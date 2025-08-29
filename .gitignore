@@ -1,0 +1,4 @@
+node_modules/*
+node_modules
+game_logs/*
+package-lock.json
