@@ -20,9 +20,18 @@ const config = {
 
 // Create Express app for HTTP endpoints and dashboard
 const app = express();
+// const srcPath = "src/lib/bingovista";
+// const staticPath = "src/lib/bingovista";
+// const htmlPath = "/bingovista.html";
+const srcPath = "build";
+const staticPath = "build";
+const htmlPath = "/index.html";
+const buildPath = path.join(__dirname, srcPath);
+if (fs.existsSync(buildPath))
+    app.use(express.static(buildPath));
 app.use(cors());
 app.use(express.json());
-app.use(express.static('public'));
+app.use(express.static(staticPath));
 
 // Game data storage
 let gameData = {
@@ -124,8 +133,8 @@ wss.on('connection', (ws, req) => {
 
     ws.on('message', (message) => {
         try {
-            const data = JSON.parse(message);
-            handleGameData(sessionId, data, ws);
+            // const data = JSON.parse(message);
+            handleGameData(sessionId, message, ws);
         } catch (error) {
             logMessage('error', `Invalid JSON from client ${sessionId}:`, error.message);
             ws.send(JSON.stringify({
@@ -231,7 +240,7 @@ function handleGameStateUpdate(sessionId, stateData) {
 
 function handleCustomData(sessionId, customData) {
     // Handle any custom data sent by the mod
-    logMessage('debug', `Custom data from ${sessionId}`, customData);
+    logMessage('debug', `Custom data from ${sessionId}: ${customData}`, customData);
 }
 
 // Dashboard WebSocket connections
@@ -302,98 +311,20 @@ app.post('/gamedata', (req, res) => {
     });
 });
 
-// Dashboard HTML (basic example)
+app.get("/favicon.ico", (req, res) => {
+    const faviconPath = path.join(__dirname, srcPath + "/favicon.ico");
+    if (fs.existsSync(faviconPath))
+        res.sendFile(faviconPath);
+    else
+        res.status(204).end();
+})
+
 app.get('/', (req, res) => {
-    res.send(`
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <title>Game Data Dashboard</title>
-            <style>
-                body { font-family: Arial, sans-serif; margin: 20px; }
-                .stats { display: flex; gap: 20px; margin-bottom: 20px; }
-                .stat-card { border: 1px solid #ccc; padding: 15px; border-radius: 5px; flex: 1; }
-                .events { margin-top: 20px; }
-                .event { padding: 10px; border-bottom: 1px solid #eee; }
-                #status { font-weight: bold; color: green; }
-                .disconnected { color: red; }
-            </style>
-        </head>
-        <body>
-            <h1>Game Data Dashboard</h1>
-            <div id="status">Connecting...</div>
-            
-            <div class="stats">
-                <div class="stat-card">
-                    <h3>Active Connections</h3>
-                    <div id="activeConnections">0</div>
-                </div>
-                <div class="stat-card">
-                    <h3>Total Messages</h3>
-                    <div id="totalMessages">0</div>
-                </div>
-                <div class="stat-card">
-                    <h3>Current Players</h3>
-                    <div id="currentPlayers">0</div>
-                </div>
-            </div>
-            
-            <div class="events">
-                <h3>Recent Events</h3>
-                <div id="eventsList"></div>
-            </div>
-            
-            <script>
-                const ws = new WebSocket('ws://localhost:8080');
-                const status = document.getElementById('status');
-                
-                ws.onopen = () => {
-                    status.textContent = 'Connected';
-                    status.className = '';
-                };
-                
-                ws.onclose = () => {
-                    status.textContent = 'Disconnected';
-                    status.className = 'disconnected';
-                };
-                
-                ws.onmessage = (event) => {
-                    const data = JSON.parse(event.data);
-                    if (data.type === 'game_update') {
-                        updateDashboard();
-                    }
-                };
-                
-                async function updateDashboard() {
-                    try {
-                        const response = await fetch('/api/stats');
-                        const data = await response.json();
-                        
-                        document.getElementById('activeConnections').textContent = data.gameStats.activeConnections;
-                        document.getElementById('totalMessages').textContent = data.gameStats.messagesReceived;
-                        document.getElementById('currentPlayers').textContent = data.currentPlayers.length;
-                        
-                        const eventsList = document.getElementById('eventsList');
-                        eventsList.innerHTML = data.recentEvents.map(event => 
-                            \`<div class="event">
-                                <strong>\${event.event_type || 'data_update'}</strong> - 
-                                \${new Date(event.timestamp).toLocaleString()}
-                                <br><small>Session: \${event.sessionId}</small>
-                            </div>\`
-                        ).join('');
-                        
-                    } catch (error) {
-                        console.error('Error updating dashboard:', error);
-                    }
-                }
-                
-                // Update dashboard every 5 seconds
-                setInterval(updateDashboard, 5000);
-                updateDashboard(); // Initial load
-            </script>
-        </body>
-        </html>
-    `);
+    const indexPath = path.join(__dirname, srcPath + htmlPath);
+    if (fs.existsSync(indexPath))
+        res.sendFile(indexPath);
+    else
+        res.status(404).send("React app not found.");
 });
 
 // Heartbeat to detect broken connections

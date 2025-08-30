@@ -1,0 +1,3 @@
+[submodule "src/lib/bingovista"]
+	path = src/lib/bingovista
+	url = https://github.com/GreatGameDota/bingovista.git
