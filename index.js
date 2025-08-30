@@ -11,10 +11,9 @@ const path = require('path');
 const config = {
     port: 8080,
     httpPort: 3000,
-    logToFile: true,
+    logToFile: false,
     logDirectory: './game_logs',
     maxLogFiles: 100,
-    enableWebDashboard: true,
     clientTimeout: 30000 // 30 seconds
 };
 
@@ -31,7 +30,7 @@ if (fs.existsSync(buildPath))
     app.use(express.static(buildPath));
 app.use(cors());
 app.use(express.json());
-app.use(express.static(staticPath));
+// app.use(express.static(staticPath));
 
 // Game data storage
 let gameData = {
