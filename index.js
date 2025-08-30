@@ -10,7 +10,7 @@ const path = require('path');
 // Configuration
 const config = {
     port: 8080,
-    httpPort: 3000,
+    httpPort: process.env.PORT || 3000,
     logToFile: false,
     logDirectory: './game_logs',
     maxLogFiles: 100,
@@ -347,10 +347,10 @@ wss.on('listening', () => {
     logMessage('info', `WebSocket server listening on port ${config.port}`);
 });
 
-app.listen(config.httpPort, () => {
-    logMessage('info', `HTTP server listening on port ${config.httpPort}`);
-    logMessage('info', `Dashboard available at http://localhost:${config.httpPort}`);
-});
+// app.listen(config.httpPort, () => {
+//     logMessage('info', `HTTP server listening on port ${config.httpPort}`);
+//     logMessage('info', `Dashboard available at http://localhost:${config.httpPort}`);
+// });
 
 // Graceful shutdown
 process.on('SIGTERM', () => {
