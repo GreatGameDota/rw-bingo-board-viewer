@@ -21,14 +21,14 @@ class BingoCanvas extends Component {
         var transpose = true;
 
         //	Prepare atlases
-        atlases[0].img = await import("../lib/bingovista/bvicons.png");
-        atlases[0].txt = await import("../lib/bingovista/bvicons.txt");
-        atlases[1].img = await import("../lib/bingovista/bingoicons.png");
-        atlases[1].txt = await import("../lib/bingovista/bingoicons.txt");
-        atlases[2].img = await import("../lib/bingovista/uispritesmsc.png");
-        atlases[2].txt = await import("../lib/bingovista/uispritesmsc.txt");
-        atlases[3].img = await import("../lib/bingovista/uiSprites.png");
-        atlases[3].txt = await import("../lib/bingovista/uiSprites.txt");
+        atlases[0].img = (await import("../lib/bingovista/bvicons.png")).default;
+        atlases[0].txt = (await import("../lib/bingovista/bvicons.txt")).default;
+        atlases[1].img = (await import("../lib/bingovista/bingoicons.png")).default;
+        atlases[1].txt = (await import("../lib/bingovista/bingoicons.txt")).default;
+        atlases[2].img = (await import("../lib/bingovista/uispritesmsc.png")).default;
+        atlases[2].txt = (await import("../lib/bingovista/uispritesmsc.txt")).default;
+        atlases[3].img = (await import("../lib/bingovista/uiSprites.png")).default;
+        atlases[3].txt = (await import("../lib/bingovista/uiSprites.txt")).default;
 
         function loadImage(src, dest) {
             return new Promise(function (resolve, reject) {
@@ -43,12 +43,12 @@ class BingoCanvas extends Component {
                 });
                 img.crossOrigin = "anonymous";
                 img.addEventListener("error", () => reject({ message: "Error loading image " + src + "." }));
-                img.src = src.default; // IMPORTANT: Changed to .default because we import modules
+                img.src = src;
             });
         }
 
         function loadJson(src, dest) {
-            return fetch(src.default).then(function (response, reject) { // IMPORTANT: Changed to .default because we import modules
+            return fetch(src).then(function (response, reject) {
                 if (!response.ok)
                     return reject(new DOMException("URL " + response.url + " error " + response.status + " " + response.statusText + ".", "NetworkError"));
                 return response.text();
@@ -151,7 +151,7 @@ class BingoCanvas extends Component {
     render() {
         return (
             <div>
-                <canvas ref={this.canvasRef} width="454" height="454" id="board">Canvas support and scripting are required.</canvas>
+                <canvas ref={this.canvasRef} width="800" height="800" id="board">Canvas support and scripting are required.</canvas>
             </div>
         );
     }
