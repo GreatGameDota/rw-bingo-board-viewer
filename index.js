@@ -116,7 +116,7 @@ wss.on('connection', (ws, req) => {
     ws.on('message', (message) => {
         try {
             var client = clients.get(ws);
-            if (message.startsWith("Spectator")) {
+            if (message.toString().startsWith("Spectator")) {
                 client.spectator = true;
             }
 
