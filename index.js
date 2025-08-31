@@ -31,15 +31,12 @@ app.use(express.json());
 
 // Game data storage
 let gameData = {
-    sessions: new Map(),
-    currentPlayers: new Map(),
     gameStats: {
         totalConnections: 0,
         activeConnections: 0,
         messagesReceived: 0,
         lastUpdate: null
     },
-    recentEvents: []
 };
 
 // Ensure log directory exists
@@ -96,20 +93,12 @@ const wss = new WebSocket.Server({
     clientTracking: true
 });
 
+var clients = new Map();
+
 wss.on('connection', (ws, req) => {
     const sessionId = generateSessionId();
     const clientIP = req.socket.remoteAddress;
-
-    // Initialize session
-    gameData.sessions.set(sessionId, {
-        id: sessionId,
-        ip: clientIP,
-        connectedAt: new Date(),
-        lastSeen: new Date(),
-        messagesReceived: 0,
-        playerData: null,
-        gameState: null
-    });
+    clients.set(ws, { id: sessionId, ip: clientIP, spectator: false });
 
     gameData.gameStats.totalConnections++;
     gameData.gameStats.activeConnections++;
@@ -122,61 +111,58 @@ wss.on('connection', (ws, req) => {
 
     ws.on('pong', () => {
         ws.isAlive = true;
-        if (gameData.sessions.has(sessionId)) {
-            gameData.sessions.get(sessionId).lastSeen = new Date();
-        }
     });
 
     ws.on('message', (message) => {
         try {
-            // const data = JSON.parse(message);
+            var client = clients.get(ws);
+            if (message.startsWith("Spectator")) {
+                client.spectator = true;
+            }
+
             handleGameData(sessionId, message, ws);
+
+            wss.clients.forEach((c) => {
+                var _client = clients.get(c);
+                if (_client !== client && _client.spectator) {
+                    c.send(message);
+                }
+            });
         } catch (error) {
             logMessage('error', `Invalid JSON from client ${sessionId}:`, error.message);
-            ws.send(JSON.stringify({
-                type: 'error',
-                message: 'Invalid JSON format'
-            }));
+            // ws.send(JSON.stringify({
+            //     type: 'error',
+            //     message: 'Invalid JSON format'
+            // }));
         }
     });
 
     ws.on('close', () => {
         logMessage('info', `Client disconnected: ${sessionId}`);
-        gameData.sessions.delete(sessionId);
-        gameData.currentPlayers.delete(sessionId);
         gameData.gameStats.activeConnections = Math.max(0, gameData.gameStats.activeConnections - 1);
+        clients.delete(ws);
     });
 
     ws.on('error', (error) => {
         logMessage('error', `WebSocket error for client ${sessionId}:`, error.message);
+        gameData.gameStats.activeConnections = Math.max(0, gameData.gameStats.activeConnections - 1);
+        clients.delete(ws);
     });
 
     // Send welcome message
-    ws.send(JSON.stringify({
-        type: 'welcome',
-        sessionId: sessionId,
-        message: 'Connected to game data server'
-    }));
+    // ws.send(JSON.stringify({
+    //     type: 'welcome',
+    //     sessionId: sessionId,
+    //     message: 'Connected to game data server'
+    // }));
 });
 
 // Handle incoming game data
 function handleGameData(sessionId, data, ws) {
-    const session = gameData.sessions.get(sessionId);
-    if (!session) return;
-
-    session.messagesReceived++;
-    session.lastSeen = new Date();
     gameData.gameStats.messagesReceived++;
     gameData.gameStats.lastUpdate = new Date();
 
-    handleCustomData(sessionId, data);
-
-    logMessage('debug', `Received data from ${sessionId}`, data);
-}
-
-function handleCustomData(sessionId, customData) {
-    // Handle any custom data sent by the mod
-    logMessage('debug', `Custom data from ${sessionId}: ${customData}`, customData);
+    logMessage('debug', `Custom data from ${sessionId}: ${data}`, data);
 }
 
 app.get("/favicon.ico", (req, res) => {
@@ -210,7 +196,6 @@ const heartbeatInterval = setInterval(() => {
 
 // Clean up old logs daily
 setInterval(cleanOldLogs, 24 * 60 * 60 * 1000);
-setInterval(() => logMessage("info", "keep alive"), 1000 * 60);
 
 // Start servers
 wss.on('listening', () => {
