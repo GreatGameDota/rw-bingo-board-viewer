@@ -129,7 +129,7 @@ wss.on('connection', (ws, req) => {
                 }
             });
         } catch (error) {
-            logMessage('error', `Invalid JSON from client ${sessionId}:`, error.message);
+            logMessage('error', `Invalid JSON from client ${sessionId}: ${error.message}`);
             // ws.send(JSON.stringify({
             //     type: 'error',
             //     message: 'Invalid JSON format'
@@ -144,7 +144,7 @@ wss.on('connection', (ws, req) => {
     });
 
     ws.on('error', (error) => {
-        logMessage('error', `WebSocket error for client ${sessionId}:`, error.message);
+        logMessage('error', `WebSocket error for client ${sessionId}: ${error.message}`);
         gameData.gameStats.activeConnections = Math.max(0, gameData.gameStats.activeConnections - 1);
         clients.delete(ws);
     });
