@@ -100,7 +100,7 @@ class App extends Component {
             <option key={id} value={id}>{id}</option>
         ));
         return (
-            <div>
+            <div style={{margin: '12px'}}>
                 <label>
                     <span style={{marginRight: '8px'}}>Select Client:</span>
                     <select value={this.state.selectedClientId || ""} onChange={this.handleClientChange}>
