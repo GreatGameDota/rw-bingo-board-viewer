@@ -1,0 +1,14 @@
+name: 10min render ping
+
+on:
+  schedule:
+    - cron: '*/10 * * * *'
+  workflow_dispatch:  # Allows manual triggering
+
+jobs:
+  curl-website:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Run cURL on Website
+        run: curl -I https://rw-bingo-board-viewer.onrender.com
