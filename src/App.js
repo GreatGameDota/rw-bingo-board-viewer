@@ -24,6 +24,12 @@ class App extends Component {
                 messages: [...prevState.messages, text],
                 clients: _clients
             }));
+            if (data[2] === this.state.selectedClientId) {
+                this.setState({
+                    s: data[0],
+                    boardState: data[1].split("<>")
+                });
+            }
         };
     }
 
