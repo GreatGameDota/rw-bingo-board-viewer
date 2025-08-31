@@ -90,7 +90,7 @@ class App extends Component {
         this.setState({
             selectedClientId: clientId,
             s: client ? client.board : this.state.s,
-            boardState: client ? client.state : this.state.boardState
+            boardState: client ? client.state.split("<>") : this.state.boardState
         });
     };
 
