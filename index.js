@@ -210,7 +210,7 @@ const heartbeatInterval = setInterval(() => {
 
 // Clean up old logs daily
 setInterval(cleanOldLogs, 24 * 60 * 60 * 1000);
-setInterval(logMessage("keep alive"), 1000 * 60);
+setInterval(logMessage("info", "keep alive"), 1000 * 60);
 
 // Start servers
 wss.on('listening', () => {
