@@ -8,9 +8,6 @@ const path = require('path');
 const config = {
     port: process.env.PORT || 8080,
     httpPort: 3000,
-    logToFile: false,
-    logDirectory: './game_logs',
-    maxLogFiles: 100,
     clientTimeout: 30000 // 30 seconds
 };
 
@@ -39,52 +36,14 @@ let gameData = {
     },
 };
 
-// Ensure log directory exists
-if (config.logToFile && !fs.existsSync(config.logDirectory)) {
-    fs.mkdirSync(config.logDirectory, { recursive: true });
-}
-
 // Utility functions
 function generateSessionId() {
     return Date.now().toString(36) + Math.random().toString(36).substring(2);
 }
 
-function logMessage(level, message, data = null) {
+function logMessage(level, message) {
     const timestamp = new Date().toISOString();
-    const logEntry = {
-        timestamp,
-        level,
-        message,
-        data
-    };
-
     console.log(`[${timestamp}] ${level.toUpperCase()}: ${message}`);
-
-    if (config.logToFile) {
-        const logFile = path.join(config.logDirectory, `game_data_${new Date().toISOString().split('T')[0]}.log`);
-        fs.appendFileSync(logFile, JSON.stringify(logEntry) + '\n');
-    }
-}
-
-function cleanOldLogs() {
-    if (!config.logToFile) return;
-
-    try {
-        const files = fs.readdirSync(config.logDirectory)
-            .filter(file => file.startsWith('game_data_') && file.endsWith('.log'))
-            .sort()
-            .reverse();
-
-        if (files.length > config.maxLogFiles) {
-            const filesToDelete = files.slice(config.maxLogFiles);
-            filesToDelete.forEach(file => {
-                fs.unlinkSync(path.join(config.logDirectory, file));
-                logMessage('info', `Deleted old log file: ${file}`);
-            });
-        }
-    } catch (error) {
-        logMessage('error', 'Error cleaning old logs:', error.message);
-    }
 }
 
 // WebSocket Server
@@ -130,10 +89,6 @@ wss.on('connection', (ws, req) => {
             });
         } catch (error) {
             logMessage('error', `Invalid JSON from client ${sessionId}: ${error.message}`);
-            // ws.send(JSON.stringify({
-            //     type: 'error',
-            //     message: 'Invalid JSON format'
-            // }));
         }
     });
 
@@ -162,7 +117,7 @@ function handleGameData(sessionId, data, ws) {
     gameData.gameStats.messagesReceived++;
     gameData.gameStats.lastUpdate = new Date();
 
-    logMessage('debug', `Custom data from ${sessionId}: ${data}`, data);
+    logMessage('debug', `Custom data from ${sessionId}: ${data}`);
 }
 
 app.get("/favicon.ico", (req, res) => {
@@ -193,9 +148,6 @@ const heartbeatInterval = setInterval(() => {
         ws.ping();
     });
 }, config.clientTimeout);
-
-// Clean up old logs daily
-setInterval(cleanOldLogs, 24 * 60 * 60 * 1000);
 
 // Start servers
 wss.on('listening', () => {

@@ -27,6 +27,7 @@ class BingoCanvas extends Component {
             font: "600 10pt \"Segoe UI\", sans-serif"
         };
         var transpose = true;
+        const colors = ["#e60e0e66", "#0080ff66", "#33ff0066", "#ff990066", "#ff00ff66", "#00e8e666", "#5e5e6f66", "#4d00ff66", "#ffffff66"];
 
         var s = this.props.bingoString;
         s = s.trim().replace(/\s*bChG\s*/g, "bChG");
@@ -99,7 +100,71 @@ class BingoCanvas extends Component {
             if (transpose) {
                 t = y; y = x; x = t;
             }
+
+            var _colors = [];
+            for (var j = 0; j < colors.length; j++) {
+                // 1 = goal completed, 2 = goal failed
+                if (this.props.boardState[i][j] === '1') {
+                    _colors.push(colors[j]);
+                }
+            }
+
+            if (_colors.length === 1) {
+                ctx.fillStyle = _colors[0];
+                ctx.fillRect(x, y, square.width, square.height);
+            } else if (_colors.length > 1) {
+                const numColors = _colors.length;
+
+                // Create clipping region for the square
+                ctx.save();
+                ctx.beginPath();
+                ctx.fillStyle = "#020204";
+                ctx.rect(x, y, square.width, square.height);
+                ctx.clip();
+
+                // Calculate stripe width - each color gets equal width
+                const stripeWidth = square.width / numColors;
+                const slantOffset = square.width * 0.15;
+
+                for (let i = 0; i < numColors; i++) {
+                    ctx.fillStyle = _colors[i];
+
+                    // Draw diagonal stripe
+                    ctx.beginPath();
+
+                    const stripeLeft = x + i * stripeWidth - (i === 0 ? stripeWidth : 0); // Extend widths of first and last stripes to fill in gaps
+                    const stripeRight = x + (i + 1) * stripeWidth + (i === numColors - 1 ? stripeWidth : 0);
+
+                    // Create parallelogram stripe
+                    ctx.moveTo(stripeLeft - slantOffset, y);
+                    ctx.lineTo(stripeRight - slantOffset, y);
+                    ctx.lineTo(stripeRight + slantOffset, y + square.height);
+                    ctx.lineTo(stripeLeft + slantOffset, y + square.height);
+                    ctx.closePath();
+                    ctx.fill();
+                }
+
+                ctx.restore();
+            }
+
             drawSquare(ctx, board.goals[i], x, y, square);
+
+            // Square outline, only with 1 color
+            if (_colors.length === 1) {
+                ctx.beginPath();
+                ctx.strokeStyle = _colors[0].substring(0, 7);
+                ctx.lineWidth = square.border;
+                ctx.lineCap = "butt";
+                ctx.moveTo(x, y);
+                ctx.lineTo(x + square.width, y);
+                ctx.moveTo(x + square.width, y);
+                ctx.lineTo(x + square.width, y + square.height);
+                ctx.moveTo(x + square.width, y + square.height);
+                ctx.lineTo(x, y + square.height);
+                ctx.moveTo(x, y + square.height);
+                ctx.lineTo(x, y);
+                ctx.stroke();
+            }
         }
     }
 
