@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import './App.css';
 import BingoCanvas from "./components/BingoCanvas";
 import { atlases } from './lib/bingovista/bingovista';
 
@@ -11,7 +10,8 @@ class App extends Component {
             boardState: "000000000<>000000000<>000000000<>000000000<>000000000<>000000000<>000000000<>000000000<>000000000<>000000000<>001000000<>000000000<>000000000<>000000000<>000000000<>000000000<>000000000<>000000000<>000000000<>000000000<>000000000<>000000000<>000000000<>111110000<>000000000".split("<>"),
             messages: [],
             clients: new Map(),
-            selectedClientId: null
+            selectedClientId: null,
+            connected: false
         };
 
         this.props.socket.onmessage = async (e) => {
@@ -30,6 +30,17 @@ class App extends Component {
                     boardState: data[1].split("<>")
                 });
             }
+        };
+        this.props.socket.onopen = () => {
+            this.setState({ connected: true });
+            this.props.socket.send("Spectator connected");
+        };
+        this.props.socket.onclose = () => {
+            this.setState({ connected: false });
+        };
+        this.props.socket.onerror = () => (e) => {
+            console.log(e);
+            this.setState({ connected: false });
         };
     }
 
@@ -106,9 +117,10 @@ class App extends Component {
             <option key={id} value={id}>{id}</option>
         ));
         return (
-            <div style={{margin: '12px'}}>
+            <div style={{ padding: '12px', backgroundColor: "#181a1b", minHeight: "100vh", color: "white" }}>
                 <label>
-                    <span style={{marginRight: '8px'}}>Select Client:</span>
+                    <span style={{color: this.state.connected ? "#00ff00" : "#ff0000", marginRight: "12px"}}>{this.state.connected ? "Connected" : "Disconnected"}</span>
+                    <span style={{ marginRight: '8px' }}>Select Client:</span>
                     <select value={this.state.selectedClientId || ""} onChange={this.handleClientChange}>
                         <option value="" disabled>Select a client</option>
                         {clientOptions}

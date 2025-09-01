@@ -1,19 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
+import './App.css';
 import reportWebVitals from './reportWebVitals';
 
 const ws = new WebSocket("wss://rw-bingo-board-viewer.onrender.com");
-ws.onopen = () => {
-  console.log("connected");
-  ws.send("Spectator connected");
-};
-ws.onclose = () => {
-  console.log("connection closed");
-};
-ws.onerror = () => (e) => {
-  console.log(e);
-};
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
