@@ -81,12 +81,14 @@ wss.on('connection', (ws, req) => {
 
             handleGameData(sessionId, message, ws);
 
-            wss.clients.forEach((c) => {
-                var _client = clients.get(c);
-                if (_client !== client && _client.spectator) {
-                    c.send(message);
-                }
-            });
+            if (!message.toString().startsWith("Spectator")) {
+                wss.clients.forEach((c) => {
+                    var _client = clients.get(c);
+                    if (_client !== client && _client.spectator) {
+                        c.send(message);
+                    }
+                });
+            }
         } catch (error) {
             logMessage('error', `Invalid JSON from client ${sessionId}: ${error.message}`);
         }

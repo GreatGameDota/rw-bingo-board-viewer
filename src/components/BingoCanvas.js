@@ -136,10 +136,10 @@ class BingoCanvas extends Component {
                     const stripeRight = x + (i + 1) * stripeWidth + (i === numColors - 1 ? stripeWidth : 0);
 
                     // Create parallelogram stripe
-                    ctx.moveTo(stripeLeft - slantOffset, y);
-                    ctx.lineTo(stripeRight - slantOffset, y);
-                    ctx.lineTo(stripeRight + slantOffset, y + square.height);
-                    ctx.lineTo(stripeLeft + slantOffset, y + square.height);
+                    ctx.moveTo(stripeLeft + slantOffset, y);
+                    ctx.lineTo(stripeRight + slantOffset, y);
+                    ctx.lineTo(stripeRight - slantOffset, y + square.height);
+                    ctx.lineTo(stripeLeft - slantOffset, y + square.height);
                     ctx.closePath();
                     ctx.fill();
                 }
