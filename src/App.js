@@ -117,17 +117,23 @@ class App extends Component {
             <option key={id} value={id}>{id}</option>
         ));
         return (
-            <div style={{ padding: '12px', backgroundColor: "#181a1b", minHeight: "100vh", color: "white" }}>
-                <label>
-                    <span style={{color: this.state.connected ? "#00ff00" : "#ff0000", marginRight: "12px"}}>{this.state.connected ? "Connected" : "Disconnected"}</span>
-                    <span style={{ marginRight: '8px' }}>Select Client:</span>
-                    <select value={this.state.selectedClientId || ""} onChange={this.handleClientChange}>
-                        <option value="" disabled>Select a client</option>
-                        {clientOptions}
-                    </select>
-                </label>
-                <BingoCanvas bingoString={this.state.s} boardState={this.state.boardState} />
-                {messages}
+            <div style={{ minHeight: "100vh", backgroundColor: "#181a1b", color: "white" }}>
+                <div style={{ padding: "12px", display: "flex", flexDirection: "row" }}>
+                    <BingoCanvas bingoString={this.state.s} boardState={this.state.boardState} />
+                    <div style={{ marginLeft: "8px", display: "flex", flexDirection: "column", height: "fit" }}>
+                        <span style={{ color: this.state.connected ? "#00ff00" : "#ff0000" }}>{this.state.connected ? "Connected" : "Disconnected"}</span>
+                        <label>
+                            <span style={{ marginRight: '8px' }}>Select Client:</span>
+                            <select value={this.state.selectedClientId || ""} onChange={this.handleClientChange}>
+                                <option value="" disabled>Select a client</option>
+                                {clientOptions}
+                            </select>
+                        </label>
+                        <div style={{ minHeight: "100%", overflowY: "auto" }}>
+                            {messages}
+                        </div>
+                    </div>
+                </div>
             </div>
         );
     }
