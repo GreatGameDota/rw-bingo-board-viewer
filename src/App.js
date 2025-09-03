@@ -16,7 +16,7 @@ class App extends Component {
 
         this.props.socket.onmessage = async (e) => {
             const text = await e.data.text();
-            var data = text.split(",");
+            var data = text.split("#");
 
             var _clients = new Map(this.state.clients);
             _clients.set(data[2], { board: data[0], state: data[1] });
@@ -112,7 +112,7 @@ class App extends Component {
     };
 
     render() {
-        const messages = this.state.messages.map((m, i) => (<div key={i}>Message from {m.split(",")[2]}</div>));
+        const messages = this.state.messages.map((m, i) => (<li key={i}>Message from {m.split("#")[2]}</li>));
         const clientOptions = Array.from(this.state.clients.keys()).map(id => (
             <option key={id} value={id}>{id}</option>
         ));
@@ -120,7 +120,7 @@ class App extends Component {
             <div style={{ minHeight: "100vh", backgroundColor: "#181a1b", color: "white" }}>
                 <div style={{ padding: "12px", display: "flex", flexDirection: "row" }}>
                     <BingoCanvas bingoString={this.state.s} boardState={this.state.boardState} />
-                    <div style={{ marginLeft: "8px", display: "flex", flexDirection: "column", height: "fit" }}>
+                    <div style={{ marginLeft: "8px", display: "flex", flexDirection: "column", height: "fit", width: "100%" }}>
                         <span style={{ color: this.state.connected ? "#00ff00" : "#ff0000" }}>{this.state.connected ? "Connected" : "Disconnected"}</span>
                         <label>
                             <span style={{ marginRight: '8px' }}>Select Client:</span>
@@ -129,7 +129,7 @@ class App extends Component {
                                 {clientOptions}
                             </select>
                         </label>
-                        <div style={{ minHeight: "100%", overflowY: "auto" }}>
+                        <div style={{ maxHeight: "75vh", overflowY: "auto" }}>
                             {messages}
                         </div>
                     </div>
