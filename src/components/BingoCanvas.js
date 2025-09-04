@@ -171,7 +171,7 @@ class BingoCanvas extends Component {
     render() {
         return (
             <div>
-                <canvas ref={this.canvasRef} width="800" height="800" id="board">Canvas support and scripting are required.</canvas>
+                <canvas ref={this.canvasRef} width="700" height="700" id="board">Canvas support and scripting are required.</canvas>
             </div>
         );
     }

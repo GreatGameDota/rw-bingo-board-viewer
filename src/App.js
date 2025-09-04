@@ -120,7 +120,7 @@ class App extends Component {
             <div style={{ minHeight: "100vh", backgroundColor: "#181a1b", color: "white" }}>
                 <div style={{ padding: "12px", display: "flex", flexDirection: "row" }}>
                     <BingoCanvas bingoString={this.state.s} boardState={this.state.boardState} />
-                    <div style={{ marginLeft: "8px", display: "flex", flexDirection: "column", height: "fit", width: "100%" }}>
+                    <div style={{ marginLeft: "8px", display: "flex", flexDirection: "column", height: "fit", width: "100%", minWidth: "300px" }}>
                         <span style={{ color: this.state.connected ? "#00ff00" : "#ff0000" }}>{this.state.connected ? "Connected" : "Disconnected"}</span>
                         <label>
                             <span style={{ marginRight: '8px' }}>Select Client:</span>
@@ -134,7 +134,7 @@ class App extends Component {
                         </div>
                     </div>
                 </div>
-                <div style={{ marginLeft: "12px" }}>This viewer is a fork of <a href="https://t3sl4co1l.github.io/bingovista/bingovista.html" style={{ color: "#0080ff" }}>T3sl4co1l's Bingo Vista board viewer</a></div>
+                <div style={{ marginLeft: "12px", marginBottom: "12px" }}>This viewer is a fork of <a href="https://t3sl4co1l.github.io/bingovista/bingovista.html" style={{ color: "#0080ff" }}>T3sl4co1l's Bingo Vista board viewer</a></div>
             </div>
         );
     }
