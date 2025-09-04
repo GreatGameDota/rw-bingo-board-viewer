@@ -150,7 +150,9 @@ class BingoCanvas extends Component {
             drawSquare(ctx, board.goals[i], x, y, square);
 
             // Square outline, only with 1 color
-            if (_colors.length === 1) {
+            if (_colors.length === 1 || String(goals[i]).endsWith('1')) {
+                if (_colors.length === 0)
+                    _colors.push("#e60e0e");
                 ctx.beginPath();
                 ctx.strokeStyle = _colors[0].substring(0, 7);
                 ctx.lineWidth = square.border;
