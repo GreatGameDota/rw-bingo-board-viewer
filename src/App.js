@@ -16,7 +16,7 @@ class App extends Component {
 
         this.props.socket.onmessage = async (e) => {
             const text = await e.data.text();
-            var data = text.split("#");
+            var data = text.split(";;");
 
             var _clients = new Map(this.state.clients);
             _clients.set(data[2], { board: data[0], state: data[1] });
@@ -112,7 +112,7 @@ class App extends Component {
     };
 
     render() {
-        const messages = this.state.messages.map((m, i) => (<li key={i}>Message from {m.split("#")[2]}</li>));
+        const messages = this.state.messages.map((m, i) => (<li key={i}>Message from {m.split(";;")[2]}</li>));
         const clientOptions = Array.from(this.state.clients.keys()).map(id => (
             <option key={id} value={id}>{id}</option>
         ));
@@ -134,6 +134,7 @@ class App extends Component {
                         </div>
                     </div>
                 </div>
+                <div style={{ marginLeft: "12px" }}>This viewer is a fork of <a href="https://t3sl4co1l.github.io/bingovista/bingovista.html" style={{ color: "#0080ff" }}>T3sl4co1l's Bingo Vista board viewer</a></div>
             </div>
         );
     }
