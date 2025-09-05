@@ -150,9 +150,12 @@ class BingoCanvas extends Component {
             drawSquare(ctx, board.goals[i], x, y, square);
 
             // Square outline, only with 1 color
+            // This logic doesnt work with
+            // BingoItemHoardChallenge, BingoPearlHoardChallenge, BingoCollectPearlChallenge, BingoEchoChallenge, BingoMaulTypesChallenge
+            // BingoTameChallenge, BingoGourmandCrushChallenge, BingoLickChallenge
             if (_colors.length === 1 || String(goals[i]).endsWith('1')) {
                 if (_colors.length === 0)
-                    _colors.push("#e60e0e");
+                    _colors.push(colors[this.props.team]);
                 ctx.beginPath();
                 ctx.strokeStyle = _colors[0].substring(0, 7);
                 ctx.lineWidth = square.border;
