@@ -159,15 +159,7 @@ class BingoCanvas extends Component {
                 ctx.beginPath();
                 ctx.strokeStyle = _colors[0].substring(0, 7);
                 ctx.lineWidth = square.border;
-                ctx.lineCap = "butt";
-                ctx.moveTo(x, y);
-                ctx.lineTo(x + square.width, y);
-                ctx.moveTo(x + square.width, y);
-                ctx.lineTo(x + square.width, y + square.height);
-                ctx.moveTo(x + square.width, y + square.height);
-                ctx.lineTo(x, y + square.height);
-                ctx.moveTo(x, y + square.height);
-                ctx.lineTo(x, y);
+                ctx.roundRect(x, y, square.width, square.height, 4);
                 ctx.stroke();
             }
         }
