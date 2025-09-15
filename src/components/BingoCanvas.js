@@ -5,6 +5,14 @@ class BingoCanvas extends Component {
     constructor(props) {
         super(props);
         this.canvasRef = React.createRef();
+        this.state = {
+            tooltip: {
+                visible: false,
+                content: '',
+                x: 0,
+                y: 0
+            }
+        };
     }
 
     componentDidMount() {
@@ -163,12 +171,91 @@ class BingoCanvas extends Component {
                 ctx.stroke();
             }
         }
+
+        canv.onmousemove = (e) => {
+            const rect = canv.getBoundingClientRect();
+            let x = Math.floor(e.clientX - Math.round(rect.left)) - (square.border + square.margin) / 2;
+            let y = Math.floor(e.clientY - Math.round(rect.top)) - (square.border + square.margin) / 2;
+            let mouseX = e.clientX - rect.left;
+            let mouseY = e.clientY - rect.top;
+            if (transpose) {
+                let t = y; y = x; x = t;
+            }
+            let sqWidth = square.width + square.margin + square.border;
+            let sqHeight = square.height + square.margin + square.border;
+            let col = Math.floor(x / sqWidth);
+            let row = Math.floor(y / sqHeight);
+            if (
+                x >= 0 && y >= 0 &&
+                (x % sqWidth) < (sqWidth - square.margin) &&
+                (y % sqHeight) < (sqHeight - square.margin)
+            ) {
+                const idx = row + col * board.width;
+                let content = `Challenge: ${board.goals[idx].category};;${board.goals[idx].description}`;
+                this.setState({
+                    tooltip: {
+                        visible: true,
+                        content,
+                        x: mouseX,
+                        y: mouseY
+                    }
+                });
+            } else {
+                this.setState({
+                    tooltip: {
+                        ...this.state.tooltip,
+                        visible: false
+                    }
+                });
+            }
+        };
+        canv.onmouseleave = () => {
+            this.setState({
+                tooltip: {
+                    ...this.state.tooltip,
+                    visible: false
+                }
+            });
+        };
     }
 
     render() {
+        const { tooltip } = this.state;
+        const TOOLTIP_WIDTH = 220;
+        const TOOLTIP_HEIGHT = 90;
+        let left = tooltip.x - TOOLTIP_WIDTH / 2;
+        let top = tooltip.y + 16;
+        if (left + TOOLTIP_WIDTH > 700) left = 700 - TOOLTIP_WIDTH - 4;
+        if (left < 4) left = 4;
+        if (top + TOOLTIP_HEIGHT > 700) top = 700 - TOOLTIP_HEIGHT - 4;
+        if (top < 4) top = 4;
+
+        var header = <div style={{ fontSize: "1.25rem", fontWeight: "bold" }}>{tooltip.content.split(";;")[0]}</div>;
+        var body = <div>{tooltip.content.split(";;")[1]}</div>;
         return (
-            <div>
+            <div style={{ position: 'relative' }}>
                 <canvas ref={this.canvasRef} width="700" height="700" id="board">Canvas support and scripting are required.</canvas>
+                {tooltip.visible && (
+                    <div
+                        style={{
+                            position: 'absolute',
+                            left: left,
+                            top: top,
+                            width: TOOLTIP_WIDTH,
+                            minHeight: TOOLTIP_HEIGHT,
+                            background: 'rgba(30,30,30,0.95)',
+                            color: '#fff',
+                            padding: '6px 12px',
+                            borderRadius: 6,
+                            pointerEvents: 'none',
+                            zIndex: 10,
+                            boxShadow: '0 2px 8px rgba(0,0,0,0.2)'
+                        }}
+                    >
+                        {header}
+                        {body}
+                    </div>
+                )}
             </div>
         );
     }
