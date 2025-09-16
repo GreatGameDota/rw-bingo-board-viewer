@@ -5,13 +5,9 @@ class BingoCanvas extends Component {
     constructor(props) {
         super(props);
         this.canvasRef = React.createRef();
+        this.tooltipRef = React.createRef();
         this.state = {
-            tooltip: {
-                visible: false,
-                content: '',
-                x: 0,
-                y: 0
-            }
+            tooltipVisible: false
         };
     }
 
@@ -172,6 +168,8 @@ class BingoCanvas extends Component {
             }
         }
 
+        const TOOLTIP_WIDTH = 220;
+        const TOOLTIP_HEIGHT = 90;
         canv.onmousemove = (e) => {
             const rect = canv.getBoundingClientRect();
             let x = Math.floor(e.clientX - Math.round(rect.left)) - (square.border + square.margin) / 2;
@@ -191,71 +189,55 @@ class BingoCanvas extends Component {
                 (y % sqHeight) < (sqHeight - square.margin)
             ) {
                 const idx = row + col * board.width;
-                let content = `Challenge: ${board.goals[idx].category};;${board.goals[idx].description}`;
-                this.setState({
-                    tooltip: {
-                        visible: true,
-                        content,
-                        x: mouseX,
-                        y: mouseY
-                    }
-                });
+                let left = mouseX - TOOLTIP_WIDTH / 2;
+                let top = mouseY + 16;
+                if (left + TOOLTIP_WIDTH > 700) left = 700 - TOOLTIP_WIDTH - 4;
+                if (left < 4) left = 4;
+                if (top + TOOLTIP_HEIGHT > 700) top = 700 - TOOLTIP_HEIGHT - 4;
+                if (top < 4) top = 4;
+                if (this.tooltipRef.current) {
+                    this.tooltipRef.current.style.display = 'block';
+                    this.tooltipRef.current.style.left = left + 'px';
+                    this.tooltipRef.current.style.top = top + 'px';
+                    this.tooltipRef.current.innerHTML = `<span style="font-size:1.25rem;font-weight:bold;">Challenge: ${board.goals[idx].category}</span><br><span>${board.goals[idx].description}</span>`;
+                }
+                if (!this.state.tooltipVisible)
+                    this.setState({ tooltipVisible: true });
             } else {
-                this.setState({
-                    tooltip: {
-                        ...this.state.tooltip,
-                        visible: false
-                    }
-                });
+                if (this.tooltipRef.current)
+                    this.tooltipRef.current.style.display = 'none';
+                if (this.state.tooltipVisible)
+                    this.setState({ tooltipVisible: false });
             }
         };
         canv.onmouseleave = () => {
-            this.setState({
-                tooltip: {
-                    ...this.state.tooltip,
-                    visible: false
-                }
-            });
+            if (this.tooltipRef.current)
+                this.tooltipRef.current.style.display = 'none';
+            if (this.state.tooltipVisible)
+                this.setState({ tooltipVisible: false });
         };
     }
 
     render() {
-        const { tooltip } = this.state;
-        const TOOLTIP_WIDTH = 220;
-        const TOOLTIP_HEIGHT = 90;
-        let left = tooltip.x - TOOLTIP_WIDTH / 2;
-        let top = tooltip.y + 16;
-        if (left + TOOLTIP_WIDTH > 700) left = 700 - TOOLTIP_WIDTH - 4;
-        if (left < 4) left = 4;
-        if (top + TOOLTIP_HEIGHT > 700) top = 700 - TOOLTIP_HEIGHT - 4;
-        if (top < 4) top = 4;
-
-        var header = <div style={{ fontSize: "1.25rem", fontWeight: "bold" }}>{tooltip.content.split(";;")[0]}</div>;
-        var body = <div>{tooltip.content.split(";;")[1]}</div>;
         return (
             <div style={{ position: 'relative' }}>
                 <canvas ref={this.canvasRef} width="700" height="700" id="board">Canvas support and scripting are required.</canvas>
-                {tooltip.visible && (
-                    <div
-                        style={{
-                            position: 'absolute',
-                            left: left,
-                            top: top,
-                            width: TOOLTIP_WIDTH,
-                            minHeight: TOOLTIP_HEIGHT,
-                            background: 'rgba(30,30,30,0.95)',
-                            color: '#fff',
-                            padding: '6px 12px',
-                            borderRadius: 6,
-                            pointerEvents: 'none',
-                            zIndex: 10,
-                            boxShadow: '0 2px 8px rgba(0,0,0,0.2)'
-                        }}
-                    >
-                        {header}
-                        {body}
-                    </div>
-                )}
+                <div
+                    ref={this.tooltipRef}
+                    style={{
+                        display: this.state.tooltipVisible ? 'block' : 'none',
+                        position: 'absolute',
+                        width: 220,
+                        minHeight: 90,
+                        background: 'rgba(30,30,30,0.95)',
+                        color: '#fff',
+                        padding: '6px 8px 12px 12px',
+                        borderRadius: 6,
+                        pointerEvents: 'none',
+                        zIndex: 10,
+                        boxShadow: '0 2px 8px rgba(0,0,0,0.2)'
+                    }}
+                />
             </div>
         );
     }
