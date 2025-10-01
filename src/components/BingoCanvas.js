@@ -6,9 +6,6 @@ class BingoCanvas extends Component {
         super(props);
         this.canvasRef = React.createRef();
         this.tooltipRef = React.createRef();
-        this.state = {
-            tooltipVisible: false
-        };
     }
 
     componentDidMount() {
@@ -201,20 +198,14 @@ class BingoCanvas extends Component {
                     this.tooltipRef.current.style.top = top + 'px';
                     this.tooltipRef.current.innerHTML = `<span style="font-size:1.25rem;font-weight:bold;">Challenge: ${board.goals[idx].category}</span><br><span>${board.goals[idx].description}</span>`;
                 }
-                if (!this.state.tooltipVisible)
-                    this.setState({ tooltipVisible: true });
             } else {
                 if (this.tooltipRef.current)
                     this.tooltipRef.current.style.display = 'none';
-                if (this.state.tooltipVisible)
-                    this.setState({ tooltipVisible: false });
             }
         };
         canv.onmouseleave = () => {
             if (this.tooltipRef.current)
                 this.tooltipRef.current.style.display = 'none';
-            if (this.state.tooltipVisible)
-                this.setState({ tooltipVisible: false });
         };
     }
 
@@ -225,7 +216,7 @@ class BingoCanvas extends Component {
                 <div
                     ref={this.tooltipRef}
                     style={{
-                        display: this.state.tooltipVisible ? 'block' : 'none',
+                        display: 'none',
                         position: 'absolute',
                         width: 220,
                         minHeight: 90,
