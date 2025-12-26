@@ -31,6 +31,11 @@ class BingoCanvas extends Component {
         const colors = ["#e60e0e66", "#0080ff66", "#33ff0066", "#ff990066", "#ff00ff66", "#00e8e666", "#5e5e6f66", "#4d00ff66", "#ffffff66"];
 
         var s = this.props.bingoString;
+        const parts = s.split(";");
+        if (parts.length >= 3) { // Remove starting shelter string
+            parts.splice(1, 1);
+            s = parts.join(";");
+        }
         s = s.trim().replace(/\s*bChG\s*/g, "bChG");
         var goals = s.split(/bChG/);
         var size = Math.ceil(Math.sqrt(goals.length));
