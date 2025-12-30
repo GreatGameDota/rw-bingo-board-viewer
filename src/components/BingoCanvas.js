@@ -159,7 +159,7 @@ class BingoCanvas extends Component {
             // This logic doesnt work with
             // BingoItemHoardChallenge, BingoPearlHoardChallenge, BingoCollectPearlChallenge, BingoEchoChallenge, BingoMaulTypesChallenge
             // BingoTameChallenge, BingoGourmandCrushChallenge, BingoLickChallenge
-            if (_colors.length === 1 || String(goals[i]).endsWith('1')) {
+            if (_colors.length === 1 || String(goals[i]).endsWith('<1')) {
                 if (_colors.length === 0)
                     _colors.push(colors[this.props.team]);
                 ctx.beginPath();
