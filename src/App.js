@@ -17,7 +17,7 @@ class App extends Component {
 
         this.props.socket.onmessage = async (e) => {
             const text = await e.data.text();
-            if (text.StartsWith("Arena"))
+            if (text.startsWith("Arena"))
                 return;
             var data = text.split(";;");
 
