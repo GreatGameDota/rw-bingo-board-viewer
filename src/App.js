@@ -17,6 +17,8 @@ class App extends Component {
 
         this.props.socket.onmessage = async (e) => {
             const text = await e.data.text();
+            if (text.StartsWith("Arena"))
+                return;
             var data = text.split(";;");
 
             var _clients = new Map(this.state.clients);

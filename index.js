@@ -78,13 +78,19 @@ wss.on('connection', (ws, req) => {
             if (message.toString().startsWith("Spectator")) {
                 client.spectator = true;
             }
+            if (message.toString().startsWith("SpectatorArena")) {
+                client.spectator2 = true;
+            }
 
             handleGameData(sessionId, message, ws);
 
             if (!message.toString().startsWith("Spectator")) {
                 wss.clients.forEach((c) => {
                     var _client = clients.get(c);
-                    if (_client !== client && _client.spectator) {
+                    if (_client !== client && message.toString().startsWith("Arena") && _client.spectator2) {
+                        c.send(message);
+                    }
+                    if (_client !== client && !message.toString().startsWith("Arena") && _client.spectator) {
                         c.send(message);
                     }
                 });
