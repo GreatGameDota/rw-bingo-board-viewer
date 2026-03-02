@@ -107,7 +107,7 @@ async function processMessage(raw) {
                     boardString: boardString,
                     boardState: boardState,
                     name: playerName,
-                    team: teamNumber,
+                    team: String(teamNumber),
                 }),
             });
             const result = await response.json();
@@ -122,6 +122,11 @@ async function processMessage(raw) {
             reason: `Game already won by "${wins.get(gameId).playerName}", saved final snapshot for "${playerName}"`,
         };
     }
+    if (gameOver)
+        return {
+            saved: false, record: wins.get(gameId), player,
+            reason: `Game already won by "${wins.get(gameId).playerName}", ignoring update from "${playerName}"`,
+        };
 
     // Check win conditions
     let grid, result;
@@ -155,7 +160,7 @@ async function processMessage(raw) {
                 boardString: boardString,
                 boardState: boardState,
                 name: playerName,
-                team: teamNumber,
+                team: String(teamNumber),
             }),
         });
         const result = await response.json();
