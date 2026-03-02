@@ -13,35 +13,46 @@ const BINGO_LINES = [
     [0, 6, 12, 18, 24], [4, 8, 12, 16, 20],
 ];
 
-function parseState(stateStr) {
-    const cells = stateStr.split("<>");
-    if (cells.length !== 25)
-        throw new Error(`Invalid board state: expected 25 cells, got ${cells.length}`);
-    return cells.map(cell => ({ hasOne: cell.includes("1"), hasTwo: cell.includes("2") }));
-}
-
 function checkWin(grid) {
+    const activeTeams = [];
+    for (let team = 0; team < 9; team++) {
+        if (grid.some(c => c[team] !== "0")) {
+            activeTeams.push(team);
+        }
+    }
+
     for (const line of BINGO_LINES) {
-        if (line.every(i => grid[i].hasOne)) {
+        for (const team of activeTeams) {
+            if (line.every(i => grid[i][team] === "1")) {
+                return {
+                    winner: "bingo",
+                    winningTeam: team,
+                    winningLine: line,
+                    score: grid.filter(c => c[team] === "1").length,
+                    threshold: null,
+                };
+            }
+        }
+    }
+
+    const allFailedCount = grid.filter(c => activeTeams.every(team => c[team] === "2")).length;
+    const effectiveCells = grid.length - allFailedCount;
+    const half = Math.ceil(effectiveCells / 2);
+
+    for (const team of activeTeams) {
+        const score = grid.filter(c => c[team] === "1").length;
+        if (score >= half) {
             return {
-                winner: "bingo",
-                winningLine: line,
-                score: grid.filter(c => c.hasOne).length,
-                threshold: null,
-                bothFailed: 0,
+                winner: "majority",
+                winningTeam: team,
+                score,
+                threshold: half,
+                winningLine: null,
             };
         }
     }
 
-    const score = grid.filter(c => c.hasOne).length;
-    const bothFailed = grid.filter(c => c.hasTwo).length;
-    const threshold = 13 - bothFailed;
-
-    if (score >= threshold) {
-        return { winner: "majority", score, threshold, bothFailed, winningLine: null };
-    }
-
-    return { winner: null, score, threshold, bothFailed, winningLine: null };
+    return { winner: null, winningTeam: null, winningLine: null };
 }
 
 function hashString(str) {
@@ -98,10 +109,9 @@ async function processMessage(raw) {
     };
 
     // Check win conditions
-    let grid, result;
+    let result;
     try {
-        grid = parseState(boardState);
-        result = checkWin(grid);
+        result = checkWin(boardState.split("<>"));
     }
     catch (e) {
         return { saved: false, record: null, player, reason: `State error: ${e.message}` };
@@ -126,10 +136,11 @@ async function processMessage(raw) {
                         boardState: boardState,
                         name: playerName,
                         team: String(teamNumber),
+                        winningTeam: String(result.winningTeam),
                     }),
                 });
-                const result = await response.json();
-                console.log(`[API] POST response: ${response.status}`, result);
+                const res = await response.json();
+                console.log(`[API] POST response: ${response.status}`, res);
             } catch (e) {
                 console.error(`[API] POST error: ${e.message}`);
             }
@@ -170,10 +181,11 @@ async function processMessage(raw) {
                     boardState: boardState,
                     name: playerName,
                     team: String(teamNumber),
+                    winningTeam: String(result.winningTeam),
                 }),
             });
-            const result = await response.json();
-            console.log(`[API] POST response: ${response.status}`, result);
+            const res = await response.json();
+            console.log(`[API] POST response: ${response.status}`, res);
         } catch (e) {
             console.error(`[API] POST error: ${e.message}`);
         }
