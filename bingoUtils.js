@@ -152,3 +152,7 @@ function processMessage(raw) {
         reason: `Game over! "${playerName}" triggered a win: ${result.winner === "bingo" ? `Bingo [${result.winningLine}]` : `Majority (${result.score}/${result.threshold})`}`,
     };
 }
+
+const bingoUtils = { processMessage };
+
+export default bingoUtils;
