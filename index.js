@@ -3,6 +3,7 @@ const express = require('express');
 const cors = require('cors');
 const fs = require('fs');
 const path = require('path');
+const { processMessage } = require('./bingoUtils');
 
 // Configuration
 const config = {
@@ -83,6 +84,10 @@ wss.on('connection', (ws, req) => {
             }
 
             handleGameData(sessionId, message, ws);
+
+            if (!client.spectator && !client.spectator2 && !message.toString().startsWith("Arena")) {
+                processMessage(message.toString());
+            }
 
             if (!message.toString().startsWith("Spectator")) {
                 wss.clients.forEach((c) => {
