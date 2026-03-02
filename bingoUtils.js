@@ -99,21 +99,23 @@ async function processMessage(raw) {
 
     if (gameOver && !players.has(playerKey)) {
         players.set(playerKey, player);
-        try {
-            const response = await fetch("https://us-central1-bingo-db-57e75.cloudfunctions.net/api/game", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    boardString: boardString,
-                    boardState: boardState,
-                    name: playerName,
-                    team: String(teamNumber),
-                }),
-            });
-            const result = await response.json();
-            console.log(`[API] POST response: ${response.status}`, result);
-        } catch (e) {
-            console.error(`[API] POST error: ${e.message}`);
+        if (teamNumber !== 8) {
+            try {
+                const response = await fetch("https://us-central1-bingo-db-57e75.cloudfunctions.net/api/game", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        boardString: boardString,
+                        boardState: boardState,
+                        name: playerName,
+                        team: String(teamNumber),
+                    }),
+                });
+                const result = await response.json();
+                console.log(`[API] POST response: ${response.status}`, result);
+            } catch (e) {
+                console.error(`[API] POST error: ${e.message}`);
+            }
         }
         return {
             saved: true,
@@ -152,21 +154,24 @@ async function processMessage(raw) {
     };
     wins.set(gameId, record);
     players.set(playerKey, player);
-    try {
-        const response = await fetch("https://us-central1-bingo-db-57e75.cloudfunctions.net/api/game", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                boardString: boardString,
-                boardState: boardState,
-                name: playerName,
-                team: String(teamNumber),
-            }),
-        });
-        const result = await response.json();
-        console.log(`[API] POST response: ${response.status}`, result);
-    } catch (e) {
-        console.error(`[API] POST error: ${e.message}`);
+
+    if (teamNumber !== 8) {
+        try {
+            const response = await fetch("https://us-central1-bingo-db-57e75.cloudfunctions.net/api/game", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    boardString: boardString,
+                    boardState: boardState,
+                    name: playerName,
+                    team: String(teamNumber),
+                }),
+            });
+            const result = await response.json();
+            console.log(`[API] POST response: ${response.status}`, result);
+        } catch (e) {
+            console.error(`[API] POST error: ${e.message}`);
+        }
     }
 
     return {
