@@ -97,6 +97,23 @@ async function processMessage(raw) {
         lastSeen: new Date().toISOString(),
     };
 
+    // Check win conditions
+    let grid, result;
+    try {
+        grid = parseState(boardState);
+        result = checkWin(grid);
+    }
+    catch (e) {
+        return { saved: false, record: null, player, reason: `State error: ${e.message}` };
+    }
+
+    if (!result.winner) {
+        return {
+            saved: false, record: null, player,
+            reason: `No win yet from "${playerName}" (score: ${result.score}/${result.threshold})`,
+        };
+    }
+
     if (gameOver && !players.has(playerKey)) {
         players.set(playerKey, player);
         if (teamNumber !== 8) {
@@ -129,18 +146,6 @@ async function processMessage(raw) {
             saved: false, record: wins.get(gameId), player,
             reason: `Game already won by "${wins.get(gameId).playerName}", ignoring update from "${playerName}"`,
         };
-
-    // Check win conditions
-    let grid, result;
-    try { grid = parseState(boardState); result = checkWin(grid); }
-    catch (e) { return { saved: false, record: null, player, reason: `State error: ${e.message}` }; }
-
-    if (!result.winner) {
-        return {
-            saved: false, record: null, player,
-            reason: `No win yet from "${playerName}" (score: ${result.score}/${result.threshold})`,
-        };
-    }
 
     const record = {
         gameId, boardString, boardState,
