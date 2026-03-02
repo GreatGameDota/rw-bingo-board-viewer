@@ -153,6 +153,4 @@ function processMessage(raw) {
     };
 }
 
-const bingoUtils = { processMessage };
-
-export default bingoUtils;
+module.exports = { processMessage };
