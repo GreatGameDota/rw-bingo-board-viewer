@@ -73,7 +73,7 @@ wss.on('connection', (ws, req) => {
         ws.isAlive = true;
     });
 
-    ws.on('message', (message) => {
+    ws.on('message', async (message) => {
         try {
             var client = clients.get(ws);
             if (message.toString().startsWith("SpectatorArena")) {
@@ -86,7 +86,10 @@ wss.on('connection', (ws, req) => {
             handleGameData(sessionId, message, ws);
 
             if (!client.spectator && !client.spectator2 && !message.toString().startsWith("Arena")) {
-                processMessage(message.toString());
+                var res = await processMessage(message.toString());
+                if (res) {
+                    logMessage('info', `Processed message from ${sessionId}: ${res.reason}`);
+                }
             }
 
             if (!message.toString().startsWith("Spectator")) {
