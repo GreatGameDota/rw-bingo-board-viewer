@@ -88,10 +88,12 @@ function parseMessage(raw) {
     const boardString = parts[0];
     const boardState = parts[1];
     const playerName = parts[2];
-    const teamNumber = parseInt(parts[3], 10);
+    const teamNumber = parseInt(parts[3]);
+    const time = parts[4];
+    const completedGoals = parseInt(parts[5]);
     const gameId = deriveGameId(boardString);
     const playerKey = `${gameId}|${playerName}`;
-    return { gameId, playerKey, boardString, boardState, playerName, teamNumber };
+    return { gameId, playerKey, boardString, boardState, playerName, teamNumber, time, completedGoals };
 }
 
 async function processMessage(raw) {
@@ -99,7 +101,7 @@ async function processMessage(raw) {
     try { parsed = parseMessage(raw); }
     catch (e) { return { saved: false, record: null, player: null, reason: `Parse error: ${e.message}` }; }
 
-    const { gameId, playerKey, boardString, boardState, playerName, teamNumber } = parsed;
+    const { gameId, playerKey, boardString, boardState, playerName, teamNumber, time, completedGoals } = parsed;
     const gameOver = wins.has(gameId);
     const player = {
         playerKey, gameId, playerName, teamNumber,
@@ -117,7 +119,7 @@ async function processMessage(raw) {
         return { saved: false, record: null, player, reason: `State error: ${e.message}` };
     }
 
-    if (!result.winner) {
+    if (!result.winner || boardState.split("<>").length !== 25) {
         return {
             saved: false, record: null, player,
             reason: `No win yet from "${playerName}" (score: ${result.score}/${result.threshold})`,
@@ -137,6 +139,8 @@ async function processMessage(raw) {
                         name: playerName,
                         team: String(teamNumber),
                         winningTeam: String(result.winningTeam),
+                        time: time,
+                        completedGoals: String(completedGoals),
                     }),
                 });
                 const res = await response.json();
@@ -182,6 +186,8 @@ async function processMessage(raw) {
                     name: playerName,
                     team: String(teamNumber),
                     winningTeam: String(result.winningTeam),
+                    time: time,
+                    completedGoals: String(completedGoals),
                 }),
             });
             const res = await response.json();
