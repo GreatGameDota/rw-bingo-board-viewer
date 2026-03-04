@@ -75,9 +75,7 @@ function extractChallengeNames(boardString) {
 }
 
 function deriveGameId(boardString) {
-    const firstSemi = boardString.indexOf(";");
-    const secondSemi = boardString.indexOf(";", firstSemi + 1);
-    const seed = boardString.slice(0, secondSemi);
+    const seed = boardString.slice(0, boardString.indexOf(";"));
     const challengeHash = hashString(extractChallengeNames(boardString).join("|"));
     return `${seed}:${challengeHash}`;
 }
