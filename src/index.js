@@ -3,13 +3,14 @@ import ReactDOM from 'react-dom/client';
 import App from './App';
 import './App.css';
 import reportWebVitals from './reportWebVitals';
+import { getLiveSocketService } from './live/liveSocketService';
 
-const ws = new WebSocket("wss://rw-bingo-board-viewer.onrender.com");
+getLiveSocketService();
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <App socket={ws} />
+    <App />
   </React.StrictMode>
 );
 

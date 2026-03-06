@@ -42,6 +42,14 @@ function checkWin(grid) {
     for (const team of activeTeams) {
         const score = grid.filter(c => c[team] === "1").length;
         if (score >= half) {
+            const otherTeams = activeTeams.filter(t => t !== team);
+            const potentialBingoExists = otherTeams.some(other =>
+                BINGO_LINES.some(line =>
+                    line.every(i => grid[i][other] !== "2")
+                )
+            );
+            if (potentialBingoExists) continue;
+
             return {
                 winner: "majority",
                 winningTeam: team,

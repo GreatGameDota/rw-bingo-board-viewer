@@ -27,6 +27,7 @@ class BingoCanvas extends Component {
             background: "#020204",
             font: "600 10pt \"Segoe UI\", sans-serif"
         };
+        const canvasSize = this.props.size || 700;
         var transpose = true;
         const colors = ["#e60e0e66", "#0080ff66", "#33ff0066", "#ff990066", "#ff00ff66", "#00e8e666", "#5e5e6f66", "#4d00ff66", "#ffffff66"];
 
@@ -95,8 +96,8 @@ class BingoCanvas extends Component {
         square.height = Math.round((canv.height / board.height) - square.margin - square.border);
 
         var ctx = this.canvasRef.current.getContext("2d");
-        ctx.fillStyle = square.background;
-        ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+        // ctx.fillStyle = square.background;
+        ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
         for (var i = 0; i < board.goals.length; i++) {
             var x, y, t;
             x = Math.floor(i / board.height) * (square.width + square.margin + square.border)
@@ -151,6 +152,9 @@ class BingoCanvas extends Component {
                 }
 
                 ctx.restore();
+            } else {
+                ctx.fillStyle = square.background;
+                ctx.fillRect(x, y, square.width, square.height);
             }
 
             drawSquare(ctx, board.goals[i], x, y, square);
@@ -193,15 +197,15 @@ class BingoCanvas extends Component {
                 const idx = row + col * board.width;
                 let left = mouseX - TOOLTIP_WIDTH / 2;
                 let top = mouseY + 16;
-                if (left + TOOLTIP_WIDTH > 700) left = 700 - TOOLTIP_WIDTH - 4;
+                if (left + TOOLTIP_WIDTH > canvasSize) left = canvasSize - TOOLTIP_WIDTH - 4;
                 if (left < 4) left = 4;
-                if (top + TOOLTIP_HEIGHT > 700) top = 700 - TOOLTIP_HEIGHT - 4;
+                if (top + TOOLTIP_HEIGHT > canvasSize) top = canvasSize - TOOLTIP_HEIGHT - 4;
                 if (top < 4) top = 4;
                 if (this.tooltipRef.current) {
                     this.tooltipRef.current.style.display = 'block';
                     this.tooltipRef.current.style.left = left + 'px';
                     this.tooltipRef.current.style.top = top + 'px';
-                    this.tooltipRef.current.innerHTML = `<span style="font-size:1.25rem;font-weight:bold;">Challenge: ${board.goals[idx].category}</span><br><span>${board.goals[idx].description}</span>`;
+                    this.tooltipRef.current.innerHTML = `<span style="font-size:1.25rem;font-weight:bold;">${board.goals[idx].category}</span><br><span>${board.goals[idx].description}</span>`;
                 }
             } else {
                 if (this.tooltipRef.current)
@@ -215,9 +219,10 @@ class BingoCanvas extends Component {
     }
 
     render() {
+        const canvasSize = this.props.size || 700;
         return (
             <div style={{ position: 'relative' }}>
-                <canvas ref={this.canvasRef} width="700" height="700" id="board">Canvas support and scripting are required.</canvas>
+                <canvas ref={this.canvasRef} width={canvasSize} height={canvasSize} id="board">Canvas support and scripting are required.</canvas>
                 <div
                     ref={this.tooltipRef}
                     style={{
