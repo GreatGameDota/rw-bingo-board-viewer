@@ -10,9 +10,9 @@ function App() {
             <div className="flex flex-col min-h-screen bg-gray-950 text-white">
                 <MenuBar />
                 <Routes>
-                    <Route path="/" element={<Viewer />} />
+                    {/* <Route path="/" element={<Viewer />} /> */}
                     <Route path="/rw-bingo-board-viewer" element={<Viewer />} />
-                    <Route path="/all-games" element={<AllGames />} />
+                    <Route path="/rw-bingo-board-viewer/all-games" element={<AllGames />} />
                 </Routes>
                 <Footer />
             </div>

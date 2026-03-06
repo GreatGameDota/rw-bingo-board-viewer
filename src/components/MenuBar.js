@@ -8,7 +8,7 @@ const MenuBar = () => {
         <nav className="bg-gray-900 border-b border-gray-700 shadow-lg">
             <div className="max-w-full mx-auto px-6 py-4">
                 <div className="flex items-center">
-                    <Link to="/">
+                    <Link to="/rw-bingo-board-viewer">
                         <img
                             src="https://firebasestorage.googleapis.com/v0/b/bingo-db-57e75.firebasestorage.app/o/logo%20color%20glow%20shadow.png?alt=media"
                             alt="Bingo Logo"
@@ -18,7 +18,7 @@ const MenuBar = () => {
                     <ul className="flex ml-12 space-x-8 items-center">
                         <li>
                             <Link
-                                to="/"
+                                to="/rw-bingo-board-viewer"
                                 className="text-gray-300 hover:text-white transition-colors duration-200"
                             >
                                 Home
@@ -26,7 +26,7 @@ const MenuBar = () => {
                         </li>
                         <li>
                             <Link
-                                to="/all-games"
+                                to="/rw-bingo-board-viewer/all-games"
                                 className="text-gray-300 hover:text-white transition-colors duration-200"
                             >
                                 All Games
