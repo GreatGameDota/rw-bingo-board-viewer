@@ -1,6 +1,7 @@
 
 var wins = new Map();
 var players = new Map();
+var userCompletedGameIdsCache = new Map();
 
 const BINGO_LINES = [
     // Rows
@@ -88,6 +89,29 @@ function deriveGameId(boardString) {
     return `${seed}:${challengeHash}`;
 }
 
+async function getCompletedGameIdsForUser(userName) {
+    const now = Date.now();
+    const cached = userCompletedGameIdsCache.get(userName);
+    if (cached && cached.expires > now) return cached.set;
+
+    let set;
+    try {
+        const response = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/games/user/${encodeURIComponent(userName)}`);
+        if (!response.ok) return new Set();
+        const data = await response.json();
+        const games = data.games || [];
+        set = new Set();
+        for (const game of games) {
+            set.add(deriveGameId(game.info.boardString.stringValue));
+        }
+        userCompletedGameIdsCache.set(userName, { set, expires: now + 60000 });
+    } catch (e) {
+        console.error(`getCompletedGameIdsForUser ${e.message}`);
+        return new Set();
+    }
+    return set;
+}
+
 function parseMessage(raw) {
     const parts = raw.split(";;");
     if (parts.length < 4) throw new Error("Invalid message");
@@ -108,7 +132,6 @@ async function processMessage(raw) {
     catch (e) { return { saved: false, record: null, player: null, reason: `Parse error: ${e.message}` }; }
 
     const { gameId, playerKey, boardString, boardState, playerName, teamNumber, time, completedGoals } = parsed;
-    const gameOver = wins.has(gameId);
     const player = {
         playerKey, gameId, playerName, teamNumber,
         lastBoardState: boardState,
@@ -131,6 +154,9 @@ async function processMessage(raw) {
             reason: `No win yet from "${playerName}" (score: ${result.score}/${result.threshold})`,
         };
     }
+
+    const apiCompletedIds = await getCompletedGameIdsForUser(playerName);
+    const gameOver = wins.has(gameId) || apiCompletedIds.has(gameId);
 
     if (gameOver && !players.has(playerKey)) {
         players.set(playerKey, player);
