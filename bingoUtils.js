@@ -92,24 +92,36 @@ function deriveGameId(boardString) {
 async function getCompletedGameIdsForUser(userName) {
     const now = Date.now();
     const cached = userCompletedGameIdsCache.get(userName);
-    if (cached && cached.expires > now) return cached.set;
+    if (cached && cached.expires > now) return cached;
 
-    let set;
+    let apiCompletedIds;
+    let apiIds;
     try {
         const response = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/games/user/${encodeURIComponent(userName)}`);
-        if (!response.ok) return new Set();
+        if (!response.ok) return { apiCompletedIds: new Set(), apiIds: new Map(), expires: now };
+
         const data = await response.json();
         const games = data.games || [];
-        set = new Set();
+        apiCompletedIds = new Set();
+        apiIds = new Map();
         for (const game of games) {
-            set.add(deriveGameId(game.info.boardString.stringValue));
+            if (!game.info) continue;
+
+            const boardString = game.info.boardString.stringValue;
+            const derivedId = deriveGameId(boardString);
+            apiCompletedIds.add(derivedId);
+
+            apiIds.set(derivedId, game.info.id.stringValue);
         }
-        userCompletedGameIdsCache.set(userName, { set, expires: now + 60000 });
+        const cachedValue = { apiCompletedIds, apiIds, expires: now + 60000 };
+        userCompletedGameIdsCache.set(userName, cachedValue);
+        return cachedValue;
     } catch (e) {
         console.error(`getCompletedGameIdsForUser ${e.message}`);
-        return new Set();
+        const fallback = { apiCompletedIds: new Set(), apiIds: new Map(), expires: now + 10000 };
+        userCompletedGameIdsCache.set(userName, fallback);
+        return fallback;
     }
-    return set;
 }
 
 function parseMessage(raw) {
@@ -155,8 +167,48 @@ async function processMessage(raw) {
         };
     }
 
-    const apiCompletedIds = await getCompletedGameIdsForUser(playerName);
-    const gameOver = wins.has(gameId) || apiCompletedIds.has(gameId);
+    const { apiCompletedIds, apiIds } = await getCompletedGameIdsForUser(playerName);
+
+    let gameOver = wins.has(gameId);
+
+    if (!gameOver && apiCompletedIds.has(gameId)) {
+        const existingId = apiIds.get(gameId);
+        if (existingId) {
+            try {
+                const response = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/games/${existingId}`);
+                if (response.ok) {
+                    const data = await response.json();
+                    const game = data.game || [];
+
+                    const existingBoardString = game.info.boardString.stringValue;
+                    const existingBoardState = game.info.boardState.stringValue;
+                    const name = game.info.name.stringValue;
+                    const rawTeam = game.info.team.stringValue;
+                    const existingTeamNumber = parseInt(String(rawTeam));
+                    const createdAt = new Date().toISOString();
+
+                    const apiRecord = {
+                        gameId,
+                        boardString: existingBoardString,
+                        boardState: existingBoardState,
+                        playerName: name,
+                        teamNumber: existingTeamNumber,
+                        winner: null,
+                        winningLine: null,
+                        score: null,
+                        threshold: null,
+                        bothFailed: undefined,
+                        timestamp: createdAt,
+                    };
+
+                    wins.set(gameId, apiRecord);
+                    gameOver = true;
+                }
+            } catch (e) {
+                console.error(`error for gameId ${gameId}: ${e.message}`);
+            }
+        }
+    }
 
     if (gameOver && !players.has(playerKey)) {
         players.set(playerKey, player);
