@@ -1,8 +1,17 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const MenuBar = () => {
     const [search, setSearch] = useState('');
+    const navigate = useNavigate();
+
+    const handleSearchSubmit = (e) => {
+        e.preventDefault();
+        const userName = search.trim();
+        if (userName) {
+            navigate(`/rw-bingo-board-viewer/user/${encodeURIComponent(userName)}`);
+        }
+    };
 
     return (
         <nav className="bg-gray-900 border-b border-gray-700 shadow-lg">
@@ -33,7 +42,7 @@ const MenuBar = () => {
                             </Link>
                         </li>
                     </ul>
-                    <div className="ml-auto relative">
+                    <form onSubmit={handleSearchSubmit} className="ml-auto relative">
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
                             fill="none"
@@ -51,7 +60,7 @@ const MenuBar = () => {
                             onChange={(e) => setSearch(e.target.value)}
                             className="pl-9 pr-3 py-2 rounded bg-gray-800 border border-gray-600 text-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-blue-400 focus:border-blue-400 w-48"
                         />
-                    </div>
+                    </form>
                 </div>
             </div>
         </nav>
