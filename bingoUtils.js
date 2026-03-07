@@ -178,12 +178,12 @@ async function processMessage(raw) {
                 const response = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/games/${existingId}`);
                 if (response.ok) {
                     const data = await response.json();
-                    const game = data.game || [];
+                    const game = data.game;
 
-                    const existingBoardString = game.info.boardString.stringValue;
-                    const existingBoardState = game.info.boardState.stringValue;
-                    const name = game.info.name.stringValue;
-                    const rawTeam = game.info.team.stringValue;
+                    const existingBoardString = game.boardString.stringValue;
+                    const existingBoardState = game.boardState.stringValue;
+                    const name = game.name.stringValue;
+                    const rawTeam = game.team.stringValue;
                     const existingTeamNumber = parseInt(String(rawTeam));
                     const createdAt = new Date().toISOString();
 
@@ -205,7 +205,7 @@ async function processMessage(raw) {
                     gameOver = true;
                 }
             } catch (e) {
-                console.error(`error for gameId ${gameId}: ${e.message}`);
+                console.error(`error for gameId ${gameId} ${existingId}: ${e.message}`);
             }
         }
     }
