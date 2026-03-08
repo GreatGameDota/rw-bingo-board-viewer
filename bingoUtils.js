@@ -46,7 +46,10 @@ function checkWin(grid) {
             const otherTeams = activeTeams.filter(t => t !== team);
             const potentialBingoExists = otherTeams.some(other =>
                 BINGO_LINES.some(line =>
-                    line.every(i => grid[i][other] !== "2")
+                    line.every(i =>
+                        grid[i][other] !== "2" &&
+                        activeTeams.every(t => t === other || grid[i][t] !== "1")
+                    )
                 )
             );
             if (potentialBingoExists) continue;
