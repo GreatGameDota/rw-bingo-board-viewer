@@ -213,7 +213,7 @@ async function processMessage(raw) {
         }
     }
 
-    if (gameOver && !players.has(playerKey)) {
+    if (gameOver && !players.has(playerKey) && !apiCompletedIds.has(gameId)) {
         players.set(playerKey, player);
         if (teamNumber !== 8) {
             try {
