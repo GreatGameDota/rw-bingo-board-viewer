@@ -48,7 +48,7 @@ function checkWin(grid) {
                 BINGO_LINES.some(line =>
                     line.every(i =>
                         grid[i][other] !== "2" &&
-                        activeTeams.every(t => t === other || grid[i][t] !== "1")
+                        (grid[i][other] === "1" || activeTeams.every(t => t === other || grid[i][t] !== "1"))
                     )
                 )
             );
