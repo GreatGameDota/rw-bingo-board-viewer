@@ -158,6 +158,7 @@ class UserGames extends Component {
                                 const name = this.getGameValue(game, 'name') ?? 'Unknown';
                                 const team = this.getGameValue(game, 'team');
                                 const completedGoals = this.getGameValue(game, 'completedGoals') ?? 0;
+                                const deaths = this.getGameValue(game, 'deaths') ?? 0;
                                 const winningTeam = this.getGameValue(game, 'winningTeam');
                                 const time = this.getGameValue(game, 'time');
                                 const createdAt = this.getGameValue(game, 'createdAt');
@@ -169,12 +170,12 @@ class UserGames extends Component {
                                         key={index}
                                         className="bg-gray-800 border border-gray-700 rounded-lg flex flex-row"
                                     >
-                                        <div className="lg:w-1/3 p-4 border-r border-gray-700 space-y-2 shrink-0">
+                                        <div className="flex flex-col lg:w-1/3 p-4 border-r border-gray-700 space-y-2">
                                             <div className="flex items-center justify-between gap-2">
-                                                <span className="text-white font-semibold truncate">{name}</span>
-                                                <span className="text-gray-400 text-sm shrink-0">{getTeamName(team)}</span>
+                                                <span className="text-white font-semibold">{name}</span>
+                                                <span className="text-gray-400">{getTeamName(team)}</span>
                                             </div>
-                                            <div className="flex flex-wrap items-center gap-2 text-sm">
+                                            <div className="flex flex-wrap items-center justify-between gap-2">
                                                 <span className="text-gray-400">Goals locked: {completedGoals}</span>
                                                 {winningTeam === team ?
                                                     <span className="px-2 py-0.5 rounded bg-green-400 text-gray-900 font-medium">Won ({getTeamName(winningTeam)})</span> :
@@ -182,6 +183,7 @@ class UserGames extends Component {
                                                 }
                                             </div>
                                             <span className="text-gray-400">Duration: {time}</span>
+                                            <span className="text-gray-400">Deaths: {deaths}</span>
                                             <p className="text-gray-500 text-xs">
                                                 {this.formatDate(createdAt)}
                                             </p>
