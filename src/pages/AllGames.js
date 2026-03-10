@@ -179,7 +179,7 @@ class AllGames extends Component {
                                             <span className="text-gray-400">Duration: {time}</span>
                                             <p>
                                                 <span className="text-gray-400">Deaths: {deaths === "" ? 0 : deaths.split(',').length} </span>
-                                                <span className="text-gray-400 text-sm">[{deaths}]</span>
+                                                <span className="text-gray-500 text-sm break-all">[{deaths}]</span>
                                             </p>
                                             <p className="text-gray-500 text-xs">
                                                 {this.formatDate(createdAt)}
