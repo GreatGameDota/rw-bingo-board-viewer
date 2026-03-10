@@ -158,7 +158,7 @@ class UserGames extends Component {
                                 const name = this.getGameValue(game, 'name') ?? 'Unknown';
                                 const team = this.getGameValue(game, 'team');
                                 const completedGoals = this.getGameValue(game, 'completedGoals') ?? 0;
-                                const deaths = this.getGameValue(game, 'deaths') ?? 0;
+                                const deaths = this.getGameValue(game, 'deaths') ?? "";
                                 const winningTeam = this.getGameValue(game, 'winningTeam');
                                 const time = this.getGameValue(game, 'time');
                                 const createdAt = this.getGameValue(game, 'createdAt');
@@ -183,7 +183,10 @@ class UserGames extends Component {
                                                 }
                                             </div>
                                             <span className="text-gray-400">Duration: {time}</span>
-                                            <span className="text-gray-400">Deaths: {deaths}</span>
+                                            <p>
+                                                <span className="text-gray-400">Deaths: {deaths === "" ? 0 : deaths.split(',').length} </span>
+                                                <span className="text-gray-400 text-sm">[{deaths}]</span>
+                                            </p>
                                             <p className="text-gray-500 text-xs">
                                                 {this.formatDate(createdAt)}
                                             </p>

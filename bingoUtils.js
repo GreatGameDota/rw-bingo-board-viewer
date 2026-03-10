@@ -136,7 +136,7 @@ function parseMessage(raw) {
     const teamNumber = parseInt(parts[3]);
     const time = parts[4];
     const completedGoals = parseInt(parts[5]);
-    const deaths = parseInt(parts[6]);
+    const deaths = parts[6];
     const gameId = deriveGameId(boardString);
     const playerKey = `${gameId}|${playerName}`;
     return { gameId, playerKey, boardString, boardState, playerName, teamNumber, time, completedGoals, deaths };
@@ -230,7 +230,7 @@ async function processMessage(raw) {
                         winningTeam: String(result.winningTeam),
                         time: time,
                         completedGoals: String(completedGoals),
-                        deaths: String(deaths),
+                        deaths: deaths,
                     }),
                 });
                 const res = await response.json();
@@ -278,7 +278,7 @@ async function processMessage(raw) {
                     winningTeam: String(result.winningTeam),
                     time: time,
                     completedGoals: String(completedGoals),
-                    deaths: String(deaths),
+                    deaths: deaths,
                 }),
             });
             const res = await response.json();
