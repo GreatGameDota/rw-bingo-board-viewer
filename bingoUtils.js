@@ -136,7 +136,7 @@ function parseMessage(raw) {
     const teamNumber = parseInt(parts[3]);
     const time = parts[4];
     const completedGoals = parseInt(parts[5]);
-    const deaths = parts[6];
+    const deaths = parts[6] ?? "";
     const gameId = deriveGameId(boardString);
     const playerKey = `${gameId}|${playerName}`;
     return { gameId, playerKey, boardString, boardState, playerName, teamNumber, time, completedGoals, deaths };

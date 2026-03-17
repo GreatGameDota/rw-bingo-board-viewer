@@ -68,7 +68,7 @@ class UserGames extends Component {
         };
         Promise.all(loaders).catch(function (e) {
             console.log("Promise.all(): failed to complete fetches. Error: " + e.message);
-        }).finally(() => this.setState({ loading: false }));
+        });
 
         this.fetchUserGames();
     }
@@ -123,34 +123,22 @@ class UserGames extends Component {
         const { games, loading, error } = this.state;
         const { userName } = this.props;
 
-        if (loading) {
-            return (
-                <div className="flex-grow p-6 flex items-center justify-center">
-                    <div className="text-center">
-                        <p className="text-white text-xl">Loading games...</p>
-                    </div>
-                </div>
-            );
-        }
-
-        if (error) {
-            return (
-                <div className="flex-grow p-6 flex items-center justify-center">
-                    <div className="text-center">
-                        <p className="text-red-400 text-xl">Error loading games</p>
-                    </div>
-                </div>
-            );
-        }
-
         return (
             <div className="flex-grow">
                 <div className="p-6 max-w-7xl mx-auto">
                     <h1 className="text-4xl font-bold text-white mb-8">{decodeURIComponent(userName || '')}</h1>
 
-                    {games.length === 0 ? (
+                    {loading ? (
+                        <div className="flex items-center justify-center py-24">
+                            <p className="text-white text-xl">Loading games...</p>
+                        </div>
+                    ) : error ? (
+                        <div className="flex items-center justify-center py-24">
+                            <p className="text-red-400 text-xl">Error loading games</p>
+                        </div>
+                    ) : games.length === 0 ? (
                         <div className="bg-gray-800 border border-gray-700 rounded-lg p-6">
-                            <p className="text-gray-400">No games found for this user.</p>
+                            <p className="text-gray-400">No games found.</p>
                         </div>
                     ) : (
                         <div className="flex flex-col gap-6">

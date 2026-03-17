@@ -9,7 +9,9 @@ class AllGames extends Component {
         this.state = {
             games: [],
             loading: true,
-            error: null
+            error: null,
+            page: 0,
+            total: 0,
         };
     }
 
@@ -69,10 +71,17 @@ class AllGames extends Component {
         };
         Promise.all(loaders).catch(function (e) {
             console.log("Promise.all(): failed to complete fetches. Error: " + e.message);
-        }).finally(() => this.setState({ loading: false }));
+        });
 
+        await this.fetchPage(0);
+    }
+
+    fetchPage = async (page) => {
+        this.setState({ loading: true, error: null });
+        const min = page * 10;
+        const max = min + 10;
         try {
-            const response = await fetch('https://us-central1-bingo-db-57e75.cloudfunctions.net/api/games');
+            const response = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/games?min=${min}&max=${max}`);
             if (!response.ok) {
                 throw new Error(`API error: ${response.status}`);
             }
@@ -80,7 +89,9 @@ class AllGames extends Component {
             const games = data.games || [];
             this.setState({
                 games,
-                loading: false
+                page,
+                total: data.total ?? 0,
+                loading: false,
             });
         } catch (error) {
             console.error('Error fetching games:', error);
@@ -89,13 +100,24 @@ class AllGames extends Component {
                 loading: false
             });
         }
-    }
+    };
+
+    handlePrev = () => {
+        const { page } = this.state;
+        if (page > 0) this.fetchPage(page - 1);
+    };
+
+    handleNext = () => {
+        const { page, total } = this.state;
+        const totalPages = Math.ceil(total / 10);
+        if (page < totalPages - 1) this.fetchPage(page + 1);
+    };
 
     formatDate = (dateString) => {
         if (!dateString) return 'N/A';
         const date = new Date(dateString);
         return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
-    }
+    };
 
     getGameValue = (obj, key) => {
         if (!obj) return null;
@@ -104,30 +126,50 @@ class AllGames extends Component {
         if (v && typeof v === 'object' && 'timestampValue' in v) return v.timestampValue;
         if (v && typeof v === 'object' && 'integerValue' in v) return v.integerValue;
         return v;
+    };
+
+    renderPagination = () => {
+        const { page, total, loading } = this.state;
+        const totalPages = Math.ceil(total / 10);
+        if (totalPages === 0) return null;
+
+        return (
+            <div className="flex items-center justify-between my-8">
+                <button
+                    onClick={this.handlePrev}
+                    disabled={page === 0 || loading}
+                    className="flex items-center gap-2 px-4 py-2 rounded-lg bg-gray-800 border border-gray-700 text-white font-medium
+                               disabled:opacity-30 disabled:cursor-not-allowed
+                               hover:bg-gray-700 hover:border-gray-500 transition-colors"
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                    </svg>
+                    Previous
+                </button>
+
+                <span className="text-gray-400 text-sm">
+                    Page {page + 1} of {totalPages}
+                </span>
+
+                <button
+                    onClick={this.handleNext}
+                    disabled={page >= totalPages - 1 || loading}
+                    className="flex items-center gap-2 px-4 py-2 rounded-lg bg-gray-800 border border-gray-700 text-white font-medium
+                               disabled:opacity-30 disabled:cursor-not-allowed
+                               hover:bg-gray-700 hover:border-gray-500 transition-colors"
+                >
+                    Next
+                    <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                </button>
+            </div>
+        );
     }
 
     render() {
-        const { games, loading, error } = this.state;
-
-        if (loading) {
-            return (
-                <div className="flex-grow p-6 flex items-center justify-center">
-                    <div className="text-center">
-                        <p className="text-white text-xl">Loading games...</p>
-                    </div>
-                </div>
-            );
-        }
-
-        if (error) {
-            return (
-                <div className="flex-grow p-6 flex items-center justify-center">
-                    <div className="text-center">
-                        <p className="text-red-400 text-xl">Error loading games</p>
-                    </div>
-                </div>
-            );
-        }
+        const { games, total, loading, error } = this.state;
 
         return (
             <div className="flex-grow">
@@ -140,62 +182,74 @@ class AllGames extends Component {
                 </div>
 
                 <div className="p-6 max-w-7xl mx-auto">
-                    <h1 className="text-4xl font-bold text-white mb-8">Previous Matches</h1>
+                    <h1 className="text-4xl font-bold text-white mb-8">Previous Matches ({total})</h1>
 
-                    {games.length === 0 ? (
+                    {loading ? (
+                        <div className="flex items-center justify-center py-24">
+                            <p className="text-white text-xl">Loading games...</p>
+                        </div>
+                    ) : error ? (
+                        <div className="flex items-center justify-center py-24">
+                            <p className="text-red-400 text-xl">Error loading games</p>
+                        </div>
+                    ) : games.length === 0 ? (
                         <div className="bg-gray-800 border border-gray-700 rounded-lg p-6">
                             <p className="text-gray-400">No games found.</p>
                         </div>
                     ) : (
-                        <div className="flex flex-col gap-6">
-                            {games.map((game, index) => {
-                                const name = this.getGameValue(game, 'name') ?? 'Unknown';
-                                const team = this.getGameValue(game, 'team');
-                                const completedGoals = this.getGameValue(game, 'completedGoals') ?? 0;
-                                const deaths = this.getGameValue(game, 'deaths') ?? "";
-                                const winningTeam = this.getGameValue(game, 'winningTeam');
-                                const time = this.getGameValue(game, 'time');
-                                const createdAt = this.getGameValue(game, 'createdAt');
-                                const boardState = this.getGameValue(game, 'boardState');
-                                const boardString = this.getGameValue(game, 'boardString');
+                        <div>
+                            {this.renderPagination()}
+                            <div className="flex flex-col gap-6">
+                                {games.map((game, index) => {
+                                    const name = this.getGameValue(game, 'name') ?? 'Unknown';
+                                    const team = this.getGameValue(game, 'team');
+                                    const completedGoals = this.getGameValue(game, 'completedGoals') ?? 0;
+                                    const deaths = this.getGameValue(game, 'deaths') ?? "";
+                                    const winningTeam = this.getGameValue(game, 'winningTeam');
+                                    const time = this.getGameValue(game, 'time');
+                                    const createdAt = this.getGameValue(game, 'createdAt');
+                                    const boardState = this.getGameValue(game, 'boardState');
+                                    const boardString = this.getGameValue(game, 'boardString');
 
-                                return (
-                                    <div
-                                        key={index}
-                                        className="bg-gray-800 border border-gray-700 rounded-lg flex flex-row"
-                                    >
-                                        <div className="flex flex-col lg:w-1/3 p-4 border-r border-gray-700 space-y-2">
-                                            <div className="flex items-center justify-between gap-2">
-                                                <span className="text-white font-semibold">{name}</span>
-                                                <span className="text-gray-400">{getTeamName(team)}</span>
+                                    return (
+                                        <div
+                                            key={index}
+                                            className="bg-gray-800 border border-gray-700 rounded-lg flex flex-row"
+                                        >
+                                            <div className="flex flex-col lg:w-1/3 p-4 border-r border-gray-700 space-y-2">
+                                                <div className="flex items-center justify-between gap-2">
+                                                    <span className="text-white font-semibold">{name}</span>
+                                                    <span className="text-gray-400">{getTeamName(team)}</span>
+                                                </div>
+                                                <div className="flex flex-wrap items-center justify-between gap-2">
+                                                    <span className="text-gray-400">Goals locked: {completedGoals}</span>
+                                                    {winningTeam === team ?
+                                                        <span className="px-2 py-0.5 rounded bg-green-400 text-gray-900 font-medium">Won ({getTeamName(winningTeam)})</span> :
+                                                        <span className="px-2 py-0.5 rounded bg-red-400 text-gray-900 font-medium">Lost ({getTeamName(winningTeam)})</span>
+                                                    }
+                                                </div>
+                                                <span className="text-gray-400">Duration: {time}</span>
+                                                <p>
+                                                    <span className="text-gray-400">Deaths: {deaths === "" ? 0 : deaths.split(',').length} </span>
+                                                    <span className="text-gray-500 text-sm break-all">[{deaths}]</span>
+                                                </p>
+                                                <p className="text-gray-500 text-xs">
+                                                    {this.formatDate(createdAt)}
+                                                </p>
                                             </div>
-                                            <div className="flex flex-wrap items-center justify-between gap-2">
-                                                <span className="text-gray-400">Goals locked: {completedGoals}</span>
-                                                {winningTeam === team ?
-                                                    <span className="px-2 py-0.5 rounded bg-green-400 text-gray-900 font-medium">Won ({getTeamName(winningTeam)})</span> :
-                                                    <span className="px-2 py-0.5 rounded bg-red-400 text-gray-900 font-medium">Lost ({getTeamName(winningTeam)})</span>
-                                                }
+                                            <div className="p-4 flex justify-center bg-gray-900/50 flex-1">
+                                                <BingoCanvas
+                                                    bingoString={boardString}
+                                                    boardState={boardState.split("<>")}
+                                                    team={Number(team)}
+                                                    size={500}
+                                                />
                                             </div>
-                                            <span className="text-gray-400">Duration: {time}</span>
-                                            <p>
-                                                <span className="text-gray-400">Deaths: {deaths === "" ? 0 : deaths.split(',').length} </span>
-                                                <span className="text-gray-500 text-sm break-all">[{deaths}]</span>
-                                            </p>
-                                            <p className="text-gray-500 text-xs">
-                                                {this.formatDate(createdAt)}
-                                            </p>
                                         </div>
-                                        <div className="p-4 flex justify-center bg-gray-900/50 flex-1">
-                                            <BingoCanvas
-                                                bingoString={boardString}
-                                                boardState={boardState.split("<>")}
-                                                team={Number(team)}
-                                                size={500}
-                                            />
-                                        </div>
-                                    </div>
-                                );
-                            })}
+                                    );
+                                })}
+                            </div>
+                            {this.renderPagination()}
                         </div>
                     )}
                 </div>
