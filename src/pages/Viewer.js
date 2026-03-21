@@ -114,7 +114,7 @@ class Viewer extends Component {
         };
         Promise.all(loaders).catch(function (e) {
             console.log("Promise.all(): failed to complete fetches. Error: " + e.message);
-        });
+        }).finally(() => this.setState({ loading: false })); // Useless but forces a re-render
 
         window.addEventListener('resize', this.handleResize);
     }
