@@ -33,7 +33,11 @@ class BingoCanvas extends Component {
 
         var s = this.props.bingoString;
         const parts = s.split(";");
-        if (parts.length >= 3) { // Remove starting shelter string
+        if (parts.length === 4) { // Remove watchermode
+            parts.splice(1, 1);
+            s = parts.join(";");
+        }
+        if (parts.length === 3) { // Remove starting shelter string
             parts.splice(1, 1);
             s = parts.join(";");
         }

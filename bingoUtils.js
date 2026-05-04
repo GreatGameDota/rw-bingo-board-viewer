@@ -78,7 +78,11 @@ function hashString(str) {
 
 function extractChallengeNames(boardString) {
     const names = [];
-    const firstMatch = boardString.match(/^[^;]+;[^;]+;([A-Za-z]+Challenge)~/);
+    var firstMatch;
+    if (boardString.split(";").length === 4)
+        firstMatch = boardString.match(/^[^;]+;[^;]+;[^;]+;([A-Za-z]+Challenge)~/);
+    else if (boardString.split(";").length === 3)
+        firstMatch = boardString.match(/^[^;]+;[^;]+;([A-Za-z]+Challenge)~/);
     if (firstMatch) names.push(firstMatch[1]);
     const re = /bChG([A-Za-z]+Challenge)~/g;
     let m;
@@ -90,6 +94,88 @@ function deriveGameId(boardString) {
     const seed = boardString.slice(0, boardString.indexOf(";"));
     const challengeHash = hashString(extractChallengeNames(boardString).join("|"));
     return `${seed}:${challengeHash}`;
+}
+
+async function saveGame(gameId) {
+    var response = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/games/${gameId}`);
+    const game = (await response.json()).game;
+
+    // Create or update user with name and gameId
+    response = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/users/name/${game.info.name.stringValue}`);
+    var user = (await response.json()).users[0];
+    if (!user) {
+        response = await fetch("https://us-central1-bingo-db-57e75.cloudfunctions.net/api/user", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                name: game.info.name.stringValue,
+            }),
+        });
+        const res = await response.json();
+        user = { info: { id: { stringValue: res.id } } };
+    }
+    response = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/user/${user.info.id.stringValue}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            name: game.info.name.stringValue,
+            gameId: game.info.id.stringValue,
+        }),
+    });
+    var res = await response.json();
+
+    // Create or update match with boardId, gameId and playerId
+    var boardId = deriveGameId(game.info.boardString.stringValue);
+    response = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/matches/board/${boardId}`);
+    var match = (await response.json()).matches[0];
+    if (!match) {
+        response = await fetch("https://us-central1-bingo-db-57e75.cloudfunctions.net/api/match", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                playerId: user.info.id.stringValue,
+                gameId: game.info.id.stringValue,
+                boardId: boardId,
+            }),
+        });
+        const res = await response.json();
+        match = { info: { id: { stringValue: res.id } } };
+    }
+    else {
+        response = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/match/${match.info.id.stringValue}`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                playerId: user.info.id.stringValue,
+                gameId: game.info.id.stringValue,
+                boardId: boardId,
+            }),
+        });
+        const res = await response.json();
+    }
+
+    // Set match ranked if it has 4 games
+    response = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/matches/${match.info.id.stringValue}`); // Getting single match returns just "match" without nested "info"
+    match = (await response.json()).match;
+    await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/match/${match.id.stringValue}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            boardId: match.boardId.stringValue,
+            ranked: match.games.arrayValue.values.length === 4,
+        }),
+    });
+
+    // Add matchId to user
+    response = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/user/${user.info.id.stringValue}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            name: game.info.name.stringValue,
+            matchId: match.id.stringValue,
+        }),
+    });
+    res = await response.json();
 }
 
 async function getCompletedGameIdsForUser(userName) {
@@ -235,6 +321,7 @@ async function processMessage(raw) {
                 });
                 const res = await response.json();
                 console.log(`[API] POST response: ${response.status}`, res);
+                await saveGame(res.id);
             } catch (e) {
                 console.error(`[API] POST error: ${e.message}`);
             }
@@ -283,6 +370,7 @@ async function processMessage(raw) {
             });
             const res = await response.json();
             console.log(`[API] POST response: ${response.status}`, res);
+            await saveGame(res.id);
         } catch (e) {
             console.error(`[API] POST error: ${e.message}`);
         }
