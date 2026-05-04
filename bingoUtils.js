@@ -97,10 +97,10 @@ function deriveGameId(boardString) {
 }
 
 async function calcElo(match) {
-    const isRanked = match.info.ranked?.booleanValue === true;
+    const isRanked = match.ranked?.booleanValue === true;
 
     if (isRanked) {
-        const games = match.info.games?.arrayValue?.values || [];
+        const games = match.games?.arrayValue?.values || [];
 
         const allPlayers = [];
         let winningTeam = null;
@@ -255,7 +255,7 @@ async function saveGame(gameId) {
             ranked: match.games.arrayValue.values.length === 4,
         }),
     });
-    match.info.ranked.booleanValue = match.games.arrayValue.values.length === 4;
+    match.ranked.booleanValue = match.games.arrayValue.values.length === 4;
 
     // Add matchId to user
     response = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/user/${user.info.id.stringValue}`, {
