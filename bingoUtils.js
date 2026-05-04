@@ -96,6 +96,96 @@ function deriveGameId(boardString) {
     return `${seed}:${challengeHash}`;
 }
 
+async function calcElo(match) {
+    const isRanked = match.info.ranked?.booleanValue === true;
+
+    if (isRanked) {
+        const games = match.info.games?.arrayValue?.values || [];
+
+        const allPlayers = [];
+        let winningTeam = null;
+
+        for (const gameRef of games) {
+            const gameId = gameRef.stringValue;
+            const gameResponse = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/games/${gameId}`);
+            const gameData = await gameResponse.json();
+
+            const playerName = gameData.game.name?.stringValue;
+            const team = gameData.game.team?.stringValue;
+            const gameWinningTeam = gameData.game.winningTeam?.stringValue;
+
+            allPlayers.push({ name: playerName, team });
+
+            if (!winningTeam) {
+                winningTeam = gameWinningTeam;
+            }
+        }
+
+        const winners = allPlayers.filter(p => p.team === winningTeam).map(p => p.name);
+        const losers = allPlayers.filter(p => p.team !== winningTeam).map(p => p.name);
+
+        var response = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/teams/name/${winners.sort().join(",")}`);
+        var team1 = (await response.json()).teams[0];
+        if (!team1) {
+            response = await fetch("https://us-central1-bingo-db-57e75.cloudfunctions.net/api/team", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    name: winners.sort().join(","),
+                }),
+            });
+            const res = await response.json();
+            team1 = { info: { id: { stringValue: res.id } } };
+        }
+
+        response = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/teams/name/${losers.sort().join(",")}`);
+        var team2 = (await response.json()).teams[0];
+        if (!team2) {
+            response = await fetch("https://us-central1-bingo-db-57e75.cloudfunctions.net/api/team", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    name: losers.sort().join(","),
+                }),
+            });
+            const res = await response.json();
+            team2 = { info: { id: { stringValue: res.id } } };
+        }
+
+        const winK = parseInt(team1.info.gamesPlayed?.integerValue || 0) < 2 ? 80 : 32;
+        const loseK = parseInt(team2.info.gamesPlayed?.integerValue || 0) < 2 ? 80 : 32;
+
+        const expectedWin = 1 / (1 + Math.pow(10, (parseFloat(team2.info.elo?.stringValue || 1200) - parseFloat(team1.info.elo?.stringValue || 1200)) / 400));
+
+        var elo1 = parseFloat(team1.info.elo?.stringValue || 1200) + winK * (1 - expectedWin);
+        var elo2 = parseFloat(team2.info.elo?.stringValue || 1200) + loseK * (0 - (1 - expectedWin));
+
+        response = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/team/${team1.info.id.stringValue}`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                name: winners.sort().join(","),
+                gamesPlayed: parseInt(team1.info.gamesPlayed?.integerValue || 0) + 1,
+                wins: parseInt(team1.info.wins?.integerValue || 0) + 1,
+                elo: String(elo1),
+            }),
+        });
+        var res = await response.json();
+
+        response = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/team/${team2.info.id.stringValue}`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                name: losers.sort().join(","),
+                gamesPlayed: parseInt(team2.info.gamesPlayed?.integerValue || 0) + 1,
+                losses: parseInt(team2.info.losses?.integerValue || 0) + 1,
+                elo: String(elo2),
+            }),
+        });
+        var res = await response.json();
+    }
+}
+
 async function saveGame(gameId) {
     var response = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/games/${gameId}`);
     const game = { info: (await response.json()).game };
@@ -165,6 +255,7 @@ async function saveGame(gameId) {
             ranked: match.games.arrayValue.values.length === 4,
         }),
     });
+    match.info.ranked.booleanValue = match.games.arrayValue.values.length === 4;
 
     // Add matchId to user
     response = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/user/${user.info.id.stringValue}`, {
@@ -176,6 +267,8 @@ async function saveGame(gameId) {
         }),
     });
     res = await response.json();
+
+    await calcElo(match);
 }
 
 async function getCompletedGameIdsForUser(userName) {
