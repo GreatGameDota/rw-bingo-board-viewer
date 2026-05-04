@@ -97,10 +97,10 @@ function deriveGameId(boardString) {
 }
 
 async function calcElo(match) {
-    const isRanked = match.ranked?.booleanValue === true;
+    const isRanked = match.info.ranked?.booleanValue === true;
 
     if (isRanked) {
-        const games = match.games?.arrayValue?.values || [];
+        const games = match.info.games?.arrayValue?.values || [];
 
         const allPlayers = [];
         let winningTeam = null;
@@ -245,17 +245,17 @@ async function saveGame(gameId) {
     }
 
     // Set match ranked if it has 4 games
-    response = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/matches/${match.info.id.stringValue}`); // Getting single match returns just "match" without nested "info"
-    match = (await response.json()).match;
-    await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/match/${match.id.stringValue}`, {
+    response = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/matches/${match.info.id.stringValue}`);
+    match = { info: (await response.json()).match };
+    await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/match/${match.info.id.stringValue}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-            boardId: match.boardId.stringValue,
-            ranked: match.games.arrayValue.values.length === 4,
+            boardId: match.info.boardId.stringValue,
+            ranked: match.info.games.arrayValue.values.length === 4,
         }),
     });
-    match.ranked.booleanValue = match.games.arrayValue.values.length === 4;
+    match.info.ranked.booleanValue = match.info.games.arrayValue.values.length === 4;
 
     // Add matchId to user
     response = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/user/${user.info.id.stringValue}`, {
@@ -263,7 +263,7 @@ async function saveGame(gameId) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
             name: game.info.name.stringValue,
-            matchId: match.id.stringValue,
+            matchId: match.info.id.stringValue,
         }),
     });
     res = await response.json();
