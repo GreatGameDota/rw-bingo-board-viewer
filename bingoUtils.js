@@ -98,7 +98,7 @@ function deriveGameId(boardString) {
 
 async function saveGame(gameId) {
     var response = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/games/${gameId}`);
-    const game = (await response.json()).game;
+    const game = { info: (await response.json()).game };
 
     // Create or update user with name and gameId
     response = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/users/name/${game.info.name.stringValue}`);
