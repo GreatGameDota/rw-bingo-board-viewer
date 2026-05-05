@@ -255,6 +255,7 @@ async function saveGame(gameId) {
             ranked: match.info.games.arrayValue.values.length === 4,
         }),
     });
+    match.info.ranked = {};
     match.info.ranked.booleanValue = match.info.games.arrayValue.values.length === 4;
 
     // Add matchId to user
