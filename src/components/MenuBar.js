@@ -41,6 +41,14 @@ const MenuBar = () => {
                                 All Games
                             </Link>
                         </li>
+                        <li>
+                            <Link
+                                to="/rw-bingo-board-viewer/schedule"
+                                className="text-gray-300 hover:text-white transition-colors duration-200"
+                            >
+                                Schedule
+                            </Link>
+                        </li>
                     </ul>
                     <form onSubmit={handleSearchSubmit} className="ml-auto relative">
                         <svg

@@ -4,6 +4,7 @@ import Footer from "./components/Footer";
 import Viewer from "./pages/Viewer";
 import AllGames from "./pages/AllGames";
 import UserGames from "./pages/UserGames";
+import Schedule from "./pages/Schedule";
 
 function UserGamesRoute() {
     const { userName } = useParams();
@@ -18,6 +19,7 @@ function App() {
                 <Routes>
                     {/* <Route path="/" element={<Viewer />} /> */}
                     <Route path="/rw-bingo-board-viewer" element={<Viewer />} />
+                    <Route path="/rw-bingo-board-viewer/schedule" element={<Schedule />} />
                     <Route path="/rw-bingo-board-viewer/all-games" element={<AllGames />} />
                     <Route path="/rw-bingo-board-viewer/user/:userName" element={<UserGamesRoute />} />
                 </Routes>
