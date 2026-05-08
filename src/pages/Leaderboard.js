@@ -147,7 +147,8 @@ class Leaderboard extends Component {
                                                             ${index === 2 ? 'bg-gradient-to-r from-[#7d3b2e] via-[#c55b42] to-[#7d3b2e] bg-clip-text text-transparent animate-gradient bg-[length:300%_300%]' : ''}`}
                                                         >
                                                             {eloValue}
-                                                        </span> elo • <span className="text-xl font-semibold">{winRate}</span>% winrate</p>
+                                                        </span> elo • <span className="text-xl font-semibold">{winRate}</span>% winrate
+                                                    </p>
                                                 </div>
                                                 <div className="ml-auto my-auto text-right">
                                                     <p>

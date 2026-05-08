@@ -123,6 +123,10 @@ async function calcElo(match) {
 
         const winners = allPlayers.filter(p => p.team === winningTeam).map(p => p.name);
         const losers = allPlayers.filter(p => p.team !== winningTeam).map(p => p.name);
+        if (winners.length !== 2 || losers.length !== 2) {
+            console.log(`Match ${match.info.id.stringValue} has no clear winning team. Skipping...`);
+            return;
+        }
 
         var response = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/teams/name/${winners.sort().join(",")}`);
         var team1 = (await response.json()).teams[0];
@@ -168,6 +172,7 @@ async function calcElo(match) {
                 gamesPlayed: parseInt(team1.info.gamesPlayed?.integerValue || 0) + 1,
                 wins: parseInt(team1.info.wins?.integerValue || 0) + 1,
                 elo: String(elo1),
+                matchId: match.info.id.stringValue,
             }),
         });
         var res = await response.json();
@@ -180,6 +185,7 @@ async function calcElo(match) {
                 gamesPlayed: parseInt(team2.info.gamesPlayed?.integerValue || 0) + 1,
                 losses: parseInt(team2.info.losses?.integerValue || 0) + 1,
                 elo: String(elo2),
+                matchId: match.info.id.stringValue,
             }),
         });
         var res = await response.json();
