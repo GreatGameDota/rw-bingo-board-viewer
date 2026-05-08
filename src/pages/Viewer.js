@@ -151,7 +151,7 @@ class Viewer extends Component {
 
         return (
             <div className="flex-grow flex flex-col w-full">
-                <div className="w-full h-32 overflow-hidden">
+                <div className="w-full h-16 overflow-hidden">
                     <img
                         src="https://firebasestorage.googleapis.com/v0/b/bingo-db-57e75.firebasestorage.app/o/watcherthumbnailfull.png?alt=media"
                         alt="Bingo Board Banner"

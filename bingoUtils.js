@@ -97,7 +97,7 @@ function deriveGameId(boardString) {
 }
 
 async function calcElo(match) {
-    const isRanked = match.info.ranked?.booleanValue === true;
+    const isRanked = match.info.ranked?.booleanValue;
 
     if (isRanked) {
         const games = match.info.games?.arrayValue?.values || [];

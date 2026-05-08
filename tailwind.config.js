@@ -5,7 +5,17 @@ export default {
         "./src/**/*.{js,jsx}",
     ],
     theme: {
-        extend: {},
+        extend: {
+            keyframes: {
+                gradient: {
+                    '0%': { backgroundPosition: '100% 0%' },
+                    '100%': { backgroundPosition: '-50% 0%' },
+                },
+            },
+            animation: {
+                gradient: 'gradient 2.5s linear infinite',
+            },
+        },
     },
     plugins: [],
 }

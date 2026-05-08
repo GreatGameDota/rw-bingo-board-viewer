@@ -43,6 +43,14 @@ const MenuBar = () => {
                         </li>
                         <li>
                             <Link
+                                to="/rw-bingo-board-viewer/leaderboard"
+                                className="text-gray-300 hover:text-white transition-colors duration-200"
+                            >
+                                Leaderboard
+                            </Link>
+                        </li>
+                        <li>
+                            <Link
                                 to="/rw-bingo-board-viewer/schedule"
                                 className="text-gray-300 hover:text-white transition-colors duration-200"
                             >
