@@ -357,7 +357,11 @@ class Leaderboard extends Component {
                     )}
 
                     {currentTeamGames.length > 0 && opponentGames.length > 0 && (
-                        <div className="border-t border-gray-700 my-2" />
+                        <div className="flex items-center gap-4 my-4">
+                            <div className="flex-1 border-t border-gray-700" />
+                            <span className="text-gray-500 font-semibold text-sm">VS</span>
+                            <div className="flex-1 border-t border-gray-700" />
+                        </div>
                     )}
 
                     {opponentGames.length > 0 && (
