@@ -279,6 +279,10 @@ class Leaderboard extends Component {
     render() {
         const { teams, loading, error, showDrawer, selectedTeam } = this.state;
         const selectedTeamNames = selectedTeam ? (this.getGameValue(selectedTeam, 'name') || '').split(',') : [];
+        const selectedTeamEloValue = Math.round(parseFloat(this.getGameValue(selectedTeam, 'elo')));
+        const selectedTeamWins = parseFloat(this.getGameValue(selectedTeam, 'wins'));
+        const selectedTeamGamesPlayed = Math.max(parseFloat(this.getGameValue(selectedTeam, 'gamesPlayed')), 1);
+        const selectedTeamWinRate = Math.round((selectedTeamWins / selectedTeamGamesPlayed) * 100);
         var cutoffFirst = false, cutoffEnd = false;
         var matchesCard = null;
 
@@ -464,14 +468,22 @@ class Leaderboard extends Component {
 
                         <div className="absolute inset-y-0 right-0 w-full md:w-3/4 bg-gray-800 border-l border-gray-700 shadow-lg z-50 drawer-panel flex flex-col">
                             <div className="flex items-center gap-2 p-6 bg-gray-800 border-b border-gray-700 flex-shrink-0">
-                                <h2 className="text-2xl font-bold text-white cursor-default">
-                                    {selectedTeamNames.map((player, idx) =>
-                                        `${player}${idx === selectedTeamNames.length - 1 ? '' : ' & '}`
-                                    )}
-                                </h2>
+                                <div className="flex flex-col my-auto cursor-default">
+                                    <h2 className="text-2xl font-bold text-white">
+                                        {selectedTeamNames.map((player, idx) =>
+                                            `${player}${idx === selectedTeamNames.length - 1 ? '' : ' & '}`
+                                        )}
+                                    </h2>
+                                    <p>
+                                        <span className={`text-xl font-bold`}>
+                                            {selectedTeamEloValue}
+                                        </span> elo • <span className="text-xl font-semibold">{selectedTeamWinRate}</span>% winrate
+                                        • {selectedTeamGamesPlayed} {selectedTeamGamesPlayed === "1" ? "game" : "games"} • {selectedTeamWins}W {this.getGameValue(selectedTeam, 'losses')}L
+                                    </p>
+                                </div>
                                 <button
                                     onClick={this.closeDrawer}
-                                    className="text-gray-400 hover:text-white transition-colors text-2xl md:ml-auto"
+                                    className="text-gray-400 hover:text-white transition-colors text-2xl md:ml-auto md:pr-4"
                                 >
                                     ✕
                                 </button>
