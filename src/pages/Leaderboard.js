@@ -259,6 +259,7 @@ class Leaderboard extends Component {
     }
 
     handleMatchSelect = (index, match) => {
+        if (this.state.selectedMatch === index) return;
         this.setState({ selectedMatch: index }, () => {
             this.fetchMatchGames(match, this.getGameValue(this.state.selectedTeam, 'name'));
         });
