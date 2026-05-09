@@ -300,6 +300,16 @@ class Leaderboard extends Component {
                     currentTeamGames.push(game);
                 }
             }
+            currentTeamGames.sort((a, b) => {
+                const nameA = this.getGameValue(a, 'name') || '';
+                const nameB = this.getGameValue(b, 'name') || '';
+                return nameA.localeCompare(nameB);
+            });
+            opponentGames.sort((a, b) => {
+                const nameA = this.getGameValue(a, 'name') || '';
+                const nameB = this.getGameValue(b, 'name') || '';
+                return nameA.localeCompare(nameB);
+            });
 
             const renderGameCard = (game, idx) => {
                 const name = this.getGameValue(game, 'name') ?? 'Unknown';
