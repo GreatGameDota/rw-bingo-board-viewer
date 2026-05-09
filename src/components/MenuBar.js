@@ -30,7 +30,7 @@ const MenuBar = () => {
                                 to="/rw-bingo-board-viewer"
                                 className="text-gray-300 hover:text-white transition-colors duration-200"
                             >
-                                Home
+                                Live
                             </Link>
                         </li>
                         <li>
