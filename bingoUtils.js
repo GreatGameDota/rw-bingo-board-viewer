@@ -192,7 +192,7 @@ async function calcElo(match) {
     }
 }
 
-async function saveGame(gameId) {
+async function saveGame(gameId, won) {
     var response = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/games/${gameId}`);
     const game = { info: (await response.json()).game };
 
@@ -224,15 +224,18 @@ async function saveGame(gameId) {
     var boardId = deriveGameId(game.info.boardString.stringValue);
     response = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/matches/board/${boardId}`);
     var match = (await response.json()).matches[0];
+    var body = {
+        playerId: user.info.id.stringValue,
+        playerName: game.info.name.stringValue,
+        gameId: game.info.id.stringValue,
+        boardId: boardId,
+    };
+    if (won) body.winnerName = game.info.name.stringValue;
     if (!match) {
         response = await fetch("https://us-central1-bingo-db-57e75.cloudfunctions.net/api/match", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                playerId: user.info.id.stringValue,
-                gameId: game.info.id.stringValue,
-                boardId: boardId,
-            }),
+            body: JSON.stringify(body),
         });
         const res = await response.json();
         match = { info: { id: { stringValue: res.id } } };
@@ -241,11 +244,7 @@ async function saveGame(gameId) {
         response = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/match/${match.info.id.stringValue}`, {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                playerId: user.info.id.stringValue,
-                gameId: game.info.id.stringValue,
-                boardId: boardId,
-            }),
+            body: JSON.stringify(body),
         });
         const res = await response.json();
     }
@@ -421,7 +420,7 @@ async function processMessage(raw) {
                 });
                 const res = await response.json();
                 console.log(`[API] POST response: ${response.status}`, res);
-                await saveGame(res.id);
+                await saveGame(res.id, teamNumber === result.winningTeam);
             } catch (e) {
                 console.error(`[API] POST error: ${e.message}`);
             }
@@ -470,7 +469,7 @@ async function processMessage(raw) {
             });
             const res = await response.json();
             console.log(`[API] POST response: ${response.status}`, res);
-            await saveGame(res.id);
+            await saveGame(res.id, teamNumber === result.winningTeam);
         } catch (e) {
             console.error(`[API] POST error: ${e.message}`);
         }

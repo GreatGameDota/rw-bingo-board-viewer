@@ -166,14 +166,17 @@ class Leaderboard extends Component {
                     throw new Error(`API error: ${response.status}`);
                 }
                 const data = await response.json();
-                const players = data.match.players.arrayValue.values || [];
-                const opponent = await this.extractOpponent(players, teamName);
+                const currentTeamPlayers = teamName.split(',');
+                const playerNames = data.match.playerNames.arrayValue.values || [];
+                const opponent = await this.extractOpponent(playerNames, currentTeamPlayers);
+                const winnerNames = data.match.winnerNames.arrayValue.values || [];
 
                 matches.push({
                     id: matchId.stringValue,
                     info: data.match,
                     gameIds: data.match.games.arrayValue.values,
-                    opponent: opponent
+                    opponent: opponent,
+                    won: winnerNames.some(w => currentTeamPlayers.includes(w.stringValue))
                 });
                 if (this.state.showDrawer === false || this.getGameValue(this.state.selectedTeam, 'name') !== teamName) {
                     return;
@@ -233,24 +236,17 @@ class Leaderboard extends Component {
         }
     }
 
-    extractOpponent = async (playerIds, currentTeamName) => {
+    extractOpponent = async (playerNames, currentTeamPlayers) => {
         try {
-            const currentTeamPlayers = currentTeamName.split(',').map(p => p.trim());
-            const playerNames = [];
-            for (const playerId of playerIds) {
-                const response = await fetch('https://us-central1-bingo-db-57e75.cloudfunctions.net/api/users/' + playerId.stringValue);
-                if (!response.ok) {
-                    throw new Error(`API error: ${response.status}`);
-                }
-                const data = await response.json();
-                if (data.user.name.stringValue && !currentTeamPlayers.includes(data.user.name.stringValue)) {
-                    playerNames.push(data.user.name.stringValue);
+            const _playerNames = [];
+            for (const name of playerNames) {
+                if (!currentTeamPlayers.includes(name.stringValue)) {
+                    _playerNames.push(name.stringValue);
                 }
             }
 
-            if (playerNames.length > 0) {
-                return playerNames.sort().join(' & ');
-            }
+            if (_playerNames.length > 0)
+                return _playerNames.sort().join(' & ');
             return 'Unknown';
         } catch (error) {
             console.error('Error extracting opponent from players:', error);
@@ -524,10 +520,15 @@ class Leaderboard extends Component {
                                                     <div
                                                         key={idx}
                                                         onClick={() => this.handleMatchSelect(idx, match)}
-                                                        className={`p-4 border-b border-gray-700 cursor-pointer transition-colors ${isSelected ? 'bg-gray-700' : 'hover:bg-gray-700'}`}
+                                                        className={`p-4 flex flex-row border-b border-gray-700 cursor-pointer transition-colors ${isSelected ? 'bg-gray-700' : 'hover:bg-gray-700'}`}
                                                     >
-                                                        <p className="text-white font-semibold">{match.opponent || 'Unknown'}</p>
-                                                        <p className="text-sm text-gray-400">{this.formatDate(match.info.createdAt.timestampValue)}</p>
+                                                        <div>
+                                                            <p className="text-white font-semibold">{match.opponent || 'Unknown'}</p>
+                                                            <p className="text-sm text-gray-400">{this.formatDate(match.info.createdAt.timestampValue)}</p>
+                                                        </div>
+                                                        <p className={`ml-auto my-auto font-semibold ${match.won ? 'text-green-400' : 'text-red-400'}`}>
+                                                            {match.won ? 'WON' : 'LOST'}
+                                                        </p>
                                                     </div>
                                                 );
                                             })}
