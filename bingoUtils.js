@@ -277,7 +277,18 @@ async function saveGame(gameId, won) {
     });
     res = await response.json();
 
-    await calcElo(match);
+    // Add matchId to game
+    response = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/game/${game.info.id.stringValue}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            name: game.info.name.stringValue,
+            matchId: match.id.stringValue,
+        }),
+    });
+    res = await response.json();
+
+    // await calcElo(match);
 }
 
 async function getCompletedGameIdsForUser(userName) {
