@@ -250,21 +250,21 @@ async function saveGame(gameId, won) {
     }
 
     // Set match ranked if it has 4 games
-    response = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/admin/rankedTime`);
-    var rankedTime = new Date((await response.json()).rankedTime.rankedTime.timestampValue);
+    // response = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/admin/rankedTime`);
+    // var rankedTime = new Date((await response.json()).rankedTime.rankedTime.timestampValue);
 
     response = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/matches/${match.info.id.stringValue}`);
     match = { info: (await response.json()).match };
-    await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/match/${match.info.id.stringValue}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-            boardId: match.info.boardId.stringValue,
-            ranked: match.info.games.arrayValue.values.length === 4 && new Date(match.info.createdAt.timestampValue) <= rankedTime,
-        }),
-    });
-    match.info.ranked = {};
-    match.info.ranked.booleanValue = match.info.games.arrayValue.values.length === 4 && new Date(match.info.createdAt.timestampValue) <= rankedTime;
+    // await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/match/${match.info.id.stringValue}`, {
+    //     method: "PATCH",
+    //     headers: { "Content-Type": "application/json" },
+    //     body: JSON.stringify({
+    //         boardId: match.info.boardId.stringValue,
+    //         ranked: match.info.games.arrayValue.values.length === 4 && new Date(match.info.createdAt.timestampValue) <= rankedTime,
+    //     }),
+    // });
+    // match.info.ranked = {};
+    // match.info.ranked.booleanValue = match.info.games.arrayValue.values.length === 4 && new Date(match.info.createdAt.timestampValue) <= rankedTime;
 
     // Add matchId to user
     response = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/user/${user.info.id.stringValue}`, {
