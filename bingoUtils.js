@@ -96,10 +96,10 @@ function deriveGameId(boardString) {
     return `${seed}:${challengeHash}`;
 }
 
-async function calcElo(match) {
-    const isRanked = match.info.ranked?.booleanValue;
+async function calcElo(match, token) {
+    const isRanked = match.info.ranked2?.booleanValue;
 
-    if (isRanked) {
+    if (!isRanked && !match.info.ranked?.booleanValue) {
         const games = match.info.games?.arrayValue?.values || [];
 
         const allPlayers = [];
@@ -128,10 +128,10 @@ async function calcElo(match) {
             return;
         }
 
-        var response = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/teams/name/${winners.sort().join(",")}`);
+        var response = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/teams2/name/${winners.sort().join(",")}`);
         var team1 = (await response.json()).teams[0];
         if (!team1) {
-            response = await fetch("https://us-central1-bingo-db-57e75.cloudfunctions.net/api/team", {
+            response = await fetch("https://us-central1-bingo-db-57e75.cloudfunctions.net/api/team2", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -142,10 +142,10 @@ async function calcElo(match) {
             team1 = { info: { id: { stringValue: res.id } } };
         }
 
-        response = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/teams/name/${losers.sort().join(",")}`);
+        response = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/teams2/name/${losers.sort().join(",")}`);
         var team2 = (await response.json()).teams[0];
         if (!team2) {
-            response = await fetch("https://us-central1-bingo-db-57e75.cloudfunctions.net/api/team", {
+            response = await fetch("https://us-central1-bingo-db-57e75.cloudfunctions.net/api/team2", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -164,9 +164,9 @@ async function calcElo(match) {
         var elo1 = parseFloat(team1.info.elo?.stringValue || 1200) + winK * (1 - expectedWin);
         var elo2 = parseFloat(team2.info.elo?.stringValue || 1200) + loseK * (0 - (1 - expectedWin));
 
-        response = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/team/${team1.info.id.stringValue}`, {
+        response = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/team22/${team1.info.id.stringValue}`, {
             method: "PATCH",
-            headers: { "Content-Type": "application/json" },
+            headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
             body: JSON.stringify({
                 name: winners.sort().join(","),
                 gamesPlayed: parseInt(team1.info.gamesPlayed?.integerValue || 0) + 1,
@@ -177,9 +177,9 @@ async function calcElo(match) {
         });
         var res = await response.json();
 
-        response = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/team/${team2.info.id.stringValue}`, {
+        response = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/team22/${team2.info.id.stringValue}`, {
             method: "PATCH",
-            headers: { "Content-Type": "application/json" },
+            headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
             body: JSON.stringify({
                 name: losers.sort().join(","),
                 gamesPlayed: parseInt(team2.info.gamesPlayed?.integerValue || 0) + 1,
@@ -189,6 +189,15 @@ async function calcElo(match) {
             }),
         });
         var res = await response.json();
+
+        await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/match/${match.info.id.stringValue}`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
+            body: JSON.stringify({
+                boardId: match.info.boardId.stringValue,
+                ranked2: match.info.games.arrayValue.values.length === 4,
+            }),
+        });
     }
 }
 
@@ -288,7 +297,7 @@ async function saveGame(gameId, won, token) {
     });
     res = await response.json();
 
-    // await calcElo(match);
+    await calcElo(match, token);
 }
 
 async function getCompletedGameIdsForUser(userName) {
