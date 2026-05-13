@@ -192,7 +192,7 @@ async function calcElo(match) {
     }
 }
 
-async function saveGame(gameId, won) {
+async function saveGame(gameId, won, token) {
     var response = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/games/${gameId}`);
     const game = { info: (await response.json()).game };
 
@@ -202,7 +202,7 @@ async function saveGame(gameId, won) {
     if (!user) {
         response = await fetch("https://us-central1-bingo-db-57e75.cloudfunctions.net/api/user", {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
             body: JSON.stringify({
                 name: game.info.name.stringValue,
             }),
@@ -212,7 +212,7 @@ async function saveGame(gameId, won) {
     }
     response = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/user/${user.info.id.stringValue}`, {
         method: "PATCH",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
         body: JSON.stringify({
             name: game.info.name.stringValue,
             gameId: game.info.id.stringValue,
@@ -234,7 +234,7 @@ async function saveGame(gameId, won) {
     if (!match) {
         response = await fetch("https://us-central1-bingo-db-57e75.cloudfunctions.net/api/match", {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
             body: JSON.stringify(body),
         });
         const res = await response.json();
@@ -243,7 +243,7 @@ async function saveGame(gameId, won) {
     else {
         response = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/match/${match.info.id.stringValue}`, {
             method: "PATCH",
-            headers: { "Content-Type": "application/json" },
+            headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
             body: JSON.stringify(body),
         });
         const res = await response.json();
@@ -269,7 +269,7 @@ async function saveGame(gameId, won) {
     // Add matchId to user
     response = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/user/${user.info.id.stringValue}`, {
         method: "PATCH",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
         body: JSON.stringify({
             name: game.info.name.stringValue,
             matchId: match.info.id.stringValue,
@@ -280,10 +280,10 @@ async function saveGame(gameId, won) {
     // Add matchId to game
     response = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/game/${game.info.id.stringValue}`, {
         method: "PATCH",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
         body: JSON.stringify({
             name: game.info.name.stringValue,
-            matchId: match.id.stringValue,
+            matchId: match.info.id.stringValue,
         }),
     });
     res = await response.json();
@@ -418,9 +418,21 @@ async function processMessage(raw) {
         players.set(playerKey, player);
         if (teamNumber !== 8) {
             try {
-                const response = await fetch("https://us-central1-bingo-db-57e75.cloudfunctions.net/api/game", {
+                var response = await fetch("https://us-central1-bingo-db-57e75.cloudfunctions.net/api/admin/login", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        email: process.env.ADMIN_EMAIL,
+                        password: process.env.ADMIN_PASSWORD,
+                    }),
+                });
+                if (!response.ok) throw new Error(`Login failed with status ${response.status}`);
+                const data = await response.json();
+                const token = data.refreshToken;
+
+                response = await fetch("https://us-central1-bingo-db-57e75.cloudfunctions.net/api/game", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
                     body: JSON.stringify({
                         boardString: boardString,
                         boardState: boardState,
@@ -434,7 +446,7 @@ async function processMessage(raw) {
                 });
                 const res = await response.json();
                 console.log(`[API] POST response: ${response.status}`, res);
-                await saveGame(res.id, teamNumber === result.winningTeam);
+                await saveGame(res.id, teamNumber === result.winningTeam, token);
             } catch (e) {
                 console.error(`[API] POST error: ${e.message}`);
             }
@@ -467,9 +479,21 @@ async function processMessage(raw) {
 
     if (teamNumber !== 8) {
         try {
-            const response = await fetch("https://us-central1-bingo-db-57e75.cloudfunctions.net/api/game", {
+            var response = await fetch("https://us-central1-bingo-db-57e75.cloudfunctions.net/api/admin/login", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    email: process.env.ADMIN_EMAIL,
+                    password: process.env.ADMIN_PASSWORD,
+                }),
+            });
+            if (!response.ok) throw new Error(`Login failed with status ${response.status}`);
+            const data = await response.json();
+            const token = data.refreshToken;
+
+            response = await fetch("https://us-central1-bingo-db-57e75.cloudfunctions.net/api/game", {
+                method: "POST",
+                headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
                 body: JSON.stringify({
                     boardString: boardString,
                     boardState: boardState,
@@ -483,7 +507,7 @@ async function processMessage(raw) {
             });
             const res = await response.json();
             console.log(`[API] POST response: ${response.status}`, res);
-            await saveGame(res.id, teamNumber === result.winningTeam);
+            await saveGame(res.id, teamNumber === result.winningTeam, token);
         } catch (e) {
             console.error(`[API] POST error: ${e.message}`);
         }
