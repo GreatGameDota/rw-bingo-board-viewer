@@ -170,7 +170,7 @@ class Schedule extends Component {
                 error: null
             });
             try {
-                var response = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/team/${this.getGameValue(team, 'id')}`, {
+                var response = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/team2/${this.getGameValue(team, 'id')}`, {
                     method: "PATCH",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
