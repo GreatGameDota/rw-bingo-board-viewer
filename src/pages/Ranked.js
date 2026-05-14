@@ -277,9 +277,9 @@ class Ranked extends Component {
         const { teams, loading, error, showDrawer, selectedTeam } = this.state;
         const selectedTeamNames = selectedTeam ? (this.getGameValue(selectedTeam, 'name') || '').split(',') : [];
         const selectedTeamEloValue = Math.round(parseFloat(this.getGameValue(selectedTeam, 'elo')));
-        const selectedTeamWins = parseFloat(this.getGameValue(selectedTeam, 'wins'));
-        const selectedTeamGamesPlayed = Math.max(parseFloat(this.getGameValue(selectedTeam, 'gamesPlayed')), 1);
-        const selectedTeamWinRate = Math.round((selectedTeamWins / selectedTeamGamesPlayed) * 100);
+        const selectedTeamWins = parseInt(this.getGameValue(selectedTeam, 'wins'));
+        const selectedTeamGamesPlayed = parseInt(this.getGameValue(selectedTeam, 'gamesPlayed'));
+        const selectedTeamWinRate = Math.round((selectedTeamWins / (selectedTeamGamesPlayed === 0 ? 1 : selectedTeamGamesPlayed)) * 100);
         var cutoffFirst = false, cutoffEnd = false;
         var matchesCard = null;
 
@@ -416,9 +416,9 @@ class Ranked extends Component {
                                 const rawName = this.getGameValue(team, 'name') || '';
                                 const nameParts = rawName.split(',');
                                 const eloValue = Math.round(parseFloat(this.getGameValue(team, 'elo')));
-                                const wins = parseFloat(this.getGameValue(team, 'wins'));
-                                const gamesPlayed = Math.max(parseFloat(this.getGameValue(team, 'gamesPlayed')), 1);
-                                const winRate = Math.round((wins / gamesPlayed) * 100);
+                                const wins = parseInt(this.getGameValue(team, 'wins'));
+                                const gamesPlayed = parseInt(this.getGameValue(team, 'gamesPlayed'));
+                                const winRate = Math.round((wins / (gamesPlayed === 0 ? 1 : gamesPlayed)) * 100);
                                 const showCutoffFirst = !cutoffFirst && this.getGameValue(team, 'gamesPlayed') === "0";
                                 const showCutoffEnd = cutoffFirst && !cutoffEnd && this.getGameValue(team, 'gamesPlayed') !== "0";
                                 if (showCutoffFirst) cutoffFirst = true;
