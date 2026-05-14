@@ -51,6 +51,14 @@ const MenuBar = () => {
                         </li>
                         <li>
                             <Link
+                                to="/rw-bingo-board-viewer/ranked"
+                                className="text-gray-300 hover:text-white transition-colors duration-200"
+                            >
+                                Ranked
+                            </Link>
+                        </li>
+                        <li>
+                            <Link
                                 to="/rw-bingo-board-viewer/schedule"
                                 className="text-gray-300 hover:text-white transition-colors duration-200"
                             >

@@ -6,6 +6,7 @@ import AllGames from "./pages/AllGames";
 import UserGames from "./pages/UserGames";
 import Schedule from "./pages/Schedule";
 import Leaderboard from "./pages/Leaderboard";
+import Ranked from "./pages/Ranked";
 
 function UserGamesRoute() {
     const { userName } = useParams();
@@ -22,6 +23,7 @@ function App() {
                     <Route path="/rw-bingo-board-viewer" element={<Viewer />} />
                     <Route path="/rw-bingo-board-viewer/schedule" element={<Schedule />} />
                     <Route path="/rw-bingo-board-viewer/leaderboard" element={<Leaderboard />} />
+                    <Route path="/rw-bingo-board-viewer/ranked" element={<Ranked />} />
                     <Route path="/rw-bingo-board-viewer/all-games" element={<AllGames />} />
                     <Route path="/rw-bingo-board-viewer/user/:userName" element={<UserGamesRoute />} />
                 </Routes>
