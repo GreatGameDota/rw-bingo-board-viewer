@@ -172,6 +172,7 @@ async function calcElo(match, token) {
                 gamesPlayed: parseInt(team1.info.gamesPlayed?.integerValue || 0) + 1,
                 wins: parseInt(team1.info.wins?.integerValue || 0) + 1,
                 elo: String(elo1),
+                eloChange: String(winK * (1 - expectedWin)),
                 matchId: match.info.id.stringValue,
             }),
         });
@@ -185,6 +186,7 @@ async function calcElo(match, token) {
                 gamesPlayed: parseInt(team2.info.gamesPlayed?.integerValue || 0) + 1,
                 losses: parseInt(team2.info.losses?.integerValue || 0) + 1,
                 elo: String(elo2),
+                eloChange: String(loseK * (0 - (1 - expectedWin))),
                 matchId: match.info.id.stringValue,
             }),
         });
