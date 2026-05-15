@@ -116,7 +116,7 @@ async function calcElo(match, token) {
 
             allPlayers.push({ name: playerName, team });
 
-            if (!winningTeam) {
+            if (!winningTeam && gameWinningTeam !== "null") {
                 winningTeam = gameWinningTeam;
             }
         }
@@ -203,46 +203,53 @@ async function calcElo(match, token) {
     }
 }
 
-async function saveGame(gameId, won, token) {
-    var response = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/games/${gameId}`);
-    const game = { info: (await response.json()).game };
+async function saveGame(gameInfo, won, gameEnded, token, match = null) {
+    const { gameId, playerName, boardId } = gameInfo;
+    // var response = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/games/${gameId}`);
+    // const game = { info: (await response.json()).game };
 
     // Create or update user with name and gameId
-    response = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/users/name/${game.info.name.stringValue}`);
+    var response = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/users/name/${playerName}`);
     var user = (await response.json()).users[0];
     if (!user) {
         response = await fetch("https://us-central1-bingo-db-57e75.cloudfunctions.net/api/user", {
             method: "POST",
             headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
             body: JSON.stringify({
-                name: game.info.name.stringValue,
+                name: playerName,
             }),
         });
         const res = await response.json();
         user = { info: { id: { stringValue: res.id } } };
     }
-    response = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/user/${user.info.id.stringValue}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
-        body: JSON.stringify({
-            name: game.info.name.stringValue,
-            gameId: game.info.id.stringValue,
-        }),
-    });
-    var res = await response.json();
+    var gameIdMatches = user.info.games?.arrayValue.values.filter(id => id === gameId);
+    if (!gameIdMatches || gameIdMatches.length === 0) {
+        response = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/user/${user.info.id.stringValue}`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
+            body: JSON.stringify({
+                name: playerName,
+                gameId: gameId,
+            }),
+        });
+        var res = await response.json();
+    }
 
     // Create or update match with boardId, gameId and playerId
-    var boardId = deriveGameId(game.info.boardString.stringValue);
-    response = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/matches/board/${boardId}`);
-    var match = (await response.json()).matches[0];
+    // var boardId = deriveGameId(game.info.boardString.stringValue);
+    // response = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/matches/board/${boardId}`);
+    // var matches = (await response.json()).matches;
+    // matches = matches.filter(m => !m.info.ranked2.booleanValue && !m.info.ranked.booleanValue);
+    // var match = (await response.json()).matches[0];
     var body = {
         playerId: user.info.id.stringValue,
-        playerName: game.info.name.stringValue,
-        gameId: game.info.id.stringValue,
+        playerName: playerName,
+        gameId: gameId,
         boardId: boardId,
     };
-    if (won) body.winnerName = game.info.name.stringValue;
+    if (won) body.winnerName = playerName;
     if (!match) {
+        // if (matches.length === 0) {
         response = await fetch("https://us-central1-bingo-db-57e75.cloudfunctions.net/api/match", {
             method: "POST",
             headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
@@ -264,8 +271,8 @@ async function saveGame(gameId, won, token) {
     // response = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/admin/rankedTime`);
     // var rankedTime = new Date((await response.json()).rankedTime.rankedTime.timestampValue);
 
-    response = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/matches/${match.info.id.stringValue}`);
-    match = { info: (await response.json()).match };
+    // response = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/matches/${match.info.id.stringValue}`);
+    // match = { info: (await response.json()).match };
     // await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/match/${match.info.id.stringValue}`, {
     //     method: "PATCH",
     //     headers: { "Content-Type": "application/json" },
@@ -278,28 +285,105 @@ async function saveGame(gameId, won, token) {
     // match.info.ranked.booleanValue = match.info.games.arrayValue.values.length === 4 && new Date(match.info.createdAt.timestampValue) <= rankedTime;
 
     // Add matchId to user
-    response = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/user/${user.info.id.stringValue}`, {
+    var matchIdMatches = user.info.matches?.arrayValue.values.filter(id => id === match.info.id.stringValue);
+    if (!matchIdMatches || matchIdMatches.length === 0) {
+        response = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/user/${user.info.id.stringValue}`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
+            body: JSON.stringify({
+                name: playerName,
+                matchId: match.info.id.stringValue,
+            }),
+        });
+        res = await response.json();
+    }
+
+    // Add matchId to game TODO: can prob add an if to this to skip but shrug
+    response = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/game/${gameId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
         body: JSON.stringify({
-            name: game.info.name.stringValue,
+            name: playerName,
             matchId: match.info.id.stringValue,
         }),
     });
     res = await response.json();
 
-    // Add matchId to game
-    response = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/game/${game.info.id.stringValue}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
+    if (gameEnded) {
+        response = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/matches/${match.info.id.stringValue}`);
+        match = { info: (await response.json()).match };
+        await calcElo(match, token);
+    }
+}
+
+async function createOrUpdateGame(gameInfo, result, boardId, gameComplete) {
+    // TODO: prob just make auth only for changing elo
+    var response = await fetch("https://us-central1-bingo-db-57e75.cloudfunctions.net/api/admin/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-            name: game.info.name.stringValue,
-            matchId: match.info.id.stringValue,
+            email: process.env.ADMIN_EMAIL,
+            password: process.env.ADMIN_PASSWORD,
         }),
     });
-    res = await response.json();
+    if (!response.ok) throw new Error(`Login failed with status ${response.status}`);
+    const data = await response.json();
+    const token = data.refreshToken;
 
-    await calcElo(match, token);
+    const { boardString, boardState, playerName, teamNumber, time, completedGoals, deaths } = gameInfo;
+    response = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/games/user/${playerName}`);
+    var games = (await response.json()).games;
+    games = games.filter(g => deriveGameId(g.info.boardString.stringValue) === boardId);
+
+    if (games.length === 0) {
+        response = await fetch("https://us-central1-bingo-db-57e75.cloudfunctions.net/api/game", {
+            method: "POST",
+            headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
+            body: JSON.stringify({
+                boardString: boardString,
+                boardState: boardState,
+                name: playerName,
+                team: String(teamNumber),
+                winningTeam: String(result.winningTeam),
+                time: time,
+                completedGoals: String(completedGoals),
+                deaths: deaths,
+            }),
+        });
+        const res = await response.json();
+        console.log(`[API] POST response: ${response.status}`, res);
+        await saveGame({ gameId: res.id, playerName, boardId }, teamNumber === result.winningTeam, gameComplete, token);
+    } else {
+        const gameIds = games.map(g => g.info.id.stringValue);
+        response = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/matches/board/${boardId}`);
+        var matches = (await response.json()).matches;
+        // Assume every game has a match
+        // Assume at one time, only 1 unranked match of a certain board is happening
+        matches = matches.filter(m => !m.info.ranked2.booleanValue && !m.info.ranked.booleanValue);
+        for (const m of matches) {
+            var _gameId = m.info.games.arrayValue.values.filter(item => gameIds.includes(item));
+            if (_gameId.length === 1) {
+                response = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/game/${_gameId[0]}`, {
+                    method: "PATCH",
+                    headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
+                    body: JSON.stringify({
+                        boardString: boardString,
+                        boardState: boardState,
+                        name: playerName,
+                        team: String(teamNumber),
+                        winningTeam: String(result.winningTeam),
+                        time: time,
+                        completedGoals: String(completedGoals),
+                        deaths: deaths,
+                    }),
+                });
+                const res = await response.json();
+                console.log(`[API] POST response: ${response.status} ${_gameId[0]}`, res);
+                await saveGame({ gameId: _gameId[0], playerName, boardId }, teamNumber === result.winningTeam, gameComplete, token, m);
+                break;
+            }
+        }
+    }
 }
 
 async function getCompletedGameIdsForUser(userName) {
@@ -375,6 +459,14 @@ async function processMessage(raw) {
     }
 
     if (!result.winner || boardState.split("<>").length !== 25) {
+        if (boardState.split("<>").length === 25) {
+            try {
+                await createOrUpdateGame(parsed, result, gameId, false);
+            }
+            catch (e) {
+                console.error(`Update error: ${e.message}`);
+            }
+        }
         return {
             saved: false, record: null, player,
             reason: `No win yet from "${playerName}" (score: ${result.score}/${result.threshold})`,
@@ -429,35 +521,7 @@ async function processMessage(raw) {
         players.set(playerKey, player);
         if (teamNumber !== 8) {
             try {
-                var response = await fetch("https://us-central1-bingo-db-57e75.cloudfunctions.net/api/admin/login", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        email: process.env.ADMIN_EMAIL,
-                        password: process.env.ADMIN_PASSWORD,
-                    }),
-                });
-                if (!response.ok) throw new Error(`Login failed with status ${response.status}`);
-                const data = await response.json();
-                const token = data.refreshToken;
-
-                response = await fetch("https://us-central1-bingo-db-57e75.cloudfunctions.net/api/game", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
-                    body: JSON.stringify({
-                        boardString: boardString,
-                        boardState: boardState,
-                        name: playerName,
-                        team: String(teamNumber),
-                        winningTeam: String(result.winningTeam),
-                        time: time,
-                        completedGoals: String(completedGoals),
-                        deaths: deaths,
-                    }),
-                });
-                const res = await response.json();
-                console.log(`[API] POST response: ${response.status}`, res);
-                await saveGame(res.id, teamNumber === result.winningTeam, token);
+                await createOrUpdateGame(parsed, result, gameId, true);
             } catch (e) {
                 console.error(`[API] POST error: ${e.message}`);
             }
@@ -490,35 +554,7 @@ async function processMessage(raw) {
 
     if (teamNumber !== 8) {
         try {
-            var response = await fetch("https://us-central1-bingo-db-57e75.cloudfunctions.net/api/admin/login", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    email: process.env.ADMIN_EMAIL,
-                    password: process.env.ADMIN_PASSWORD,
-                }),
-            });
-            if (!response.ok) throw new Error(`Login failed with status ${response.status}`);
-            const data = await response.json();
-            const token = data.refreshToken;
-
-            response = await fetch("https://us-central1-bingo-db-57e75.cloudfunctions.net/api/game", {
-                method: "POST",
-                headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
-                body: JSON.stringify({
-                    boardString: boardString,
-                    boardState: boardState,
-                    name: playerName,
-                    team: String(teamNumber),
-                    winningTeam: String(result.winningTeam),
-                    time: time,
-                    completedGoals: String(completedGoals),
-                    deaths: deaths,
-                }),
-            });
-            const res = await response.json();
-            console.log(`[API] POST response: ${response.status}`, res);
-            await saveGame(res.id, teamNumber === result.winningTeam, token);
+            await createOrUpdateGame(parsed, result, gameId, true);
         } catch (e) {
             console.error(`[API] POST error: ${e.message}`);
         }
