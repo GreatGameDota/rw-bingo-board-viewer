@@ -13,7 +13,7 @@ class Schedule extends Component {
             player1Search: '',
             player2Search: '',
             availability: {},
-            eloDiff: 50,
+            eloDiff: 200,
         };
     }
 
@@ -76,6 +76,16 @@ class Schedule extends Component {
         const { loading, loading2, loading3, error, availability, eloDiff } = this.state;
         const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
+        var rawName, nameParts, eloValue, wins, gamesPlayed, winRate;
+        if (this.state.team !== null) {
+            rawName = this.getGameValue(this.state.team[0], 'name') || '';
+            nameParts = rawName.split(',');
+            eloValue = Math.round(parseFloat(this.getGameValue(this.state.team[0], 'elo')));
+            wins = parseInt(this.getGameValue(this.state.team[0], 'wins'));
+            gamesPlayed = parseInt(this.getGameValue(this.state.team[0], 'gamesPlayed'));
+            winRate = Math.round((wins / (gamesPlayed === 0 ? 1 : gamesPlayed)) * 100);
+        }
+
         const handleSearchSubmit = async (e) => {
             e.preventDefault();
             const player1Name = this.state.player1Search.trim();
@@ -96,7 +106,7 @@ class Schedule extends Component {
                     // console.log('Fetched team:', teams);
                     this.setState({
                         teams: null,
-                        eloDiff: 50,
+                        eloDiff: 200,
                         team: teams,
                         loading2: false,
                         error: null,
@@ -145,7 +155,7 @@ class Schedule extends Component {
                     // console.log('Fetched team:', teams);
                     this.setState({
                         teams: null,
-                        eloDiff: 50,
+                        eloDiff: 200,
                         team: teams,
                         loading2: false,
                         error: null,
@@ -262,7 +272,8 @@ class Schedule extends Component {
                     />
                 </div>
                 <div className="p-6 max-w-7xl mx-auto">
-                    <h1 className="text-4xl font-bold text-white mb-8">Schedule</h1>
+                    <h1 className="text-4xl font-bold text-white mb-4">Find Your Team</h1>
+                    <p className="mb-4">Enter the <span className="font-bold">Steam</span> username for each player on your team.</p>
 
                     {loading ? (
                         <div className="flex items-center justify-center py-24">
@@ -275,17 +286,19 @@ class Schedule extends Component {
                     ) : (
                         <div className="flex flex-col gap-6">
                             <form onSubmit={handleSearchSubmit} className="m-auto relative flex flex-col gap-4">
-                                <div className="flex gap-4">
+                                <div className="flex items-center gap-4">
+                                    Player 1:
                                     <input
                                         type="search"
-                                        placeholder="Player 1"
+                                        placeholder="Username"
                                         value={this.state.player1Search}
                                         onChange={(e) => this.setState({ player1Search: e.target.value })}
                                         className="px-3 py-2 rounded bg-gray-800 border border-gray-600 text-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-blue-400 focus:border-blue-400 w-48"
                                     />
+                                    Player 2:
                                     <input
                                         type="search"
-                                        placeholder="Player 2"
+                                        placeholder="Username"
                                         value={this.state.player2Search}
                                         onChange={(e) => this.setState({ player2Search: e.target.value })}
                                         className="px-3 py-2 rounded bg-gray-800 border border-gray-600 text-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-blue-400 focus:border-blue-400 w-48"
@@ -335,87 +348,133 @@ class Schedule extends Component {
                                         </button>
                                     </div>
                                 ) : (
-                                    <div className="flex flex-col mx-auto mb-6 min-w-[75%]">
-                                        <div className="bg-gray-800 border border-gray-700 rounded-lg p-6">
-                                            <p>Team: {this.getGameValue(this.state.team[0], 'name')}</p>
-                                            <p>Elo: {this.getGameValue(this.state.team[0], 'elo')}</p>
+                                    <div className="flex flex-col">
+                                        <div className="flex flex-col mx-auto mb-6 min-w-[75%]">
+                                            <div className="flex flex-row bg-gray-800 border border-gray-700 rounded-lg p-6 cursor-default">
+                                                <div className="flex flex-col my-auto">
+                                                    <p className="text-2xl font-bold">
+                                                        {nameParts.map((player, idx) =>
+                                                            `${player}${idx === nameParts.length - 1 ? '' : ' & '}`
+                                                        )}
+                                                    </p>
+                                                    <p>
+                                                        <span className={`text-xl font-bold`}>
+                                                            {eloValue}
+                                                        </span> elo • <span className="text-xl font-semibold">{winRate}</span>% winrate
+                                                    </p>
+                                                </div>
+                                                <div className="ml-auto my-auto text-right">
+                                                    <p>
+                                                        {this.getGameValue(this.state.team[0], 'gamesPlayed')} {this.getGameValue(this.state.team[0], 'gamesPlayed') === "1" ? "game" : "games"} • {wins}W {this.getGameValue(this.state.team[0], 'losses')}L
+                                                    </p>
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div className="flex flex-col mx-auto">
-                                            <div className="mt-12 mb-4 flex flex-col">
-                                                <span>Click blocks to mark when your team is free.</span>
-                                                <span>Each block covers a 2-hour window.</span>
-                                            </div>
-
-                                            <table>
-                                                <tbody>
-                                                    {days.map((day) => (
-                                                        <tr key={day}>
-                                                            <td className="pr-6">{day}</td>
-                                                            {[0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22].map((h, i) => {
-                                                                const active = (availability[day] || []).includes(h);
-                                                                return (
-                                                                    <td key={h} style={{ padding: 2 }}>
-                                                                        <button
-                                                                            onClick={() => this.toggleBlock(day, h)}
-                                                                            className={`min-w-8 min-h-4 rounded p-2 ${active ? "bg-blue-500 opacity-90" : "bg-gray-700 opacity-40"} transition-colors duration-100`}
-                                                                        >
-                                                                            {this.hourToLocal(h)}
-                                                                        </button>
-                                                                    </td>
-                                                                );
-                                                            })}
-                                                        </tr>
-                                                    ))}
-                                                </tbody>
-                                            </table>
+                                        <hr className="my-8 border-gray-700" />
+                                        <h1 className="mb-4 text-4xl font-bold text-white">Team Availability</h1>
+                                        <div className="mb-4 flex flex-col">
+                                            <span>Click blocks to mark when your team is free.</span>
+                                            <span>Each block covers a 2-hour window.</span>
                                         </div>
-
-                                        <button className="px-4 py-2 mt-6 w-fit mx-auto relative bg-green-500 text-white rounded hover:bg-green-600 disabled:hover:bg-green-500 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-1 focus:ring-green-400 focus:border-green-400" onClick={saveTime} disabled={loading2}>
-                                            Save Time
-                                        </button>
-
-                                        <div>
-                                            <div className="flex items-center gap-2 mb-1">
-                                                <label>ELO diff</label>
-                                                <span className="font-bold">{`±${eloDiff}`}</span>
-                                            </div>
-                                            <input type="range" min={50} max={400} step={25} value={eloDiff} onChange={(e) => this.setState({ eloDiff: Number(e.target.value) })} className="w-full" />
-                                        </div>
-
-                                        <button className="px-4 py-2 mt-6 w-fit relative bg-blue-500 text-white rounded hover:bg-blue-600 disabled:hover:bg-blue-500 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-1 focus:ring-blue-400 focus:border-blue-400" onClick={searchTeams} disabled={loading3}>
-                                            Search for Opponents
-                                        </button>
-
-                                        {loading3 ? (
-                                            <div className="flex items-center justify-center py-12">
-                                                <p className="text-white text-xl">Searching for opponents...</p>
-                                            </div>
-                                        ) : error ? (
-                                            <div className="flex items-center justify-center py-12">
-                                                <p className="text-red-400 text-xl">Error searching for opponents</p>
-                                            </div>
-                                        ) : this.state.teams && this.state.teams.length === 0 ? (
-                                            <div className="flex items-center justify-center py-12">
-                                                <p className="text-gray-400 text-xl">No opponents found with that ELO diff and availability.</p>
-                                            </div>
-                                        ) : this.state.teams && (
-                                            <div className="flex flex-col gap-6 mt-6">
-                                                {this.state.teams.map(({ team, commonAvailability }) => (
-                                                    <div key={this.getGameValue(team, 'id')} className="bg-gray-800 border border-gray-700 rounded-lg p-6">
-                                                        <p>Team: {this.getGameValue(team, 'name')}</p>
-                                                        <p>Elo: {this.getGameValue(team, 'elo')}</p>
-                                                        <br />
-                                                        <div className="flex flex-col mx-auto">
-                                                            {Object.keys(commonAvailability).map((slot, index) => (
-                                                                <p key={index}>
-                                                                    {slot} {commonAvailability[slot].map((h) => this.hourToLocal(h)).join(', ')}
-                                                                </p>
+                                        <div className="flex flex-col items-center mx-auto mb-6 min-w-[75%]">
+                                            <div className="flex flex-col">
+                                                <table>
+                                                    <tbody>
+                                                        <tr>
+                                                            {days.map((day) => (
+                                                                <td key={day} className="text-center font-bold pb-4">{day}</td>
                                                             ))}
-                                                        </div>
-                                                    </div>
-                                                ))}
+                                                        </tr>
+                                                        {[0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22].map((h) => (
+                                                            <tr key={h}>
+                                                                {days.map((day) => {
+                                                                    const active = (availability[day] || []).includes(h);
+                                                                    return (
+                                                                        <td key={`${day}-${h}`} className="p-1">
+                                                                            <button
+                                                                                onClick={() => this.toggleBlock(day, h)}
+                                                                                className={`w-full rounded p-2 ${active ? "bg-blue-500 opacity-90" : "bg-gray-700 opacity-40"} transition-colors duration-100`}
+                                                                            >
+                                                                                {this.hourToLocal(h)}
+                                                                            </button>
+                                                                        </td>
+                                                                    );
+                                                                })}
+                                                            </tr>
+                                                        ))}
+                                                    </tbody>
+                                                </table>
                                             </div>
-                                        )}
+                                            <button className="px-4 py-2 mt-6 w-fit mx-auto relative bg-green-500 text-white rounded hover:bg-green-600 disabled:hover:bg-green-500 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-1 focus:ring-green-400 focus:border-green-400" onClick={saveTime} disabled={loading2}>
+                                                Save Time
+                                            </button>
+                                        </div>
+                                        <hr className="my-8 border-gray-700" />
+                                        <h1 className="mb-4 text-4xl font-bold text-white">Schedule Match</h1>
+                                        <div className="mb-4 flex flex-col">
+                                            <span>Search for opponents with matching availability and in your elo range.</span>
+                                        </div>
+                                        <div className="flex flex-col items-center mx-auto mb-48 min-w-[75%]">
+                                            <div className="flex flex-row items-center gap-2">
+                                                <button className="px-4 py-2 mr-8 w-fit relative bg-blue-500 text-white rounded hover:bg-blue-600 disabled:hover:bg-blue-500 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-1 focus:ring-blue-400 focus:border-blue-400" onClick={searchTeams} disabled={loading3}>
+                                                    Search for Opponents
+                                                </button>
+                                                <div className="flex items-center gap-2">
+                                                    <label>ELO diff</label>
+                                                    <span className="font-bold">{`±${eloDiff}`}</span>
+                                                </div>
+                                                {/* <input type="range" min={50} max={400} step={25} value={eloDiff} onChange={(e) => this.setState({ eloDiff: Number(e.target.value) })} className="w-full" /> */}
+                                            </div>
+
+                                            {loading3 ? (
+                                                <div className="flex items-center justify-center py-12">
+                                                    <p className="text-white text-xl">Searching for opponents...</p>
+                                                </div>
+                                            ) : error ? (
+                                                <div className="flex items-center justify-center py-12">
+                                                    <p className="text-red-400 text-xl">Error searching for opponents</p>
+                                                </div>
+                                            ) : this.state.teams && this.state.teams.length === 0 ? (
+                                                <div className="flex items-center justify-center py-12">
+                                                    <p className="text-gray-400 text-xl">No opponents found with that ELO diff and availability.</p>
+                                                </div>
+                                            ) : this.state.teams && (
+                                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+                                                    {this.state.teams.map(({ team, commonAvailability }) => {
+                                                        const rawName = this.getGameValue(team, 'name') || '';
+                                                        const nameParts = rawName.split(',');
+                                                        const eloValue = Math.round(parseFloat(this.getGameValue(team, 'elo')));
+                                                        const wins = parseInt(this.getGameValue(team, 'wins'));
+                                                        const gamesPlayed = parseInt(this.getGameValue(team, 'gamesPlayed'));
+                                                        const winRate = Math.round((wins / (gamesPlayed === 0 ? 1 : gamesPlayed)) * 100);
+
+                                                        return (
+                                                            <div key={this.getGameValue(team, 'id')} className="bg-gray-800 border border-gray-700 rounded-lg p-6">
+                                                                <div className="mb-2 flex flex-col my-auto">
+                                                                    <p className="text-2xl font-bold">
+                                                                        {nameParts.map((player, idx) =>
+                                                                            `${player}${idx === nameParts.length - 1 ? '' : ' & '}`
+                                                                        )}
+                                                                    </p>
+                                                                    <p>
+                                                                        <span className={`text-xl font-bold`}>
+                                                                            {eloValue}
+                                                                        </span> elo • <span className="text-xl font-semibold">{winRate}</span>% winrate
+                                                                    </p>
+                                                                </div>
+                                                                <div className="flex flex-col gap-2">
+                                                                    {Object.keys(commonAvailability).map((slot, index) => (
+                                                                        <p key={index} className="w-fit rounded-md bg-gray-600 py-0.5 px-2.5 text-sm shadow-sm">
+                                                                            {slot} {commonAvailability[slot].map((h) => this.hourToLocal(h)).join(', ')}
+                                                                        </p>
+                                                                    ))}
+                                                                </div>
+                                                            </div>
+                                                        );
+                                                    })}
+                                                </div>
+                                            )}
+                                        </div>
                                     </div>
                                 )
                             )}
