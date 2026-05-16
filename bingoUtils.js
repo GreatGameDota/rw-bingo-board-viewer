@@ -410,26 +410,26 @@ async function createOrUpdateGame(gameInfo, result, boardId, gameComplete) {
             }
         }
 
-        // Create new game if no match found (this shouldn't happen?)
+        // Create new game if no match found (user played before but all matches are complete)
         if (matches.length === 0) {
-            console.log("Error: no match for this game");
-            // response = await fetch("https://us-central1-bingo-db-57e75.cloudfunctions.net/api/game", {
-            //     method: "POST",
-            //     headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
-            //     body: JSON.stringify({
-            //         boardString: boardString,
-            //         boardState: boardState,
-            //         name: playerName,
-            //         team: String(teamNumber),
-            //         winningTeam: String(result.winningTeam),
-            //         time: time,
-            //         completedGoals: String(completedGoals),
-            //         deaths: deaths,
-            //     }),
-            // });
-            // const res = await response.json();
-            // console.log(`[API] POST response: ${response.status}`, res);
-            // await saveGame({ gameId: res.id, playerName, boardId }, teamNumber === result.winningTeam, gameComplete, token);
+            // console.log("Error: no match for this game");
+            response = await fetch("https://us-central1-bingo-db-57e75.cloudfunctions.net/api/game", {
+                method: "POST",
+                headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
+                body: JSON.stringify({
+                    boardString: boardString,
+                    boardState: boardState,
+                    name: playerName,
+                    team: String(teamNumber),
+                    winningTeam: String(result.winningTeam),
+                    time: time,
+                    completedGoals: String(completedGoals),
+                    deaths: deaths,
+                }),
+            });
+            const res = await response.json();
+            console.log(`[API] POST response: ${response.status}`, res);
+            await saveGame({ gameId: res.id, playerName, boardId }, teamNumber === result.winningTeam, gameComplete, token);
         }
     }
 }
