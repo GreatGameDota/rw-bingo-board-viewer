@@ -542,7 +542,7 @@ async function processMessage(raw) {
     }
 
     // const { apiCompletedIds, apiIds } = await getCompletedGameIdsForUser(playerName);
-    const id = hasGameWon(playerName, gameId);
+    const id = await hasGameWon(playerName, gameId);
     console.log(id);
 
     // let gameOver = wins.has(gameId);
