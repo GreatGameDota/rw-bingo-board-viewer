@@ -1,7 +1,6 @@
 
 var wins = new Map();
 var players = new Map();
-var userCompletedGameIdsCache = new Map();
 
 const BINGO_LINES = [
     // Rows
@@ -123,18 +122,19 @@ async function calcElo(match, token) {
             }
         }
 
-        for (const game of gameDatas) {
-            // Add winner to games
-            var response = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/game/${game.id.stringValue}`, {
-                method: "PATCH",
-                headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
-                body: JSON.stringify({
-                    name: game.name.stringValue,
-                    winningTeam: winningTeam,
-                }),
-            });
-            var res = await response.json();
-        }
+        // Cannot do this to allow other games in match to save snapshot
+        // for (const game of gameDatas) {
+        //     // Add winner to games
+        //     var response = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/game/${game.id.stringValue}`, {
+        //         method: "PATCH",
+        //         headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
+        //         body: JSON.stringify({
+        //             name: game.name.stringValue,
+        //             winningTeam: winningTeam,
+        //         }),
+        //     });
+        //     var res = await response.json();
+        // }
 
         const winners = allPlayers.filter(p => p.team === winningTeam).map(p => p.name);
         const losers = allPlayers.filter(p => p.team !== winningTeam).map(p => p.name);
@@ -143,7 +143,7 @@ async function calcElo(match, token) {
             return;
         }
 
-        response = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/teams2/name/${winners.sort().join(",")}`);
+        var response = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/teams2/name/${winners.sort().join(",")}`);
         var team1 = (await response.json()).teams[0];
         if (!team1) {
             response = await fetch("https://us-central1-bingo-db-57e75.cloudfunctions.net/api/team2", {
@@ -191,7 +191,7 @@ async function calcElo(match, token) {
                 matchId: match.info.id.stringValue,
             }),
         });
-        res = await response.json();
+        var res = await response.json();
 
         response = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/team22/${team2.info.id.stringValue}`, {
             method: "PATCH",
@@ -276,19 +276,20 @@ async function saveGame(gameInfo, won, gameEnded, token, match = null) {
     if (won) { // Assume we don't save again after someone won?
         response = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/games/${gameId}`);
         const game = { info: (await response.json()).game };
-        // Verify you *actually* won
-        if (game.info.winningTeam.stringValue === game.info.team.stringValue) {
-            response = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/match/${match.info.id.stringValue}`, {
-                method: "PATCH",
-                headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
-                body: JSON.stringify({
-                    boardId: boardId,
-                    winnerName: playerName,
-                    winnerTeam: game.info.winningTeam.stringValue,
-                }),
-            });
-            const res = await response.json();
-        }
+        // Verify you *actually* won, game's winningTeam is set later in calcElo (this just prevents possible race condition)
+        // Cannot do this actually since other games need to save once match finishes, so hopefully no race condition happens else it'll be bad
+        // if (game.info.winningTeam.stringValue === game.info.team.stringValue) {
+        response = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/match/${match.info.id.stringValue}`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
+            body: JSON.stringify({
+                boardId: boardId,
+                winnerName: playerName,
+                winnerTeam: game.info.winningTeam.stringValue,
+            }),
+        });
+        const res = await response.json();
+        // }
     }
 
     // Set match ranked if it has 4 games
@@ -445,23 +446,27 @@ async function hasGameWon(userName, boardId) {
     // All user games with current boardId
     var response = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/games/user/${encodeURIComponent(userName)}`);
     var games = (await response.json()).games;
-    games = games.filter(g => deriveGameId(g.info.boardString.stringValue) === boardId);
-    const gameIds = games.map(g => g.info.id.stringValue);
-
-    // All uncompleted matches with current boardId
-    response = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/allMatches/board/${boardId}`);
-    var matches = (await response.json()).matches;
-
-    for (const m of matches) {
-        if (m.info.winnerTeam?.stringValue === "null") {
-            for (const id of m.info.games.arrayValue.values) {
-                if (gameIds.includes(id.stringValue)) {
-                    return id.stringValue;
-                }
-            }
-        }
-    }
+    games = games.filter(g => deriveGameId(g.info.boardString.stringValue) === boardId && g.info.winningTeam?.stringValue === "null");
+    if (games.length === 1)
+        return games[0].info.id.stringValue;
     return null;
+
+    // const gameIds = games.map(g => g.info.id.stringValue);
+
+    // // All uncompleted matches with current boardId
+    // response = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/allMatches/board/${boardId}`);
+    // var matches = (await response.json()).matches;
+
+    // for (const m of matches) {
+    //     if (m.info.winnerTeam?.stringValue === "null") {
+    //         for (const id of m.info.games.arrayValue.values) {
+    //             if (gameIds.includes(id.stringValue)) {
+    //                 return id.stringValue;
+    //             }
+    //         }
+    //     }
+    // }
+    // return null;
 }
 
 function parseMessage(raw) {
@@ -565,6 +570,8 @@ async function processMessage(raw) {
         // }
     }
 
+    // TODO: test, gameOver only true if id is null, this will never run...
+    // once someone wins, match is set to null, all other players stop updating, boards outdated...
     if (gameOver && !players.has(playerKey) && id) {
         players.set(playerKey, player);
         if (teamNumber !== 8) {
