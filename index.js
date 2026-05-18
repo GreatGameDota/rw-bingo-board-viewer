@@ -78,7 +78,6 @@ wss.on('connection', (ws, req) => {
 
     ws.on('message', async (message) => {
         messageQueue.push(message);
-
         processQueue();
     });
 
@@ -101,16 +100,13 @@ wss.on('connection', (ws, req) => {
 
     async function handleMessage(message) {
         var client = clients.get(ws);
-        if (message.toString().startsWith("SpectatorArena")) {
-            client.spectator2 = true;
-        }
-        else if (message.toString().startsWith("Spectator")) {
+        if (message.toString().startsWith("Spectator")) {
             client.spectator = true;
         }
 
         handleGameData(sessionId, message, ws);
 
-        if (!client.spectator && !client.spectator2 && !message.toString().startsWith("Arena")) {
+        if (!client.spectator) {
             var res = await processMessage(message.toString());
             if (res) {
                 logMessage('info', `Processed message from ${sessionId}: ${res.reason}`);
@@ -120,10 +116,7 @@ wss.on('connection', (ws, req) => {
         if (!message.toString().startsWith("Spectator")) {
             wss.clients.forEach((c) => {
                 var _client = clients.get(c);
-                if (_client !== client && message.toString().startsWith("Arena") && _client.spectator2) {
-                    c.send(message);
-                }
-                if (_client !== client && !message.toString().startsWith("Arena") && _client.spectator) {
+                if (_client !== client && _client.spectator) {
                     c.send(message);
                 }
             });
