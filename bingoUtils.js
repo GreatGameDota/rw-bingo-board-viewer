@@ -263,6 +263,7 @@ async function saveGame(gameInfo, won, gameEnded, token, match = null) {
         boardId: boardId,
     };
     if (won) body.winnerName = playerName;
+    const gameIds = match?.info.games.arrayValue.values.map(g => g.stringValue);
     if (!match) {
         // if (matches.length === 0) {
         response = await fetch("https://us-central1-bingo-db-57e75.cloudfunctions.net/api/match", {
@@ -272,6 +273,13 @@ async function saveGame(gameInfo, won, gameEnded, token, match = null) {
         });
         const res = await response.json();
         match = { info: { id: { stringValue: res.id } } };
+    } else if (!gameIds.includes(gameId)) {
+        response = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/match/${match.info.id.stringValue}`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
+            body: JSON.stringify(body),
+        });
+        const res = await response.json();
     }
     if (won) { // Assume we don't save again after someone won?
         response = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/games/${gameId}`);
