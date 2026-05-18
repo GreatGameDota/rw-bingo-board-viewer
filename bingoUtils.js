@@ -273,7 +273,7 @@ async function saveGame(gameInfo, won, gameEnded, token, match = null) {
         });
         const res = await response.json();
         match = { info: { id: { stringValue: res.id } } };
-    } else if (!gameIds.includes(gameId)) {
+    } else if (gameIds && !gameIds.includes(gameId)) {
         response = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/match/${match.info.id.stringValue}`, {
             method: "PATCH",
             headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
@@ -447,7 +447,27 @@ async function createOrUpdateGame(gameInfo, result, boardId, gameComplete) {
             }
         }
     }
-    console.error("SHOULD NEVER HIT THIS");
+
+    // Game with board, but not in the current unfinished match, create new game
+    console.error("WEIRD EDGE CASE");
+    response = await fetch("https://us-central1-bingo-db-57e75.cloudfunctions.net/api/game", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
+        body: JSON.stringify({
+            boardString: boardString,
+            boardState: boardState,
+            name: playerName,
+            team: String(teamNumber),
+            winningTeam: String(result.winningTeam),
+            time: time,
+            completedGoals: String(completedGoals),
+            deaths: deaths,
+        }),
+    });
+    const res = await response.json();
+    console.log(`[API] POST response: ${response.status}`, res);
+    // Limitation: Multiple matches using same board (probably not possible, assume only 1 active match per board)
+    await saveGame({ gameId: res.id, playerName, boardId }, teamNumber === result.winningTeam, gameComplete, token, matches.length === 1 ? matches[0] : null);
 }
 
 async function hasGameWon(userName, boardId) {

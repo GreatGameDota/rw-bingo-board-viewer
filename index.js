@@ -84,19 +84,17 @@ async function handleMessage(ws, message, sessionId) {
     handleGameData(sessionId, message, ws);
 
     if (!client.spectator) {
-        var res = await processMessage(message.toString());
-        if (res) {
-            logMessage('info', `Processed message from ${sessionId}: ${res.reason}`);
-        }
-    }
-
-    if (!message.toString().startsWith("Spectator")) {
         wss.clients.forEach((c) => {
             var _client = clients.get(c);
             if (_client !== client && _client.spectator) {
                 c.send(message);
             }
         });
+
+        var res = await processMessage(message.toString());
+        if (res) {
+            logMessage('info', `Processed message from ${sessionId}: ${res.reason}`);
+        }
     }
 };
 
