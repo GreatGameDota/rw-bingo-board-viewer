@@ -73,40 +73,62 @@ wss.on('connection', (ws, req) => {
         ws.isAlive = true;
     });
 
+    const messageQueue = [];
+    var processing = false;
+
     ws.on('message', async (message) => {
-        try {
-            var client = clients.get(ws);
-            if (message.toString().startsWith("SpectatorArena")) {
-                client.spectator2 = true;
-            }
-            else if (message.toString().startsWith("Spectator")) {
-                client.spectator = true;
-            }
+        messageQueue.push(message);
 
-            handleGameData(sessionId, message, ws);
-
-            if (!client.spectator && !client.spectator2 && !message.toString().startsWith("Arena")) {
-                var res = await processMessage(message.toString());
-                if (res) {
-                    logMessage('info', `Processed message from ${sessionId}: ${res.reason}`);
-                }
-            }
-
-            if (!message.toString().startsWith("Spectator")) {
-                wss.clients.forEach((c) => {
-                    var _client = clients.get(c);
-                    if (_client !== client && message.toString().startsWith("Arena") && _client.spectator2) {
-                        c.send(message);
-                    }
-                    if (_client !== client && !message.toString().startsWith("Arena") && _client.spectator) {
-                        c.send(message);
-                    }
-                });
-            }
-        } catch (error) {
-            logMessage('error', `Invalid JSON from client ${sessionId}: ${error.message}`);
-        }
+        processQueue();
     });
+
+    async function processQueue() {
+        if (processing) return;
+        processing = true;
+
+        while (messageQueue.length > 0) {
+            const currentMessage = messageQueue.shift();
+
+            try {
+                await handleMessage(currentMessage);
+            } catch (error) {
+                logMessage('error', `Invalid JSON from client ${sessionId}: ${error.message}`);
+            }
+        }
+
+        processing = false;
+    }
+
+    async function handleMessage(message) {
+        var client = clients.get(ws);
+        if (message.toString().startsWith("SpectatorArena")) {
+            client.spectator2 = true;
+        }
+        else if (message.toString().startsWith("Spectator")) {
+            client.spectator = true;
+        }
+
+        handleGameData(sessionId, message, ws);
+
+        if (!client.spectator && !client.spectator2 && !message.toString().startsWith("Arena")) {
+            var res = await processMessage(message.toString());
+            if (res) {
+                logMessage('info', `Processed message from ${sessionId}: ${res.reason}`);
+            }
+        }
+
+        if (!message.toString().startsWith("Spectator")) {
+            wss.clients.forEach((c) => {
+                var _client = clients.get(c);
+                if (_client !== client && message.toString().startsWith("Arena") && _client.spectator2) {
+                    c.send(message);
+                }
+                if (_client !== client && !message.toString().startsWith("Arena") && _client.spectator) {
+                    c.send(message);
+                }
+            });
+        }
+    };
 
     ws.on('close', () => {
         logMessage('info', `Client disconnected: ${sessionId}`);
