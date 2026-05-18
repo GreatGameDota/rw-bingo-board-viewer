@@ -55,6 +55,51 @@ const wss = new WebSocket.Server({
 
 var clients = new Map();
 
+const messageQueue = [];
+var processing = false;
+
+async function processQueue() {
+    if (processing) return;
+    processing = true;
+
+    while (messageQueue.length > 0) {
+        const currentMessage = messageQueue.shift();
+
+        try {
+            await handleMessage(currentMessage.ws, currentMessage.message, currentMessage.sessionId);
+        } catch (error) {
+            logMessage('error', `Invalid JSON from client ${currentMessage.sessionId}: ${error.message}`);
+        }
+    }
+
+    processing = false;
+}
+
+async function handleMessage(ws, message, sessionId) {
+    var client = clients.get(ws);
+    if (message.toString().startsWith("Spectator")) {
+        client.spectator = true;
+    }
+
+    handleGameData(sessionId, message, ws);
+
+    if (!client.spectator) {
+        var res = await processMessage(message.toString());
+        if (res) {
+            logMessage('info', `Processed message from ${sessionId}: ${res.reason}`);
+        }
+    }
+
+    if (!message.toString().startsWith("Spectator")) {
+        wss.clients.forEach((c) => {
+            var _client = clients.get(c);
+            if (_client !== client && _client.spectator) {
+                c.send(message);
+            }
+        });
+    }
+};
+
 wss.on('connection', (ws, req) => {
     const sessionId = generateSessionId();
     const clientIP = req.socket.remoteAddress;
@@ -73,55 +118,10 @@ wss.on('connection', (ws, req) => {
         ws.isAlive = true;
     });
 
-    const messageQueue = [];
-    var processing = false;
-
     ws.on('message', async (message) => {
-        messageQueue.push(message);
+        messageQueue.push({ ws, message, sessionId });
         processQueue();
     });
-
-    async function processQueue() {
-        if (processing) return;
-        processing = true;
-
-        while (messageQueue.length > 0) {
-            const currentMessage = messageQueue.shift();
-
-            try {
-                await handleMessage(currentMessage);
-            } catch (error) {
-                logMessage('error', `Invalid JSON from client ${sessionId}: ${error.message}`);
-            }
-        }
-
-        processing = false;
-    }
-
-    async function handleMessage(message) {
-        var client = clients.get(ws);
-        if (message.toString().startsWith("Spectator")) {
-            client.spectator = true;
-        }
-
-        handleGameData(sessionId, message, ws);
-
-        if (!client.spectator) {
-            var res = await processMessage(message.toString());
-            if (res) {
-                logMessage('info', `Processed message from ${sessionId}: ${res.reason}`);
-            }
-        }
-
-        if (!message.toString().startsWith("Spectator")) {
-            wss.clients.forEach((c) => {
-                var _client = clients.get(c);
-                if (_client !== client && _client.spectator) {
-                    c.send(message);
-                }
-            });
-        }
-    };
 
     ws.on('close', () => {
         logMessage('info', `Client disconnected: ${sessionId}`);
