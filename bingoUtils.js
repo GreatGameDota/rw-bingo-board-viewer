@@ -394,7 +394,7 @@ async function createOrUpdateGame(gameInfo, result, boardId, gameComplete) {
 
     response = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/games/user/${playerName}`);
     var games = (await response.json()).games;
-    games = games.filter(g => deriveGameId(g.info.boardString.stringValue) === boardId && g.info.winnerTeam?.stringValue === "null");
+    games = games.filter(g => deriveGameId(g.info.boardString.stringValue) === boardId && g.info.winningTeam?.stringValue === "null");
 
     // New game for match
     if (games.length === 0) {
