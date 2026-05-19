@@ -368,7 +368,7 @@ async function createOrUpdateGame(gameInfo, result, boardId, gameComplete) {
     // Assume every game has a match
     // Assume at one time, only 1 active match of a certain board is happening
     // If you start a match, don't finish it, you'll be assigned it
-    matches = matches.filter(m => m.info.winnerTeam?.stringValue === "null");
+    // matches = matches.filter(m => m.info.winnerTeam?.stringValue === "null");
 
     // Create new game if no match found
     if (matches.length === 0) {
@@ -394,7 +394,7 @@ async function createOrUpdateGame(gameInfo, result, boardId, gameComplete) {
 
     response = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/games/user/${playerName}`);
     var games = (await response.json()).games;
-    games = games.filter(g => deriveGameId(g.info.boardString.stringValue) === boardId);
+    games = games.filter(g => deriveGameId(g.info.boardString.stringValue) === boardId && g.info.winnerTeam?.stringValue === "null");
 
     // New game for match
     if (games.length === 0) {
