@@ -410,7 +410,7 @@ async function createOrUpdateGame(gameInfo, result, boardId, gameComplete) {
     // Assume at one time, only 1 active match of a certain board is happening
     // If you start a match, don't finish it, you'll be assigned it
     // matches = matches.filter(m => m.info.winnerTeam?.stringValue === "null");
-    matches = matches.filter(m => Math.abs(new Date(m.info.createdAt.timestampValue) - new Date()) <= 5 * 60 * 1000);
+    matches = matches.filter(m => Math.abs(new Date(m.info.createdAt.timestampValue) - new Date()) <= 10 * 60 * 1000); // 10 minutes
 
     // Create new game if no match found
     if (matches.length === 0) {
@@ -456,55 +456,56 @@ async function createOrUpdateGame(gameInfo, result, boardId, gameComplete) {
         await saveGame({ gameId: res.id, playerName, boardId, teamNumber }, result.winningTeam, gameComplete, token, matches.length === 1 ? matches[0] : null);
         return;
     }
+    console.error("SHOULD NOT BE HERE");
     // Game belongs somewhere
-    else {
-        const gameIds = games.map(g => g.info.id.stringValue);
-        for (const m of matches) { // There is probably only ever 1 match at this point
-            for (const id of m.info.games.arrayValue.values) {
-                if (gameIds.includes(id.stringValue)) {
-                    response = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/game/${id.stringValue}`, {
-                        method: "PATCH",
-                        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
-                        body: JSON.stringify({
-                            boardString: boardString,
-                            boardState: boardState,
-                            name: playerName,
-                            team: String(teamNumber),
-                            winningTeam: String(result.winningTeam),
-                            time: time,
-                            completedGoals: String(completedGoals),
-                            deaths: deaths,
-                        }),
-                    });
-                    const res = await response.json();
-                    console.log(`[API] PATCH response: ${response.status} ${id.stringValue}`, res);
-                    await saveGame({ gameId: id.stringValue, playerName, boardId, teamNumber }, result.winningTeam, gameComplete, token, m);
-                    return;
-                }
-            }
-        }
-    }
+    // else {
+    //     const gameIds = games.map(g => g.info.id.stringValue);
+    //     for (const m of matches) { // There is probably only ever 1 match at this point
+    //         for (const id of m.info.games.arrayValue.values) {
+    //             if (gameIds.includes(id.stringValue)) {
+    //                 response = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/game/${id.stringValue}`, {
+    //                     method: "PATCH",
+    //                     headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
+    //                     body: JSON.stringify({
+    //                         boardString: boardString,
+    //                         boardState: boardState,
+    //                         name: playerName,
+    //                         team: String(teamNumber),
+    //                         winningTeam: String(result.winningTeam),
+    //                         time: time,
+    //                         completedGoals: String(completedGoals),
+    //                         deaths: deaths,
+    //                     }),
+    //                 });
+    //                 const res = await response.json();
+    //                 console.log(`[API] PATCH response: ${response.status} ${id.stringValue}`, res);
+    //                 await saveGame({ gameId: id.stringValue, playerName, boardId, teamNumber }, result.winningTeam, gameComplete, token, m);
+    //                 return;
+    //             }
+    //         }
+    //     }
+    // }
 
-    // Game with board, but not in the current unfinished match, create new game
-    console.error("WEIRD EDGE CASE");
-    response = await fetch("https://us-central1-bingo-db-57e75.cloudfunctions.net/api/game", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
-        body: JSON.stringify({
-            boardString: boardString,
-            boardState: boardState,
-            name: playerName,
-            team: String(teamNumber),
-            winningTeam: String(result.winningTeam),
-            time: time,
-            completedGoals: String(completedGoals),
-            deaths: deaths,
-        }),
-    });
-    const res = await response.json();
-    console.log(`[API] POST response: ${response.status}`, res);
-    // Limitation: Multiple matches using same board (probably not possible, assume only 1 active match per board)
-    await saveGame({ gameId: res.id, playerName, boardId, teamNumber }, result.winningTeam, gameComplete, token, matches.length === 1 ? matches[0] : null);
+    // // Game with board, but not in the current unfinished match, create new game
+    // console.error("WEIRD EDGE CASE");
+    // response = await fetch("https://us-central1-bingo-db-57e75.cloudfunctions.net/api/game", {
+    //     method: "POST",
+    //     headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
+    //     body: JSON.stringify({
+    //         boardString: boardString,
+    //         boardState: boardState,
+    //         name: playerName,
+    //         team: String(teamNumber),
+    //         winningTeam: String(result.winningTeam),
+    //         time: time,
+    //         completedGoals: String(completedGoals),
+    //         deaths: deaths,
+    //     }),
+    // });
+    // const res = await response.json();
+    // console.log(`[API] POST response: ${response.status}`, res);
+    // // Limitation: Multiple matches using same board (probably not possible, assume only 1 active match per board)
+    // await saveGame({ gameId: res.id, playerName, boardId, teamNumber }, result.winningTeam, gameComplete, token, matches.length === 1 ? matches[0] : null);
 }
 
 async function hasGameWon(userName, boardId) {
