@@ -218,8 +218,8 @@ async function calcElo(match, token) {
     }
 }
 
-async function saveGame(gameInfo, won, gameEnded, token, match = null) {
-    const { gameId, playerName, boardId } = gameInfo;
+async function saveGame(gameInfo, winningTeam, gameEnded, token, match = null) {
+    const { gameId, playerName, boardId, teamNumber } = gameInfo;
     // var response = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/games/${gameId}`);
     // const game = { info: (await response.json()).game };
 
@@ -262,7 +262,7 @@ async function saveGame(gameInfo, won, gameEnded, token, match = null) {
         gameId: gameId,
         boardId: boardId,
     };
-    if (won) body.winnerName = playerName;
+    if (teamNumber === winningTeam) body.winnerName = playerName;
     const gameIds = match?.info.games.arrayValue.values.map(g => g.stringValue);
     if (!match) {
         // if (matches.length === 0) {
@@ -281,9 +281,9 @@ async function saveGame(gameInfo, won, gameEnded, token, match = null) {
         });
         const res = await response.json();
     }
-    if (won) { // Assume we don't save again after someone won?
-        response = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/games/${gameId}`);
-        const game = { info: (await response.json()).game };
+    if (gameEnded) { // Assume we don't save again after someone won?
+        // response = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/games/${gameId}`);
+        // const game = { info: (await response.json()).game };
         // Verify you *actually* won, game's winningTeam is set later in calcElo (this just prevents possible race condition)
         // Cannot do this actually since other games need to save once match finishes, so hopefully no race condition happens else it'll be bad
         // if (game.info.winningTeam.stringValue === game.info.team.stringValue) {
@@ -292,8 +292,7 @@ async function saveGame(gameInfo, won, gameEnded, token, match = null) {
             headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
             body: JSON.stringify({
                 boardId: boardId,
-                winnerName: playerName,
-                winnerTeam: game.info.winningTeam.stringValue,
+                winnerTeam: String(winningTeam),
             }),
         });
         const res = await response.json();
@@ -389,7 +388,7 @@ async function createOrUpdateGame(gameInfo, result, boardId, gameComplete) {
         });
         const res = await response.json();
         console.log(`[API] POST response: ${response.status}`, res);
-        await saveGame({ gameId: res.id, playerName, boardId }, teamNumber === result.winningTeam, gameComplete, token);
+        await saveGame({ gameId: res.id, playerName, boardId, teamNumber }, result.winningTeam, gameComplete, token);
         return;
     }
 
@@ -416,7 +415,7 @@ async function createOrUpdateGame(gameInfo, result, boardId, gameComplete) {
         const res = await response.json();
         console.log(`[API] POST response: ${response.status}`, res);
         // Limitation: Multiple matches using same board (probably not possible, assume only 1 active match per board)
-        await saveGame({ gameId: res.id, playerName, boardId }, teamNumber === result.winningTeam, gameComplete, token, matches.length === 1 ? matches[0] : null);
+        await saveGame({ gameId: res.id, playerName, boardId, teamNumber }, result.winningTeam, gameComplete, token, matches.length === 1 ? matches[0] : null);
         return;
     }
     // Game belongs somewhere
@@ -441,7 +440,7 @@ async function createOrUpdateGame(gameInfo, result, boardId, gameComplete) {
                     });
                     const res = await response.json();
                     console.log(`[API] PATCH response: ${response.status} ${id.stringValue}`, res);
-                    await saveGame({ gameId: id.stringValue, playerName, boardId }, teamNumber === result.winningTeam, gameComplete, token, m);
+                    await saveGame({ gameId: id.stringValue, playerName, boardId, teamNumber }, result.winningTeam, gameComplete, token, m);
                     return;
                 }
             }
@@ -467,7 +466,7 @@ async function createOrUpdateGame(gameInfo, result, boardId, gameComplete) {
     const res = await response.json();
     console.log(`[API] POST response: ${response.status}`, res);
     // Limitation: Multiple matches using same board (probably not possible, assume only 1 active match per board)
-    await saveGame({ gameId: res.id, playerName, boardId }, teamNumber === result.winningTeam, gameComplete, token, matches.length === 1 ? matches[0] : null);
+    await saveGame({ gameId: res.id, playerName, boardId, teamNumber }, result.winningTeam, gameComplete, token, matches.length === 1 ? matches[0] : null);
 }
 
 async function hasGameWon(userName, boardId) {
