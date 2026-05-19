@@ -287,15 +287,15 @@ async function saveGame(gameInfo, winningTeam, gameEnded, token, match = null) {
         // Verify you *actually* won, game's winningTeam is set later in calcElo (this just prevents possible race condition)
         // Cannot do this actually since other games need to save once match finishes, so hopefully no race condition happens else it'll be bad
         // if (game.info.winningTeam.stringValue === game.info.team.stringValue) {
-        response = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/match/${match.info.id.stringValue}`, {
-            method: "PATCH",
-            headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
-            body: JSON.stringify({
-                boardId: boardId,
-                winnerTeam: String(winningTeam),
-            }),
-        });
-        const res = await response.json();
+        // response = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/match/${match.info.id.stringValue}`, {
+        //     method: "PATCH",
+        //     headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
+        //     body: JSON.stringify({
+        //         boardId: boardId,
+        //         winnerTeam: String(winningTeam),
+        //     }),
+        // });
+        // const res = await response.json();
         // }
     }
 
@@ -344,7 +344,18 @@ async function saveGame(gameInfo, winningTeam, gameEnded, token, match = null) {
     if (gameEnded) {
         response = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/matches/${match.info.id.stringValue}`);
         match = { info: (await response.json()).match };
-        await calcElo(match, token);
+        if (match.info.winnerTeam?.stringValue === "null") {
+            response = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/match/${match.info.id.stringValue}`, {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
+                body: JSON.stringify({
+                    boardId: boardId,
+                    winnerTeam: String(winningTeam),
+                }),
+            });
+            const res = await response.json();
+            await calcElo(match, token);
+        }
     }
 }
 
@@ -363,12 +374,43 @@ async function createOrUpdateGame(gameInfo, result, boardId, gameComplete) {
     const token = data.refreshToken;
 
     const { boardString, boardState, playerName, teamNumber, time, completedGoals, deaths } = gameInfo;
+
+    response = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/games/user/${playerName}`);
+    var games = (await response.json()).games;
+    games = games.filter(g => deriveGameId(g.info.boardString.stringValue) === boardId && g.info.winningTeam?.stringValue === "null");
+
+    if (games.length !== 0) {
+        const id = games[0].info.id.stringValue;
+        response = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/game/${id.stringValue}`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
+            body: JSON.stringify({
+                boardString: boardString,
+                boardState: boardState,
+                name: playerName,
+                team: String(teamNumber),
+                winningTeam: String(result.winningTeam),
+                time: time,
+                completedGoals: String(completedGoals),
+                deaths: deaths,
+            }),
+        });
+        const res = await response.json();
+        console.log(`[API] PATCH response: ${response.status} ${id.stringValue}`, res);
+
+        response = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/matches/${games[0].info.matchId.stringValue}`);
+        const m = { info: (await response.json()).match };
+        await saveGame({ gameId: id.stringValue, playerName, boardId, teamNumber }, result.winningTeam, gameComplete, token, m);
+        return;
+    }
+
     response = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/allMatches/board/${boardId}`);
     var matches = (await response.json()).matches;
     // Assume every game has a match
     // Assume at one time, only 1 active match of a certain board is happening
     // If you start a match, don't finish it, you'll be assigned it
     // matches = matches.filter(m => m.info.winnerTeam?.stringValue === "null");
+    matches = matches.filter(m => Math.abs(new Date(m.info.createdAt.timestampValue) - new Date()) <= 5 * 60 * 1000);
 
     // Create new game if no match found
     if (matches.length === 0) {
@@ -391,10 +433,6 @@ async function createOrUpdateGame(gameInfo, result, boardId, gameComplete) {
         await saveGame({ gameId: res.id, playerName, boardId, teamNumber }, result.winningTeam, gameComplete, token);
         return;
     }
-
-    response = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/games/user/${playerName}`);
-    var games = (await response.json()).games;
-    games = games.filter(g => deriveGameId(g.info.boardString.stringValue) === boardId && g.info.winningTeam?.stringValue === "null");
 
     // New game for match
     if (games.length === 0) {
