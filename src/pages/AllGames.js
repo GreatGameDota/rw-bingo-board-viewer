@@ -208,6 +208,7 @@ class AllGames extends Component {
                                     const winningTeam = this.getGameValue(game, 'winningTeam');
                                     const time = this.getGameValue(game, 'time');
                                     const createdAt = this.getGameValue(game, 'createdAt');
+                                    const updatedAt = this.getGameValue(game, 'updatedAt');
                                     const boardState = this.getGameValue(game, 'boardState');
                                     const boardString = this.getGameValue(game, 'boardString');
                                     const matchId = this.getGameValue(game, 'matchId');
@@ -226,7 +227,9 @@ class AllGames extends Component {
                                                     <span className="text-gray-400">Goals locked: {completedGoals}</span>
                                                     {winningTeam === team ?
                                                         <span className="px-2 py-0.5 rounded bg-green-400 text-gray-900 font-medium">Won ({getTeamName(winningTeam)})</span> :
-                                                        <span className="px-2 py-0.5 rounded bg-red-400 text-gray-900 font-medium">Lost ({getTeamName(winningTeam)})</span>
+                                                        winningTeam === "null" ?
+                                                            <span className="px-2 py-0.5 rounded bg-gray-400 text-gray-900 font-semibold">ONGOING</span> :
+                                                            <span className="px-2 py-0.5 rounded bg-red-400 text-gray-900 font-medium">Lost ({getTeamName(winningTeam)})</span>
                                                     }
                                                 </div>
                                                 <span className="text-gray-400">Duration: {time}</span>
@@ -235,7 +238,7 @@ class AllGames extends Component {
                                                     <span className="text-gray-500 text-sm break-all">[{deaths}]</span>
                                                 </p>
                                                 <p className="text-gray-500 text-xs">
-                                                    {this.formatDate(createdAt)}
+                                                    {updatedAt ? this.formatDate(updatedAt) : this.formatDate(createdAt)}
                                                 </p>
                                                 <button
                                                     onClick={() => navigator.clipboard.writeText(matchId)}
