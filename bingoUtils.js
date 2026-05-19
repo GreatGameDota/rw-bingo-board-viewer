@@ -380,7 +380,7 @@ async function createOrUpdateGame(gameInfo, result, boardId, gameComplete) {
     games = games.filter(g => deriveGameId(g.info.boardString.stringValue) === boardId && g.info.winningTeam?.stringValue === "null");
 
     if (games.length !== 0) {
-        const id = games[0].info.id.stringValue;
+        const id = games[0].info.id;
         response = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/game/${id.stringValue}`, {
             method: "PATCH",
             headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
