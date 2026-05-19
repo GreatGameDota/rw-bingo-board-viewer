@@ -344,16 +344,20 @@ async function saveGame(gameInfo, winningTeam, gameEnded, token, match = null) {
     if (gameEnded) {
         response = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/matches/${match.info.id.stringValue}`);
         match = { info: (await response.json()).match };
+        var body2 = {
+            boardId: boardId,
+            winnerTeam: String(winningTeam),
+        };
+        if (teamNumber === winningTeam) body2.winnerName = playerName;
+        if (match.info.winnerTeam?.stringValue && match.info.winnerTeam.stringValue !== String(winningTeam))
+            console.log("SHOULD NEVER SEE THIS");
+        response = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/match/${match.info.id.stringValue}`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
+            body: JSON.stringify(body2),
+        });
+        const res = await response.json();
         if (match.info.winnerTeam?.stringValue === "null") {
-            response = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/match/${match.info.id.stringValue}`, {
-                method: "PATCH",
-                headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
-                body: JSON.stringify({
-                    boardId: boardId,
-                    winnerTeam: String(winningTeam),
-                }),
-            });
-            const res = await response.json();
             await calcElo(match, token);
         }
     }

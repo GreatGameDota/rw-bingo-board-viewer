@@ -1,7 +1,6 @@
 import React, { Component, Fragment } from 'react';
-import BingoCanvas from '../components/BingoCanvas';
 import { atlases } from '../lib/bingovista/bingovista';
-import { getTeamName } from '../utils/teamNames';
+import GameCard from '../components/GameCard';
 
 class Leaderboard extends Component {
     constructor(props) {
@@ -308,76 +307,12 @@ class Leaderboard extends Component {
                 return nameA.localeCompare(nameB);
             });
 
-            const renderGameCard = (game, idx) => {
-                const name = this.getGameValue(game, 'name') ?? 'Unknown';
-                const team = this.getGameValue(game, 'team');
-                const completedGoals = this.getGameValue(game, 'completedGoals') ?? 0;
-                const deaths = this.getGameValue(game, 'deaths') ?? "";
-                const winningTeam = this.getGameValue(game, 'winningTeam');
-                const time = this.getGameValue(game, 'time');
-                const createdAt = this.getGameValue(game, 'createdAt');
-                const updatedAt = this.getGameValue(game, 'updatedAt');
-                const boardState = this.getGameValue(game, 'boardState');
-                const boardString = this.getGameValue(game, 'boardString');
-                const matchId = this.getGameValue(game, 'matchId');
-
-                return (
-                    <div
-                        key={idx}
-                        className="bg-gray-800 border border-gray-700 rounded-lg flex flex-col"
-                    >
-                        <div className="flex flex-col p-4 space-y-2">
-                            <div className="flex items-center justify-between gap-2">
-                                <span className="text-white font-semibold">{name}</span>
-                                <span className="text-gray-400">{getTeamName(team)}</span>
-                            </div>
-                            <div className="flex flex-wrap items-center justify-between gap-2">
-                                <span className="text-gray-400">Goals locked: {completedGoals}</span>
-                                {winningTeam === team ?
-                                    <span className="px-2 py-0.5 rounded bg-green-400 text-gray-900 font-medium">Won ({getTeamName(winningTeam)})</span> :
-                                    winningTeam === "null" ?
-                                        <span className="px-2 py-0.5 rounded bg-gray-400 text-gray-900 font-semibold">UNFINISHED</span> :
-                                        <span className="px-2 py-0.5 rounded bg-red-400 text-gray-900 font-medium">Lost ({getTeamName(winningTeam)})</span>
-                                }
-                            </div>
-                            <span className="text-gray-400">Duration: {time}</span>
-                            <p>
-                                <span className="text-gray-400">Deaths: {deaths === "" ? 0 : deaths.split(',').length} </span>
-                                <span className="text-gray-500 text-sm break-all">[{deaths}]</span>
-                            </p>
-                            <div className="flex flex-row">
-                                <p className="w-fit text-gray-500 text-xs">
-                                    {updatedAt ? this.formatDate(updatedAt) : this.formatDate(createdAt)}
-                                </p>
-                                <button
-                                    onClick={() => navigator.clipboard.writeText(matchId)}
-                                    className="p-1 w-fit ml-auto text-gray-400 rounded hover:bg-gray-700 transition-colors"
-                                    title="Copy Match ID"
-                                >
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-5 h-5">
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 7.5V6.108c0-1.135.845-2.098 1.976-2.192.373-.03.748-.057 1.123-.08M15.75 18H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08M15.75 18.75v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5A3.375 3.375 0 0 0 6.375 7.5H5.25m11.9-3.664A2.251 2.251 0 0 0 15 2.25h-1.5a2.251 2.251 0 0 0-2.15 1.586m5.8 0c.065.21.1.433.1.664v.75h-6V4.5c0-.231.035-.454.1-.664M6.75 7.5H4.875c-.621 0-1.125.504-1.125 1.125v12c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V16.5a9 9 0 0 0-9-9Z" />
-                                    </svg>
-                                </button>
-                            </div>
-                        </div>
-                        <div className="p-4 flex justify-center bg-gray-900/50">
-                            <BingoCanvas
-                                bingoString={boardString}
-                                boardState={boardState ? boardState.split("<>") : []}
-                                team={Number(team)}
-                                size={400}
-                            />
-                        </div>
-                    </div>
-                );
-            };
-
             matchesCard = (
                 <Fragment>
                     {currentTeamGames.length > 0 && (
                         <div>
                             <div className="flex flex-col gap-4">
-                                {currentTeamGames.map((game, idx) => renderGameCard(game, `current-${idx}`))}
+                                {currentTeamGames.map((game, idx) => <GameCard game={game} idx={`current-${idx}`} type="ranked" />)}
                             </div>
                         </div>
                     )}
@@ -393,7 +328,7 @@ class Leaderboard extends Component {
                     {opponentGames.length > 0 && (
                         <div>
                             <div className="flex flex-col gap-4">
-                                {opponentGames.map((game, idx) => renderGameCard(game, `opponent-${idx}`))}
+                                {opponentGames.map((game, idx) => <GameCard game={game} idx={`opponent-${idx}`} type="ranked" />)}
                             </div>
                         </div>
                     )}
