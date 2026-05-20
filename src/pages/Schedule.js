@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { PLAYER_TO_TEAM } from '../utils/constants';
 
 class Schedule extends Component {
     constructor(props) {
@@ -84,6 +85,10 @@ class Schedule extends Component {
             wins = parseInt(this.getGameValue(this.state.team[0], 'wins'));
             gamesPlayed = parseInt(this.getGameValue(this.state.team[0], 'gamesPlayed'));
             winRate = Math.round((wins / (gamesPlayed === 0 ? 1 : gamesPlayed)) * 100);
+            var teamName = PLAYER_TO_TEAM.get(nameParts[0]);
+            for (const n of nameParts)
+                if (PLAYER_TO_TEAM.get(n) !== teamName)
+                    teamName = null;
         }
 
         const handleSearchSubmit = async (e) => {
@@ -352,11 +357,20 @@ class Schedule extends Component {
                                         <div className="flex flex-col mx-auto mb-6 min-w-[75%]">
                                             <div className="flex flex-row bg-gray-800 border border-gray-700 rounded-lg p-6 cursor-default">
                                                 <div className="flex flex-col my-auto">
-                                                    <p className="text-2xl font-bold">
-                                                        {nameParts.map((player, idx) =>
-                                                            `${player}${idx === nameParts.length - 1 ? '' : ' & '}`
-                                                        )}
-                                                    </p>
+                                                    <div className="flex flex-row items-center">
+                                                        {teamName &&
+                                                            <img
+                                                                src={`https://firebasestorage.googleapis.com/v0/b/bingo-db-57e75.firebasestorage.app/o/team_icons%2FThe ${teamName}.png?alt=media`}
+                                                                alt="Team Logo"
+                                                                className="w-5 h-5 mt-1 mr-2"
+                                                                title={`The ${teamName}`}
+                                                            />}
+                                                        <p className="text-2xl font-bold">
+                                                            {nameParts.map((player, idx) =>
+                                                                `${player}${idx === nameParts.length - 1 ? '' : ' & '}`
+                                                            )}
+                                                        </p>
+                                                    </div>
                                                     <p>
                                                         <span className={`text-xl font-bold`}>
                                                             {eloValue}
@@ -447,15 +461,28 @@ class Schedule extends Component {
                                                         const wins = parseInt(this.getGameValue(team, 'wins'));
                                                         const gamesPlayed = parseInt(this.getGameValue(team, 'gamesPlayed'));
                                                         const winRate = Math.round((wins / (gamesPlayed === 0 ? 1 : gamesPlayed)) * 100);
+                                                        var teamName = PLAYER_TO_TEAM.get(nameParts[0]);
+                                                        for (const n of nameParts)
+                                                            if (PLAYER_TO_TEAM.get(n) !== teamName)
+                                                                teamName = null;
 
                                                         return (
                                                             <div key={this.getGameValue(team, 'id')} className="bg-gray-800 border border-gray-700 rounded-lg p-6">
                                                                 <div className="mb-2 flex flex-col my-auto">
-                                                                    <p className="text-2xl font-bold">
-                                                                        {nameParts.map((player, idx) =>
-                                                                            `${player}${idx === nameParts.length - 1 ? '' : ' & '}`
-                                                                        )}
-                                                                    </p>
+                                                                    <div className="flex flex-row items-center">
+                                                                        {teamName &&
+                                                                            <img
+                                                                                src={`https://firebasestorage.googleapis.com/v0/b/bingo-db-57e75.firebasestorage.app/o/team_icons%2FThe ${teamName}.png?alt=media`}
+                                                                                alt="Team Logo"
+                                                                                className="w-5 h-5 mt-1 mr-2"
+                                                                                title={`The ${teamName}`}
+                                                                            />}
+                                                                        <p className="text-2xl font-bold">
+                                                                            {nameParts.map((player, idx) =>
+                                                                                `${player}${idx === nameParts.length - 1 ? '' : ' & '}`
+                                                                            )}
+                                                                        </p>
+                                                                    </div>
                                                                     <p>
                                                                         <span className={`text-xl font-bold`}>
                                                                             {eloValue}
