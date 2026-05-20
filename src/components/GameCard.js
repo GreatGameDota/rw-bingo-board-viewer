@@ -1,5 +1,5 @@
 import BingoCanvas from '../components/BingoCanvas';
-import { getTeamName } from '../utils/teamNames';
+import { getTeamName, PLAYER_TO_TEAM } from '../utils/constants';
 
 const GameCard = ({ game, idx, type }) => {
     const getGameValue = (obj, key) => {
@@ -37,7 +37,16 @@ const GameCard = ({ game, idx, type }) => {
         >
             <div className={`${type === "ranked" ? "flex flex-col p-4 space-y-2" : "flex flex-col lg:w-1/3 p-4 border-r border-gray-700 gap-2"}`}>
                 <div className="flex items-center justify-between gap-2">
-                    <span className="text-white font-semibold">{name}</span>
+                    <div className="flex flex-row justify-center items-center">
+                        <span className="text-white font-semibold mr-2">{name}</span>
+                        {PLAYER_TO_TEAM.get(name) &&
+                            <img
+                                src={`https://firebasestorage.googleapis.com/v0/b/bingo-db-57e75.firebasestorage.app/o/team_icons%2FThe ${PLAYER_TO_TEAM.get(name)}.png?alt=media`}
+                                alt="Team Logo"
+                                className="w-5 h-5 mt-1"
+                                title={`The ${PLAYER_TO_TEAM.get(name)}`}
+                            />}
+                    </div>
                     <span className="text-gray-400">{getTeamName(team)}</span>
                 </div>
                 <div className="flex flex-wrap items-center justify-between gap-2">

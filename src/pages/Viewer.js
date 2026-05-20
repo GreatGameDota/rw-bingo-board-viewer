@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import BingoCanvas from "../components/BingoCanvas";
 import { atlases } from '../lib/bingovista/bingovista';
 import { getLiveSocketService } from "../live/liveSocketService";
-import { TEAM_NAMES } from "../utils/teamNames";
+import { TEAM_NAMES } from "../utils/constants";
 
 class Viewer extends Component {
     constructor(props) {

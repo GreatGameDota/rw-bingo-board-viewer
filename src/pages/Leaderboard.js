@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import { atlases } from '../lib/bingovista/bingovista';
 import GameCard from '../components/GameCard';
+import { PLAYER_TO_TEAM } from '../utils/constants';
 
 class Leaderboard extends Component {
     constructor(props) {
@@ -279,6 +280,10 @@ class Leaderboard extends Component {
         const selectedTeamWins = parseInt(this.getGameValue(selectedTeam, 'wins'));
         const selectedTeamGamesPlayed = parseInt(this.getGameValue(selectedTeam, 'gamesPlayed'));
         const selectedTeamWinRate = Math.round((selectedTeamWins / (selectedTeamGamesPlayed === 0 ? 1 : selectedTeamGamesPlayed)) * 100);
+        var selectedTeamName = selectedTeamNames.length !== 0 ? PLAYER_TO_TEAM.get(selectedTeamNames[0]) : null;
+        for (const n of selectedTeamNames)
+            if (PLAYER_TO_TEAM.get(n) !== selectedTeamName)
+                selectedTeamName = null;
         var cutoffFirst = false, cutoffEnd = false;
         var matchesCard = null;
 
@@ -373,6 +378,10 @@ class Leaderboard extends Component {
                                 const showCutoffEnd = cutoffFirst && !cutoffEnd && this.getGameValue(team, 'gamesPlayed') !== "0";
                                 if (showCutoffFirst) cutoffFirst = true;
                                 if (showCutoffEnd) cutoffEnd = true;
+                                var teamName = PLAYER_TO_TEAM.get(nameParts[0]);
+                                for (const n of nameParts)
+                                    if (PLAYER_TO_TEAM.get(n) !== teamName)
+                                        teamName = null;
 
                                 return (
                                     <div key={index}>
@@ -386,11 +395,20 @@ class Leaderboard extends Component {
                                                     <p className="text-2xl font-semibold">{index + 1}</p>
                                                 </div>
                                                 <div className="flex flex-col my-auto">
-                                                    <p className="text-2xl font-bold">
-                                                        {nameParts.map((player, idx) =>
-                                                            `${player}${idx === nameParts.length - 1 ? '' : ' & '}`
-                                                        )}
-                                                    </p>
+                                                    <div className="flex flex-row items-center">
+                                                        {teamName &&
+                                                            <img
+                                                                src={`https://firebasestorage.googleapis.com/v0/b/bingo-db-57e75.firebasestorage.app/o/team_icons%2FThe ${teamName}.png?alt=media`}
+                                                                alt="Team Logo"
+                                                                className="w-5 h-5 mt-1 mr-2"
+                                                                title={`The ${teamName}`}
+                                                            />}
+                                                        <p className="text-2xl font-bold">
+                                                            {nameParts.map((player, idx) =>
+                                                                `${player}${idx === nameParts.length - 1 ? '' : ' & '}`
+                                                            )}
+                                                        </p>
+                                                    </div>
                                                     <p>
                                                         <span
                                                             className={`text-xl font-bold
@@ -426,11 +444,20 @@ class Leaderboard extends Component {
                         <div className="absolute inset-y-0 right-0 w-full md:w-3/4 bg-gray-800 border-l border-gray-700 shadow-lg z-50 drawer-panel flex flex-col">
                             <div className="flex items-center gap-2 p-6 bg-gray-800 border-b border-gray-700 flex-shrink-0">
                                 <div className="flex flex-col my-auto cursor-default">
-                                    <h2 className="text-2xl font-bold text-white">
-                                        {selectedTeamNames.map((player, idx) =>
-                                            `${player}${idx === selectedTeamNames.length - 1 ? '' : ' & '}`
-                                        )}
-                                    </h2>
+                                    <div className="flex flex-row items-center">
+                                        {selectedTeamName &&
+                                            <img
+                                                src={`https://firebasestorage.googleapis.com/v0/b/bingo-db-57e75.firebasestorage.app/o/team_icons%2FThe ${selectedTeamName}.png?alt=media`}
+                                                alt="Team Logo"
+                                                className="w-5 h-5 mt-1 mr-2"
+                                                title={`The ${selectedTeamName}`}
+                                            />}
+                                        <h2 className="text-2xl font-bold text-white">
+                                            {selectedTeamNames.map((player, idx) =>
+                                                `${player}${idx === selectedTeamNames.length - 1 ? '' : ' & '}`
+                                            )}
+                                        </h2>
+                                    </div>
                                     <p>
                                         <span className={`text-xl font-bold`}>
                                             {selectedTeamEloValue}
@@ -466,6 +493,11 @@ class Leaderboard extends Component {
                                         <div className="flex flex-col">
                                             {this.state.drawerMatches.map((match, idx) => {
                                                 const isSelected = this.state.selectedMatch === idx;
+                                                var selectedTeamNames = match.opponent.split(" & ");
+                                                var selectedTeamName = selectedTeamNames.length !== 0 ? PLAYER_TO_TEAM.get(selectedTeamNames[0]) : null;
+                                                for (const n of selectedTeamNames)
+                                                    if (PLAYER_TO_TEAM.get(n) !== selectedTeamName)
+                                                        selectedTeamName = null;
                                                 return (
                                                     <div
                                                         key={idx}
@@ -473,7 +505,16 @@ class Leaderboard extends Component {
                                                         className={`p-4 flex flex-row border-b border-gray-700 cursor-pointer transition-colors ${isSelected ? 'bg-gray-700' : 'hover:bg-gray-700'}`}
                                                     >
                                                         <div>
-                                                            <p className="text-white font-semibold">{match.opponent || 'Unknown'}</p>
+                                                            <div className="flex flex-row items-center">
+                                                                <p className="text-white font-semibold mr-2">{match.opponent || 'Unknown'}</p>
+                                                                {selectedTeamName &&
+                                                                    <img
+                                                                        src={`https://firebasestorage.googleapis.com/v0/b/bingo-db-57e75.firebasestorage.app/o/team_icons%2FThe ${selectedTeamName}.png?alt=media`}
+                                                                        alt="Team Logo"
+                                                                        className="w-4 h-4 mt-[2px]"
+                                                                        title={`The ${selectedTeamName}`}
+                                                                    />}
+                                                            </div>
                                                             <p className="text-sm text-gray-400">{this.formatDate(match.info.createdAt.timestampValue)}</p>
                                                         </div>
                                                         <p className={`ml-auto my-auto font-semibold ${match.won ? 'text-green-400' : 'text-red-400'}`}>

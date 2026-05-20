@@ -356,7 +356,7 @@ async function saveGame(gameInfo, winningTeam, gameEnded, token, match = null) {
             headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
             body: JSON.stringify(body2),
         });
-        const res = await response.json();
+        res = await response.json();
         if (match.info.winnerTeam?.stringValue === "null") {
             await calcElo(match, token);
         }
