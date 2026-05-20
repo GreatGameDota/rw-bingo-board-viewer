@@ -42,6 +42,30 @@ PLAYER_TO_TEAM.set("TimaFrolov", "Pupil");
 PLAYER_TO_TEAM.set("Supervillain Joe", "Gambler");
 PLAYER_TO_TEAM.set("Tactical Ferret", "Gambler");
 
+export const CHARACTER_TO_IMG = new Map();
+CHARACTER_TO_IMG.set("White", "surv");
+CHARACTER_TO_IMG.set("Yellow", "monk");
+CHARACTER_TO_IMG.set("Red", "hunt");
+CHARACTER_TO_IMG.set("Gourmand", "gourm");
+CHARACTER_TO_IMG.set("Saint", "saint");
+CHARACTER_TO_IMG.set("Spear", "spear");
+CHARACTER_TO_IMG.set("Rivulet", "riv");
+CHARACTER_TO_IMG.set("Artificer", "arti");
+CHARACTER_TO_IMG.set("Sofanthiel", "inv");
+CHARACTER_TO_IMG.set("Watcher", "wa");
+
+export const CHARACTER_TO_NAME = new Map();
+CHARACTER_TO_NAME.set("White", "Survior");
+CHARACTER_TO_NAME.set("Yellow", "Monk");
+CHARACTER_TO_NAME.set("Red", "Hunter");
+CHARACTER_TO_NAME.set("Gourmand", "Gourmand");
+CHARACTER_TO_NAME.set("Saint", "Saint");
+CHARACTER_TO_NAME.set("Spear", "Spearmaster");
+CHARACTER_TO_NAME.set("Rivulet", "Rivulet");
+CHARACTER_TO_NAME.set("Artificer", "Artificer");
+CHARACTER_TO_NAME.set("Sofanthiel", "Inv");
+CHARACTER_TO_NAME.set("Watcher", "Watcher");
+
 export function getTeamName(teamIndex) {
     if (teamIndex === undefined || teamIndex === null) return null;
     const i = Number(teamIndex);

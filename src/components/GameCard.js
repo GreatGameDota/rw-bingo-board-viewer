@@ -1,5 +1,5 @@
 import BingoCanvas from '../components/BingoCanvas';
-import { getTeamName, PLAYER_TO_TEAM } from '../utils/constants';
+import { CHARACTER_TO_IMG, CHARACTER_TO_NAME, getTeamName, PLAYER_TO_TEAM } from '../utils/constants';
 
 const GameCard = ({ game, idx, type }) => {
     const getGameValue = (obj, key) => {
@@ -78,13 +78,21 @@ const GameCard = ({ game, idx, type }) => {
                     </button>
                 </div>
             </div>
-            <div className={`p-4 flex justify-center bg-gray-900/50 ${type === "list" ? "flex-1" : ""}`}>
-                <BingoCanvas
-                    bingoString={boardString}
-                    boardState={boardState ? boardState.split("<>") : []}
-                    team={Number(team)}
-                    size={type === "ranked" ? 400 : 500}
+            <div className={`p-4 relative bg-gray-900/50 ${type === "list" ? "lg:w-2/3" : ""}`}>
+                <img
+                    src={`https://firebasestorage.googleapis.com/v0/b/bingo-db-57e75.firebasestorage.app/o/emotes%2F${CHARACTER_TO_IMG.get(boardString.split(";")[0])}_thingie.png?alt=media`}
+                    alt="Board cat icon"
+                    className="w-8 h-8 absolute bottom-0 left-1"
+                    title={`${CHARACTER_TO_NAME.get(boardString.split(";")[0])} board`}
                 />
+                <div className="w-fit mx-auto">
+                    <BingoCanvas
+                        bingoString={boardString}
+                        boardState={boardState ? boardState.split("<>") : []}
+                        team={Number(team)}
+                        size={type === "ranked" ? 400 : 500}
+                    />
+                </div>
             </div>
         </div>
     );
