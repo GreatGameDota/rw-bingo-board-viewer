@@ -84,6 +84,7 @@ async function handleMessage(ws, message, sessionId) {
     handleGameData(sessionId, message, ws);
 
     if (!client.spectator) {
+        // TODO: Can maybe move this back into on message
         wss.clients.forEach((c) => {
             var _client = clients.get(c);
             if (_client !== client && _client.spectator) {

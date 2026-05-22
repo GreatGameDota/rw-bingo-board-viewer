@@ -29,7 +29,7 @@ class BingoCanvas extends Component {
         };
         const canvasSize = this.props.size || 700;
         var transpose = true;
-        const colors = ["#e60e0e66", "#0080ff66", "#33ff0066", "#ff990066", "#ff00ff66", "#00e8e666", "#5e5e6f66", "#4d00ff66", "#ffffff66"];
+        const colors = ["#e60e0e66", "#0080ff66", "#33ff0066", "#ff990066", "#ff00ff66", "#00e8e666", "#5e5e6f66", "#5833ca66", "#ff788366", "#c7d9ff66", "#ffffff66"];
 
         var s = this.props.bingoString;
         const parts = s.split(";");

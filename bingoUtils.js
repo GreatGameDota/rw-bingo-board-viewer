@@ -349,7 +349,7 @@ async function saveGame(gameInfo, winningTeam, gameEnded, token, match = null) {
             winnerTeam: String(winningTeam),
         };
         if (teamNumber === winningTeam) body2.winnerName = playerName;
-        if (match.info.winnerTeam?.stringValue && match.info.winnerTeam.stringValue !== String(winningTeam))
+        if (match.info.winnerTeam?.stringValue !== "null" && match.info.winnerTeam?.stringValue !== String(winningTeam))
             console.log("SHOULD NEVER SEE THIS");
         response = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/match/${match.info.id.stringValue}`, {
             method: "PATCH",
