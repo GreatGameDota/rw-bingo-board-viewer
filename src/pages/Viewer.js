@@ -150,18 +150,26 @@ class Viewer extends Component {
         ));
 
         return (
-            <div className="flex-grow flex flex-col w-full">
-                <div className="w-full h-16 overflow-hidden">
+            <div className="flex-grow flex flex-col w-full bg-[url(https://firebasestorage.googleapis.com/v0/b/bingo-db-57e75.firebasestorage.app/o/WatcherCoral_RavenMind2.png?alt=media)] bg-cover bg-center" style={{ boxSizing: "border-box", boxShadow: "inset 0 0 50px 50px rgba(0,0,0,0.5)" }}>
+                {/* <div className="w-full h-16 overflow-hidden">
                     <img
                         src="https://firebasestorage.googleapis.com/v0/b/bingo-db-57e75.firebasestorage.app/o/watcherthumbnailfull.png?alt=media"
                         alt="Bingo Board Banner"
                         className="w-full h-full object-cover"
                     />
-                </div>
+                </div> */}
 
                 <div className="flex-grow p-6 flex flex-col items-center">
+                    <div style={{ fontFamily: 'RainWorldRodondo', fontSize: '154px' }} className="bg-gradient-to-r from-gray-500 via-gray-50 to-gray-500 bg-clip-text text-transparent animate-gradient bg-[length:300%_300%]">
+                        Rain world
+                    </div>
+                    <img
+                        src="https://firebasestorage.googleapis.com/v0/b/bingo-db-57e75.firebasestorage.app/o/Bingo_Explosion21.png?alt=media"
+                        alt="Bingo Board Banner"
+                        className="w-[50%] h-[10rem] object-contain mb-8"
+                    />
                     <div className="max-w-5xl mb-6 px-6 py-2">
-                        <div className="flex items-center mx-auto">
+                        <div className="flex items-center mx-auto bg-white/10 backdrop-blur-md rounded-md shadow-lg py-2 px-4">
                             <span className="font-semibold text-white">Want to track your games? Get the mod on</span>
                             <a
                                 href="https://steamcommunity.com/sharedfiles/filedetails/?id=3562250272"
@@ -177,7 +185,7 @@ class Viewer extends Component {
                         </div>
                     </div>
 
-                    <div className="w-full max-w-5xl bg-gray-800 border border-gray-700 rounded-lg p-6">
+                    <div className="w-full max-w-5xl bg-gray-800 border border-gray-700 rounded-lg p-6 mb-6">
                         <div className="flex flex-col lg:flex-row gap-6 h-full">
                             <div className="lg:w-1/3 flex flex-col">
                                 <h2 className="text-lg font-bold text-green-400 mb-4">Active Games ({this.state.clients.size})</h2>
@@ -200,6 +208,19 @@ class Viewer extends Component {
                                     />
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                    <div className="max-w-5xl mb-6 px-6 py-2">
+                        <div className="flex items-center mx-auto bg-white/10 backdrop-blur-md rounded-md shadow-lg py-2 px-4">
+                            <span className="font-semibold text-white">Background art by</span>
+                            <a
+                                href="https://linktr.ee/ravenmind_artist"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex ml-1 text-blue-400 hover:text-blue-300 transition-colors duration-200 underline font-bold"
+                            >
+                                Raven Mind Artist
+                            </a>
                         </div>
                     </div>
                 </div>

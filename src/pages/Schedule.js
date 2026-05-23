@@ -277,7 +277,7 @@ class Schedule extends Component {
                     />
                 </div>
                 <div className="p-6 max-w-7xl mx-auto">
-                    <h1 className="text-4xl font-bold text-white mb-4">Find Your Team</h1>
+                    <h1 className="text-4xl font-bold text-white mb-4" style={{ fontFamily: 'RainWorldRodondo', fontSize: '48px' }}>Find Your Team</h1>
                     <p className="mb-4">Enter the <span className="font-bold">Steam</span> username for each player on your team.</p>
 
                     {loading ? (
@@ -385,7 +385,7 @@ class Schedule extends Component {
                                             </div>
                                         </div>
                                         <hr className="my-8 border-gray-700" />
-                                        <h1 className="mb-4 text-4xl font-bold text-white">Team Availability</h1>
+                                        <h1 className="mb-4 text-4xl font-bold text-white" style={{ fontFamily: 'RainWorldRodondo', fontSize: '48px' }}>Team Availability</h1>
                                         <div className="mb-4 flex flex-col">
                                             <span>Click blocks to mark when your team is free.</span>
                                             <span>Each block covers a 2-hour window.</span>
@@ -424,7 +424,7 @@ class Schedule extends Component {
                                             </button>
                                         </div>
                                         <hr className="my-8 border-gray-700" />
-                                        <h1 className="mb-4 text-4xl font-bold text-white">Schedule Match</h1>
+                                        <h1 className="mb-4 text-4xl font-bold text-white" style={{ fontFamily: 'RainWorldRodondo', fontSize: '48px' }}>Schedule Match</h1>
                                         <div className="mb-4 flex flex-col">
                                             <span>Search for opponents with matching availability and in your elo range.</span>
                                         </div>

@@ -25,7 +25,7 @@ class BingoCanvas extends Component {
             border: 2,
             color: "#ffffff",
             background: "#020204",
-            font: "600 10pt \"Segoe UI\", sans-serif"
+            font: "16px rainworldMenu"
         };
         const canvasSize = this.props.size || 700;
         var transpose = true;

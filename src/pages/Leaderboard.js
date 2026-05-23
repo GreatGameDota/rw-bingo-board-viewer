@@ -345,13 +345,13 @@ class Leaderboard extends Component {
             <div className="flex-grow">
                 <div className="w-full h-32 overflow-hidden">
                     <img
-                        src="https://firebasestorage.googleapis.com/v0/b/bingo-db-57e75.firebasestorage.app/o/watcherthumbnailfull.png?alt=media"
+                        src="https://firebasestorage.googleapis.com/v0/b/bingo-db-57e75.firebasestorage.app/o/bingoflat.png?alt=media"
                         alt="Bingo Board Banner"
                         className="w-full h-full object-cover"
                     />
                 </div>
                 <div className="p-6 max-w-7xl mx-auto">
-                    <h1 className="text-4xl font-bold text-white mb-8">Leaderboard</h1>
+                    <h1 className="text-4xl font-bold text-white mb-8" style={{ fontFamily: 'RainWorldRodondo', fontSize: '48px' }}>Leaderboard</h1>
 
                     {loading ? (
                         <div className="flex items-center justify-center py-24">

@@ -1,5 +1,5 @@
 import BingoCanvas from '../components/BingoCanvas';
-import { CHARACTER_TO_IMG, CHARACTER_TO_NAME, getTeamName, PLAYER_TO_TEAM } from '../utils/constants';
+import { CHARACTER_TO_BG, CHARACTER_TO_IMG, CHARACTER_TO_NAME, getTeamName, PLAYER_TO_TEAM } from '../utils/constants';
 
 const GameCard = ({ game, idx, type }) => {
     const getGameValue = (obj, key) => {
@@ -79,6 +79,13 @@ const GameCard = ({ game, idx, type }) => {
                 </div>
             </div>
             <div className={`p-4 relative bg-gray-900/50 ${type === "list" ? "lg:w-2/3" : ""}`}>
+                <div className="absolute inset-0 bg-cover bg-center opacity-20"
+                    style={{
+                        backgroundImage: `url(https://firebasestorage.googleapis.com/v0/b/bingo-db-57e75.firebasestorage.app/o/${encodeURIComponent(CHARACTER_TO_BG.get(boardString.split(";")[0]))}.png?alt=media)`,
+                        boxSizing: "border-box",
+                        boxShadow: "inset 0 0 50px 50px rgba(0,0,0,0.9)"
+                    }}
+                ></div>
                 <img
                     src={`https://firebasestorage.googleapis.com/v0/b/bingo-db-57e75.firebasestorage.app/o/emotes%2F${CHARACTER_TO_IMG.get(boardString.split(";")[0])}_thingie.png?alt=media`}
                     alt="Board cat icon"

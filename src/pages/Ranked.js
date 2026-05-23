@@ -351,7 +351,7 @@ class Ranked extends Component {
                     />
                 </div>
                 <div className="p-6 max-w-7xl mx-auto">
-                    <h1 className="text-4xl font-bold text-white mb-8">Ranked</h1>
+                    <h1 className="text-4xl font-bold text-white mb-8" style={{ fontFamily: 'RainWorldRodondo', fontSize: '48px' }}>Ranked</h1>
 
                     {loading ? (
                         <div className="flex items-center justify-center py-24">

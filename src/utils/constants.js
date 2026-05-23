@@ -66,6 +66,18 @@ CHARACTER_TO_NAME.set("Artificer", "Artificer");
 CHARACTER_TO_NAME.set("Sofanthiel", "Inv");
 CHARACTER_TO_NAME.set("Watcher", "Watcher");
 
+export const CHARACTER_TO_BG = new Map();
+CHARACTER_TO_BG.set("White", "landscape - su - flat");
+CHARACTER_TO_BG.set("Yellow", "yellow intro b - flat");
+CHARACTER_TO_BG.set("Red", "landscape - lf - flat");
+CHARACTER_TO_BG.set("Gourmand", "landscape - oe - flat");
+CHARACTER_TO_BG.set("Saint", "landscape - cl - flat");
+CHARACTER_TO_BG.set("Spear", "landscape - dm - flat");
+CHARACTER_TO_BG.set("Rivulet", "landscape - ms - flat");
+CHARACTER_TO_BG.set("Artificer", "landscape - lc - flat");
+CHARACTER_TO_BG.set("Sofanthiel", "");
+CHARACTER_TO_BG.set("Watcher", "outro prince 3-1 - flat");
+
 export function getTeamName(teamIndex) {
     if (teamIndex === undefined || teamIndex === null) return null;
     const i = Number(teamIndex);

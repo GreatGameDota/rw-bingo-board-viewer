@@ -174,10 +174,13 @@ async function calcElo(match, token) {
         const winK = parseInt(team1.info.gamesPlayed?.integerValue || 0) < 2 ? 80 : 32;
         const loseK = parseInt(team2.info.gamesPlayed?.integerValue || 0) < 2 ? 80 : 32;
 
-        const expectedWin = 1 / (1 + Math.pow(10, (parseFloat(team2.info.elo?.stringValue || 1200) - parseFloat(team1.info.elo?.stringValue || 1200)) / 400));
+        var rankedElo1 = parseFloat(team1.info.elo?.stringValue || 1200);
+        var rankedElo2 = parseFloat(team2.info.elo?.stringValue || 1200);
 
-        var elo1 = parseFloat(team1.info.elo?.stringValue || 1200) + winK * (1 - expectedWin);
-        var elo2 = parseFloat(team2.info.elo?.stringValue || 1200) + loseK * (0 - (1 - expectedWin));
+        const expectedWin = 1 / (1 + Math.pow(10, (rankedElo2 - rankedElo1) / 400));
+
+        var elo1 = rankedElo1 + winK * (1 - expectedWin);
+        var elo2 = rankedElo2 + loseK * (0 - (1 - expectedWin));
 
         response = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/team22/${team1.info.id.stringValue}`, {
             method: "PATCH",
@@ -215,6 +218,8 @@ async function calcElo(match, token) {
                 ranked2: match.info.games.arrayValue.values.length === 4,
             }),
         });
+
+        console.log(`Match ranked successfully: <W ${winners.join(", ")} ${rankedElo1} -> ${elo1}> <L ${losers.join(", ")} ${rankedElo2} -> ${elo2}>`);
     }
 }
 
@@ -262,7 +267,7 @@ async function saveGame(gameInfo, winningTeam, gameEnded, token, match = null) {
         gameId: gameId,
         boardId: boardId,
     };
-    if (teamNumber === winningTeam) body.winnerName = playerName;
+    // if (teamNumber === winningTeam) body.winnerName = playerName;
     const gameIds = match?.info.games.arrayValue.values.map(g => g.stringValue);
     if (!match) {
         // if (matches.length === 0) {
