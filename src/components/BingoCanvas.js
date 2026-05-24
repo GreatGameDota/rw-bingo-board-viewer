@@ -4,11 +4,17 @@ import { CHALLENGES, BingoEnum_CharToDisplayText, drawSquare } from "../lib/bing
 class BingoCanvas extends Component {
     constructor(props) {
         super(props);
+        this.state = {
+            fontsLoaded: false
+        };
         this.canvasRef = React.createRef();
         this.tooltipRef = React.createRef();
     }
 
     componentDidMount() {
+        document.fonts.ready.then(() => {
+            this.setState({ fontsLoaded: true });
+        });
         this.renderCanvas();
     }
 
@@ -25,7 +31,7 @@ class BingoCanvas extends Component {
             border: 2,
             color: "#ffffff",
             background: "#020204",
-            font: "16px rainworldMenu"
+            font: "16px rainworldMenu, Segoe UI, sans-serif"
         };
         const canvasSize = this.props.size || 700;
         var transpose = true;

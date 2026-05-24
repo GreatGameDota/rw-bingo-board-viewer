@@ -402,7 +402,7 @@ class Leaderboard extends Component {
                                                 <div class="absolute inset-0 pointer-events-none bg-[linear-gradient(to_right,rgba(243,176,65,0.2),transparent_40%)]"></div>}
                                             <div className="flex flex-row relative z-1">
                                                 <div className="min-w-16 pl-4 mr-8">
-                                                    <p style={{fontFamily: "RainWorldRodondo", fontSize: "36px"}}>{index + 1}</p>
+                                                    <p style={{ fontFamily: "RainWorldRodondo", fontSize: "36px" }}>{index + 1}</p>
                                                 </div>
                                                 <div className="flex flex-col my-auto">
                                                     <div className="flex flex-row items-center">
