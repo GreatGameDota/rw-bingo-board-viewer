@@ -2,6 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+  font-family: "rainworldMenu";
+  src: url("assets/RainWorldSegoeUISmall.ttf");
+}
+
+@font-face {
+  font-family: "RainWorldRodondo";
+  src: url("assets/Rodondo.otf");
+}
+
 html,
 body {
   margin: 0;
@@ -28,6 +38,7 @@ a {
   from {
     transform: translateX(100%);
   }
+
   to {
     transform: translateX(0);
   }
@@ -37,6 +48,7 @@ a {
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }

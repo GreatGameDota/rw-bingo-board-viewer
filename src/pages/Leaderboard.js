@@ -384,15 +384,25 @@ class Leaderboard extends Component {
                                         teamName = null;
 
                                 return (
-                                    <div key={index}>
+                                    <div key={index} className="relative">
                                         {(showCutoffFirst || showCutoffEnd) && <hr className="mb-6 border-t-2 border-dotted border-gray-400" />}
                                         <div
                                             onClick={() => this.handleTeamClick(team)}
-                                            className="bg-gray-800 border border-gray-700 rounded-lg p-6 cursor-pointer hover:bg-[#2b3646] transition-colors duration-200"
+                                            className="relative bg-gray-800 border border-gray-700 rounded-lg p-6 cursor-pointer hover:bg-[#2b3646] transition-colors duration-200 overflow-hidden"
+                                            title={teamName ? `The ${teamName}` : ""}
                                         >
-                                            <div className="flex flex-row">
-                                                <div className="min-w-16 p-4 mr-8">
-                                                    <p className="text-2xl font-semibold">{index + 1}</p>
+                                            {teamName &&
+                                                <img
+                                                    src={`https://firebasestorage.googleapis.com/v0/b/bingo-db-57e75.firebasestorage.app/o/team_icons%2FThe ${teamName}.png?alt=media`}
+                                                    alt="Team Logo"
+                                                    className="absolute h-[164px] z-0 -left-16 top-0 opacity-40"
+                                                    style={{ translate: "0 -15%" }}
+                                                />}
+                                            {teamName &&
+                                                <div class="absolute inset-0 pointer-events-none bg-[linear-gradient(to_right,rgba(243,176,65,0.2),transparent_40%)]"></div>}
+                                            <div className="flex flex-row relative z-1">
+                                                <div className="min-w-16 pl-4 mr-8">
+                                                    <p style={{fontFamily: "RainWorldRodondo", fontSize: "36px"}}>{index + 1}</p>
                                                 </div>
                                                 <div className="flex flex-col my-auto">
                                                     <div className="flex flex-row items-center">
@@ -401,7 +411,6 @@ class Leaderboard extends Component {
                                                                 src={`https://firebasestorage.googleapis.com/v0/b/bingo-db-57e75.firebasestorage.app/o/team_icons%2FThe ${teamName}.png?alt=media`}
                                                                 alt="Team Logo"
                                                                 className="w-5 h-5 mt-1 mr-2"
-                                                                title={`The ${teamName}`}
                                                             />}
                                                         <p className="text-2xl font-bold">
                                                             {nameParts.map((player, idx) =>
@@ -527,7 +536,7 @@ class Leaderboard extends Component {
                                     )}
                                 </div>
 
-                                <div className="flex-1 overflow-y-auto p-6">
+                                <div className="flex-1 overflow-y-auto p-6 bg-gray-950">
                                     {this.state.matchGamesLoading ? (
                                         <div className="flex items-center justify-center py-12">
                                             <p className="text-white text-lg">Loading games...</p>

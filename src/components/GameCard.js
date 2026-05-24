@@ -33,7 +33,7 @@ const GameCard = ({ game, idx, type }) => {
     return (
         <div
             key={idx}
-            className={`bg-gray-800 border border-gray-700 rounded-lg flex ${type === "ranked" ? "flex-col" : "flex-row"}`}
+            className={`bg-gray-800 border border-gray-700 rounded-lg flex ${type === "ranked" ? "flex-col" : "flex-col md:flex-row"}`}
         >
             <div className={`${type === "ranked" ? "flex flex-col p-4 space-y-2" : "flex flex-col lg:w-1/3 p-4 border-r border-gray-700 gap-2"}`}>
                 <div className="flex items-center justify-between gap-2">
@@ -79,7 +79,7 @@ const GameCard = ({ game, idx, type }) => {
                 </div>
             </div>
             <div className={`p-4 relative bg-gray-900/50 ${type === "list" ? "lg:w-2/3" : ""}`}>
-                <div className="absolute inset-0 bg-cover bg-center opacity-20"
+                <div className="absolute inset-0 bg-cover bg-center opacity-10"
                     style={{
                         backgroundImage: `url(https://firebasestorage.googleapis.com/v0/b/bingo-db-57e75.firebasestorage.app/o/${encodeURIComponent(CHARACTER_TO_BG.get(boardString.split(";")[0]))}.png?alt=media)`,
                         boxSizing: "border-box",

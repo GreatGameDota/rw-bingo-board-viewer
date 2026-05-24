@@ -160,7 +160,7 @@ class Viewer extends Component {
                 </div> */}
 
                 <div className="flex-grow p-6 flex flex-col items-center">
-                    <div style={{ fontFamily: 'RainWorldRodondo', fontSize: '154px' }} className="bg-gradient-to-r from-gray-500 via-gray-50 to-gray-500 bg-clip-text text-transparent animate-gradient bg-[length:300%_300%]">
+                    <div style={{ fontFamily: 'RainWorldRodondo', fontSize: '154px' }} className="bg-gradient-to-r from-gray-500 via-gray-50 to-gray-500 bg-clip-text text-transparent animate-gradient bg-[length:300%_300%] cursor-default text-center">
                         Rain world
                     </div>
                     <img

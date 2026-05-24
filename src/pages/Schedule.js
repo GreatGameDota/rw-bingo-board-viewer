@@ -291,7 +291,7 @@ class Schedule extends Component {
                     ) : (
                         <div className="flex flex-col gap-6">
                             <form onSubmit={handleSearchSubmit} className="m-auto relative flex flex-col gap-4">
-                                <div className="flex items-center gap-4">
+                                <div className="flex flex-col md:flex-row items-center gap-4">
                                     Player 1:
                                     <input
                                         type="search"
