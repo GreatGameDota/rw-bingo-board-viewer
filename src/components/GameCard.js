@@ -70,9 +70,10 @@ const GameCard = ({ game, idx, type }) => {
                     </p>
                     <button
                         onClick={() => navigator.clipboard.writeText(matchId)}
-                        className={`p-1 w-fit ${type === "ranked" ? "ml-auto" : "mt-auto"} text-gray-400 rounded hover:bg-gray-700 transition-colors`}
+                        className={`flex flex-row text-xs p-1 w-fit ${type === "ranked" ? "ml-auto" : "mt-auto"} text-gray-400 rounded hover:bg-gray-700 transition-colors`}
                         title="Copy Match ID"
                     >
+                        <span className="mr-1 mt-1">Match ID</span>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-5 h-5">
                             <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 7.5V6.108c0-1.135.845-2.098 1.976-2.192.373-.03.748-.057 1.123-.08M15.75 18H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08M15.75 18.75v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5A3.375 3.375 0 0 0 6.375 7.5H5.25m11.9-3.664A2.251 2.251 0 0 0 15 2.25h-1.5a2.251 2.251 0 0 0-2.15 1.586m5.8 0c.065.21.1.433.1.664v.75h-6V4.5c0-.231.035-.454.1-.664M6.75 7.5H4.875c-.621 0-1.125.504-1.125 1.125v12c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V16.5a9 9 0 0 0-9-9Z" />
                         </svg>
@@ -87,12 +88,20 @@ const GameCard = ({ game, idx, type }) => {
                         boxShadow: "inset 0 0 50px 50px rgba(0,0,0,0.9)"
                     }}
                 />
-                <img
-                    src={`https://firebasestorage.googleapis.com/v0/b/bingo-db-57e75.firebasestorage.app/o/emotes%2F${CHARACTER_TO_IMG.get(boardString.split(";")[0])}_thingie${wm ? "_wm" : ""}.png?alt=media`}
-                    alt="Board cat icon"
-                    className="w-8 h-8 absolute bottom-0 left-1"
-                    title={`${CHARACTER_TO_NAME.get(boardString.split(";")[0])} board`}
-                />
+                <div className="absolute bottom-0 left-1">
+                    <div className="flex flex-row">
+                        <img
+                            src={`https://firebasestorage.googleapis.com/v0/b/bingo-db-57e75.firebasestorage.app/o/emotes%2F${CHARACTER_TO_IMG.get(boardString.split(";")[0])}_thingie${wm ? "_wm" : ""}.png?alt=media`}
+                            alt="Board cat icon"
+                            className="w-8 h-8 mr-2"
+                            title={`${CHARACTER_TO_NAME.get(boardString.split(";")[0])} board`}
+                        />
+                        {wm && <img
+                            src={`https://firebasestorage.googleapis.com/v0/b/bingo-db-57e75.firebasestorage.app/o/uispriteswatcher22.png?alt=media`}
+                            alt="Board cat icon"
+                            className="w-8 h-8 border border-[#5f1cd3] rounded-sm p-[2px]" />}
+                    </div>
+                </div>
                 <div className="w-fit mx-auto">
                     <BingoCanvas
                         bingoString={boardString}

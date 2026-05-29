@@ -81,15 +81,16 @@ class Credits extends Component {
                         <Link href="https://www.youtube.com/channel/UCrdXLtM8H3u41r475efFuFg">Youtube</Link>
                     </div>
 
-                    <p><span style={{ fontFamily: 'RainWorldRodondo', fontSize: '36px' }}>Nanoferret</span> <span>@nanoferret</span></p>
+                    <p><span style={{ fontFamily: 'RainWorldRodondo', fontSize: '36px' }}>Glottal</span> <span>@GlottalVT</span></p>
                     <div className="mb-4 ml-8 flex flex-col">
-                        <p>Bingo event artist, apart of the home page art slideshow</p>
-                        <Link href="https://nanoferret-comms.carrd.co/">Carrd</Link>
+                        <p>Creator of Bingo team icons</p>
+                        <Link href="https://x.com/GlottalVT">Twitter</Link>
                     </div>
 
-                    <p><span style={{ fontFamily: 'RainWorldRodondo', fontSize: '36px' }}>unmatchedpowerofthesun</span> <span>@unmatchedpowerofthesun</span></p>
+                    <p><span style={{ fontFamily: 'RainWorldRodondo', fontSize: '36px' }}>Eris!</span> <span>@orbitingeris</span></p>
                     <div className="mb-4 ml-8 flex flex-col">
-                        <p>Bingo event artist, apart of the home page art slideshow</p>
+                        <p>Creator of Bingo team icons</p>
+                        <Link href="https://bsky.app/profile/orbitingeris.bsky.social">Bluesky</Link>
                     </div>
 
                     <hr className="mt-4" />

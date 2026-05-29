@@ -206,7 +206,7 @@ class AllGames extends Component {
                         <div>
                             {this.renderPagination()}
                             <div className="flex flex-col gap-6">
-                                {games.map((game, index) => <GameCard game={game} idx={index} type="list" />)}
+                                {games.map((game, index) => <GameCard key={index} game={game} idx={index} type="list" />)}
                             </div>
                             {this.renderPagination()}
                         </div>

@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 const Footer = () => {
     const [memberCount, setMemberCount] = useState(0);
-    const [iconLink, setIconLink] = useState("");
+    const [iconLink, setIconLink] = useState("https://cdn.discordapp.com/icons/995807773138890853/db405fdc9087cfbee2fb0d5f16af50a0.png");
 
     useEffect(() => {
         const fetchData = async () => {
@@ -24,7 +24,7 @@ const Footer = () => {
         <footer className="bg-gray-900 border-t border-gray-700">
             <div className="max-w-full mx-auto px-6 py-6">
                 <div className="flex flex-col md:flex-row justify-between items-center">
-                    <div className="text-gray-400 text-sm mb-4 md:mb-0">
+                    <div className="text-gray-400 text-sm mb-4 md:mb-0 cursor-default">
                         <p>&copy; {new Date().getFullYear()} GreatGameDota</p>
                     </div>
                     <a href="https://discord.gg/D3Yy3sYx2v"
