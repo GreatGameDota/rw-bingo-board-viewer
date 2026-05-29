@@ -345,7 +345,7 @@ class Leaderboard extends Component {
             <div className="flex-grow">
                 <div className="w-full h-32 overflow-hidden">
                     <img
-                        src="https://firebasestorage.googleapis.com/v0/b/bingo-db-57e75.firebasestorage.app/o/bingoflat.png?alt=media"
+                        src="https://firebasestorage.googleapis.com/v0/b/bingo-db-57e75.firebasestorage.app/o/basethumbnailfull.png?alt=media"
                         alt="Bingo Board Banner"
                         className="w-full h-full object-cover"
                     />

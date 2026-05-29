@@ -6,7 +6,9 @@ export const TEAM_NAMES = [
     'Pink',
     'Cyan',
     'Black',
-    'Hurricane',
+    'Indigo',
+    'Peach',
+    'Blizzard',
     'Board Viewer'
 ];
 
@@ -77,6 +79,18 @@ CHARACTER_TO_BG.set("Rivulet", "landscape - ms - flat");
 CHARACTER_TO_BG.set("Artificer", "landscape - lc - flat");
 CHARACTER_TO_BG.set("Sofanthiel", "");
 CHARACTER_TO_BG.set("Watcher", "outro prince 3-1 - flat");
+
+export const CHARACTER_TO_BG2 = new Map();
+CHARACTER_TO_BG2.set("White", "landscape - wpga - flat");
+CHARACTER_TO_BG2.set("Yellow", "landscape - waua - flat");
+CHARACTER_TO_BG2.set("Red", "landscape - wbla - flat");
+CHARACTER_TO_BG2.set("Gourmand", "landscape - wskb - flat");
+CHARACTER_TO_BG2.set("Saint", "landscape - wpta - flat");
+CHARACTER_TO_BG2.set("Spear", "landscape - ward - flat");
+CHARACTER_TO_BG2.set("Rivulet", "landscape - wrra - flat");
+CHARACTER_TO_BG2.set("Artificer", "landscape - ware - flat");
+CHARACTER_TO_BG2.set("Sofanthiel", "");
+CHARACTER_TO_BG2.set("Watcher", "outro prince 3-1 - flat");
 
 export function getTeamName(teamIndex) {
     if (teamIndex === undefined || teamIndex === null) return null;

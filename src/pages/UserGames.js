@@ -125,7 +125,7 @@ class UserGames extends Component {
         return (
             <div className="flex-grow">
                 <div className="p-6 max-w-7xl mx-auto">
-                    <h1 className="text-4xl font-bold text-white mb-8">{decodeURIComponent(userName || '')}</h1>
+                    <h1 className="text-4xl font-bold text-white mb-8" style={{ fontFamily: 'RainWorldRodondo', fontSize: '48px' }}>{decodeURIComponent(userName || '')}</h1>
 
                     {loading ? (
                         <div className="flex items-center justify-center py-24">

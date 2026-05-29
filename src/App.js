@@ -7,6 +7,7 @@ import UserGames from "./pages/UserGames";
 import Schedule from "./pages/Schedule";
 import Leaderboard from "./pages/Leaderboard";
 import Ranked from "./pages/Ranked";
+import Credits from "./pages/Credits";
 
 function UserGamesRoute() {
     const { userName } = useParams();
@@ -26,6 +27,7 @@ function App() {
                     <Route path="/rw-bingo-board-viewer/ranked" element={<Ranked />} />
                     <Route path="/rw-bingo-board-viewer/all-games" element={<AllGames />} />
                     <Route path="/rw-bingo-board-viewer/user/:userName" element={<UserGamesRoute />} />
+                    <Route path="/rw-bingo-board-viewer/credits" element={<Credits />} />
                 </Routes>
                 <Footer />
             </div>

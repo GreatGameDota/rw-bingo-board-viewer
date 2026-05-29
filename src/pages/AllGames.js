@@ -2,6 +2,12 @@ import React, { Component } from 'react';
 import { atlases } from '../lib/bingovista/bingovista';
 import GameCard from '../components/GameCard';
 
+const IMAGES = [
+    "https://firebasestorage.googleapis.com/v0/b/bingo-db-57e75.firebasestorage.app/o/regions.png?alt=media",
+    "https://firebasestorage.googleapis.com/v0/b/bingo-db-57e75.firebasestorage.app/o/regions2.png?alt=media",
+    "https://firebasestorage.googleapis.com/v0/b/bingo-db-57e75.firebasestorage.app/o/regions3.png?alt=media",
+];
+
 class AllGames extends Component {
     constructor(props) {
         super(props);
@@ -11,6 +17,7 @@ class AllGames extends Component {
             error: null,
             page: 0,
             total: 0,
+            currentIndex: Math.floor(Math.random() * IMAGES.length),
         };
     }
 
@@ -168,13 +175,13 @@ class AllGames extends Component {
     }
 
     render() {
-        const { games, total, loading, error } = this.state;
+        const { games, total, loading, error, currentIndex } = this.state;
 
         return (
             <div className="flex-grow">
                 <div className="w-full h-32 overflow-hidden">
                     <img
-                        src="https://firebasestorage.googleapis.com/v0/b/bingo-db-57e75.firebasestorage.app/o/regions.png?alt=media"
+                        src={IMAGES[currentIndex]}
                         alt="Bingo Board Banner"
                         className="w-full h-full object-cover"
                     />

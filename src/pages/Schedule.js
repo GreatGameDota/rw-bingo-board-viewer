@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { PLAYER_TO_TEAM } from '../utils/constants';
+import { Link } from 'react-router-dom';
 
 class Schedule extends Component {
     constructor(props) {
@@ -268,15 +269,15 @@ class Schedule extends Component {
         };
 
         return (
-            <div className="flex-grow">
-                <div className="w-full h-32 overflow-hidden">
+            <div className="flex-grow flex flex-col w-full bg-[url(https://firebasestorage.googleapis.com/v0/b/bingo-db-57e75.firebasestorage.app/o/bingoart.png?alt=media)] bg-fixed bg-cover bg-center" style={{ boxShadow: "inset 0 0 50px 50px rgba(0,0,0,0.5)" }}>
+                {/* <div className="w-full h-32 overflow-hidden">
                     <img
                         src="https://firebasestorage.googleapis.com/v0/b/bingo-db-57e75.firebasestorage.app/o/watcherthumbnailfull.png?alt=media"
                         alt="Bingo Board Banner"
                         className="w-full h-full object-cover"
                     />
-                </div>
-                <div className="p-6 max-w-7xl mx-auto">
+                </div> */}
+                <div className="my-16 p-8 min-w-[75%] mx-auto bg-gray-700/95 backdrop-blur-md rounded-md shadow-lg">
                     <h1 className="text-4xl font-bold text-white mb-4" style={{ fontFamily: 'RainWorldRodondo', fontSize: '48px' }}>Find Your Team</h1>
                     <p className="mb-4">Enter the <span className="font-bold">Steam</span> username for each player on your team.</p>
 
@@ -407,7 +408,7 @@ class Schedule extends Component {
                                                                         <td key={`${day}-${h}`} className="p-1">
                                                                             <button
                                                                                 onClick={() => this.toggleBlock(day, h)}
-                                                                                className={`w-full rounded p-2 ${active ? "bg-blue-500 opacity-90" : "bg-gray-700 opacity-40"} transition-colors duration-100`}
+                                                                                className={`w-full rounded p-2 ${active ? "bg-blue-500" : "bg-gray-900"} transition-colors duration-100`}
                                                                             >
                                                                                 {this.hourToLocal(h)}
                                                                             </button>
@@ -507,6 +508,18 @@ class Schedule extends Component {
                             )}
                         </div>
                     )}
+                </div>
+
+                <div className="mx-auto mt-auto mb-6 px-6 py-2">
+                    <div className="flex items-center mx-auto bg-white/10 backdrop-blur-md rounded-md shadow-lg py-2 px-4">
+                        <span className="font-semibold text-white">Background art by</span>
+                        <Link
+                            to="/rw-bingo-board-viewer/credits"
+                            className="flex ml-1 text-blue-400 hover:text-blue-300 transition-colors duration-200 underline font-bold"
+                        >
+                            WILD
+                        </Link>
+                    </div>
                 </div>
             </div>
         );
