@@ -297,9 +297,9 @@ const GameCard = ({ game, idx, type }) => {
                     _challenges += replaced + separator;
                 }
                 else {
-                    const replaced = challenges[next].replace(/<-?\d+>|<-?\d+$/g, m => {
+                    const replaced = challenges[next].replace(/[<~]-?\d+>|[<~]-?\d+$/g, m => {
                         const inner = m.endsWith(">") ? m.substring(1, m.length - 1) : m.substring(1);
-                        return !isNaN(parseInt(inner, 10)) ? (m.endsWith(">") ? "<0>" : "<0") : m;
+                        return !isNaN(parseInt(inner, 10)) ? (m.endsWith(">") ? m[0] + "0>" : m[0] + "0") : m;
                     });
                     _challenges += replaced + separator;
                 }
