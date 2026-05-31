@@ -18,6 +18,279 @@ const GameCard = ({ game, idx, type }) => {
         return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
     }
 
+    const extractChallengeNames = (text) => {
+        const lastSemicolon = text.lastIndexOf(';');
+        const challenges = text.substring(lastSemicolon + 1).split("bChG");
+
+        const size = Math.round(Math.sqrt(challenges.length));
+        let next = 0;
+        let _challenges = "";
+
+        for (let j = 0; j < size; j++) {
+            for (let i = 0; i < size; i++) {
+                const array11 = challenges[next].split("~");
+                const type = array11[0];
+                var replaced;
+
+                const separator = next === challenges.length - 1 ? "" : "bChG";
+
+                if (type === "BingoDontUseItemChallenge" || type === "WatcherBingoDontUseItemChallenge") {
+                    const segs = challenges[next].split("><");
+                    segs[2] = "0";
+                    segs[3] = "0";
+                    replaced = segs.join("><");
+                    _challenges += replaced + separator;
+                } else if (type === "BingoVistaChallenge") {
+                    const segs = challenges[next].split("><");
+                    segs[4] = "0";
+                    segs[5] = "0";
+                    replaced = segs.join("><");
+                    _challenges += replaced + separator;
+                } else if (type === "BingoBombTollChallenge" || type === "WatcherBingoBombTollChallenge") {
+                    const segs = challenges[next].split("><");
+                    if (segs.length === 4) {
+                        segs[2] = "0";
+                        segs[3] = "0";
+                    } else {
+                        segs[3] = "0";
+                        segs[5] = "empty";
+                        segs[6] = "0";
+                        segs[7] = "0";
+                    }
+                    replaced = segs.join("><");
+                    _challenges += replaced + separator;
+                } else if (type === "BingoCollectPearlChallenge" || type === "WatcherBingoCollectPearlChallenge") {
+                    const segs = challenges[next].split("><");
+                    segs[2] = "0";
+                    segs[4] = "0";
+                    segs[5] = "0";
+                    segs[6] = "";
+                    replaced = segs.join("><");
+                    _challenges += replaced + separator;
+                } else if (type === "BingoCreatureGateChallenge") {
+                    const segs = challenges[next].split("><");
+                    segs[1] = "0";
+                    segs[3] = "empty";
+                    segs[4] = "0";
+                    segs[5] = "0";
+                    replaced = segs.join("><");
+                    _challenges += replaced + separator;
+                } else if (type === "BingoEatChallenge" || type === "WatcherBingoEatChallenge") {
+                    const segs = challenges[next].split("><");
+                    segs[1] = "0";
+                    segs[segs.length === 6 ? 4 : 5] = "0";
+                    segs[segs.length === 6 ? 5 : 6] = "0";
+                    replaced = segs.join("><");
+                    _challenges += replaced + separator;
+                } else if (type === "BingoEchoChallenge") {
+                    const segs = challenges[next].split("><");
+                    if (segs.length === 4) {
+                        segs[2] = "0";
+                        segs[3] = "0";
+                    } else {
+                        segs[3] = "0";
+                        segs[5] = "0";
+                        segs[6] = "0";
+                        segs[7] = "";
+                    }
+                    replaced = segs.join("><");
+                    _challenges += replaced + separator;
+                } else if (type === "BingoHatchNoodleChallenge") {
+                    const segs = challenges[next].split("><");
+                    if (segs.length === 5) {
+                        segs[0] = "0";
+                        segs[3] = "0";
+                        segs[4] = "0";
+                    } else {
+                        segs[3] = "0";
+                        segs[5] = "0";
+                        segs[6] = "0";
+                        segs[7] = "";
+                    }
+                    replaced = segs.join("><");
+                    _challenges += replaced + separator;
+                } else if (type === "BingoItemHoardChallenge") {
+                    const segs = challenges[next].split("><");
+                    if (segs.length === 4) {
+                        segs[2] = "0";
+                        segs[3] = "0";
+                    } else if (segs.length === 7) {
+                        segs[1] = "0";
+                        segs[4] = "0";
+                        segs[5] = "0";
+                        segs[6] = "";
+                    } else {
+                        segs[1] = "0";
+                        segs[5] = "0";
+                        segs[6] = "0";
+                        segs[7] = "";
+                    }
+                    replaced = segs.join("><");
+                    _challenges += replaced + separator;
+                } else if (type === "BingoKarmaFlowerChallenge") {
+                    const segs = challenges[next].split("><");
+                    if (segs.length === 4) {
+                        segs[0] = "0";
+                        segs[2] = "0";
+                        segs[3] = "0";
+                    } else {
+                        segs[3] = "0";
+                        segs[5] = "0";
+                        segs[6] = "0";
+                        segs[7] = "";
+                    }
+                    replaced = segs.join("><");
+                    _challenges += replaced + separator;
+                } else if (type === "BingoKillChallenge") {
+                    const segs = challenges[next].split("><");
+                    segs[3] = "0";
+                    segs[9] = "0";
+                    segs[10] = "0";
+                    replaced = segs.join("><");
+                    _challenges += replaced + separator;
+                } else if (type === "BingoMaulTypesChallenge") {
+                    const segs = challenges[next].split("><");
+                    segs[0] = "0";
+                    segs[2] = "0";
+                    segs[3] = "0";
+                    segs[4] = "";
+                    replaced = segs.join("><");
+                    _challenges += replaced + separator;
+                } else if (type === "BingoPearlHoardChallenge") {
+                    const segs = challenges[next].split("><");
+                    if (segs.length === 5) {
+                        segs[3] = "0";
+                        segs[4] = "0";
+                    } else {
+                        segs[2] = "0";
+                        segs[5] = "0";
+                        segs[6] = "0";
+                        segs[7] = "";
+                    }
+                    replaced = segs.join("><");
+                    _challenges += replaced + separator;
+                } else if (type === "BingoPinChallenge") {
+                    const segs = challenges[next].split("><");
+                    segs[0] = "0";
+                    segs[3] = "";
+                    segs[5] = "0";
+                    segs[6] = "0";
+                    replaced = segs.join("><");
+                    _challenges += replaced + separator;
+                } else if (type === "BingoPopcornChallenge") {
+                    const segs = challenges[next].split("><");
+                    if (segs.length === 4) {
+                        segs[0] = "0";
+                        segs[2] = "0";
+                        segs[3] = "0";
+                    } else {
+                        segs[3] = "0";
+                        segs[5] = "";
+                        segs[6] = "0";
+                        segs[7] = "0";
+                    }
+                    replaced = segs.join("><");
+                    _challenges += replaced + separator;
+                } else if (type === "BingoTameChallenge" || type === "WatcherBingoTameChallenge") {
+                    const segs = challenges[next].split("><");
+                    if (segs.length === 3) {
+                        segs[1] = "0";
+                        segs[2] = "0";
+                    } else if (segs.length === 7) {
+                        segs[2] = "0";
+                        segs[4] = "0";
+                        segs[5] = "0";
+                        segs[6] = "";
+                    } else {
+                        segs[2] = "0";
+                        segs[4] = "0";
+                        segs[5] = "0";
+                        segs[6] = "";
+                        segs[7] = "";
+                    }
+                    replaced = segs.join("><");
+                    _challenges += replaced + separator;
+                } else if (type === "BingoTradeTradedChallenge") {
+                    const segs = challenges[next].split("><");
+                    segs[0] = "0";
+                    segs[2] = "empty";
+                    segs[3] = "0";
+                    segs[4] = "0";
+                    replaced = segs.join("><");
+                    _challenges += replaced + separator;
+                } else if (type === "BingoTransportChallenge") {
+                    const segs = challenges[next].split("><");
+                    segs[3] = "";
+                    segs[4] = "0";
+                    segs[5] = "0";
+                    replaced = segs.join("><");
+                    _challenges += replaced + separator;
+                } else if (type === "BingoGourmandCrushChallenge") {
+                    const segs = challenges[next].split("><");
+                    segs[0] = "0";
+                    segs[2] = "0";
+                    segs[3] = "0";
+                    segs[4] = "";
+                    replaced = segs.join("><");
+                    _challenges += replaced + separator;
+                } else if (type === "BingoLickChallenge") {
+                    const segs = challenges[next].split("><");
+                    segs[0] = "0";
+                    segs[2] = "0";
+                    segs[3] = "0";
+                    segs[4] = "";
+                    replaced = segs.join("><");
+                    _challenges += replaced + separator;
+                } else if (type === "WatcherBingoSpinningTopChallenge") {
+                    const segs = challenges[next].split("><");
+                    segs[3] = "0";
+                    segs[5] = "0";
+                    segs[6] = "0";
+                    segs[7] = "";
+                    replaced = segs.join("><");
+                    _challenges += replaced + separator;
+                } else if (type === "WatcherBingoOpenMelonsChallenge") {
+                    const segs = challenges[next].split("><");
+                    if (segs.length === 4) {
+                        segs[0] = "0";
+                        segs[2] = "0";
+                        segs[3] = "0";
+                    } else if (segs.length === 5) {
+                        segs[0] = "0";
+                        segs[3] = "0";
+                        segs[4] = "0";
+                    } else {
+                        segs[3] = "0";
+                        segs[5] = "";
+                        segs[6] = "0";
+                        segs[7] = "0";
+                    }
+                    replaced = segs.join("><");
+                    _challenges += replaced + separator;
+                } else if (type === "WatcherBingoCreaturePortalChallenge") {
+                    const segs = challenges[next].split("><");
+                    segs[1] = "0";
+                    segs[3] = "empty";
+                    segs[4] = "0";
+                    segs[5] = "0";
+                    replaced = segs.join("><");
+                    _challenges += replaced + separator;
+                }
+                else {
+                    const replaced = challenges[next].replace(/<-?\d+>|<-?\d+$/g, m => {
+                        const inner = m.endsWith(">") ? m.substring(1, m.length - 1) : m.substring(1);
+                        return !isNaN(parseInt(inner, 10)) ? (m.endsWith(">") ? "<0>" : "<0") : m;
+                    });
+                    _challenges += replaced + separator;
+                }
+
+                next++;
+            }
+        }
+
+        return text.substring(0, lastSemicolon + 1) + _challenges;
+    }
+
     const name = getGameValue(game, 'name') ?? 'Unknown';
     const team = getGameValue(game, 'team');
     const completedGoals = getGameValue(game, 'completedGoals') ?? 0;
@@ -93,14 +366,26 @@ const GameCard = ({ game, idx, type }) => {
                         <img
                             src={`https://firebasestorage.googleapis.com/v0/b/bingo-db-57e75.firebasestorage.app/o/emotes%2F${CHARACTER_TO_IMG.get(boardString.split(";")[0])}_thingie${wm ? "_wm" : ""}.png?alt=media`}
                             alt="Board cat icon"
-                            className="w-8 h-8 mr-2"
+                            className="w-8 h-8 mr-1"
                             title={`${CHARACTER_TO_NAME.get(boardString.split(";")[0])} board`}
                         />
                         {wm && <img
                             src={`https://firebasestorage.googleapis.com/v0/b/bingo-db-57e75.firebasestorage.app/o/uispriteswatcher22.png?alt=media`}
                             alt="Board cat icon"
-                            className="w-8 h-8 border border-[#5f1cd3] rounded-sm p-[2px]" />}
+                            className="w-8 h-8 pb-[2px]" />}
                     </div>
+                </div>
+                <div className="absolute bottom-0 right-0">
+                    <button
+                        onClick={() => navigator.clipboard.writeText(extractChallengeNames(boardString))}
+                        className={`flex flex-row text-xs p-1 w-fit ${type === "ranked" ? "ml-auto" : "mt-auto"} text-gray-400 rounded hover:bg-gray-700 transition-colors`}
+                        title="Copy Board String"
+                    >
+                        <span className="mr-1 mt-1">Board String</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-5 h-5">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 7.5V6.108c0-1.135.845-2.098 1.976-2.192.373-.03.748-.057 1.123-.08M15.75 18H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08M15.75 18.75v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5A3.375 3.375 0 0 0 6.375 7.5H5.25m11.9-3.664A2.251 2.251 0 0 0 15 2.25h-1.5a2.251 2.251 0 0 0-2.15 1.586m5.8 0c.065.21.1.433.1.664v.75h-6V4.5c0-.231.035-.454.1-.664M6.75 7.5H4.875c-.621 0-1.125.504-1.125 1.125v12c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V16.5a9 9 0 0 0-9-9Z" />
+                        </svg>
+                    </button>
                 </div>
                 <div className="w-fit mx-auto">
                     <BingoCanvas
