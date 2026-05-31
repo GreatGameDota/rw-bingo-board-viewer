@@ -317,7 +317,7 @@ class Leaderboard extends Component {
                     {currentTeamGames.length > 0 && (
                         <div>
                             <div className="flex flex-col gap-4">
-                                {currentTeamGames.map((game, idx) => <GameCard game={game} idx={`current-${idx}`} type="ranked" />)}
+                                {currentTeamGames.map((game, idx) => <GameCard key={`current-${idx}`} game={game} idx={`current-${idx}`} type="ranked" />)}
                             </div>
                         </div>
                     )}
@@ -333,7 +333,7 @@ class Leaderboard extends Component {
                     {opponentGames.length > 0 && (
                         <div>
                             <div className="flex flex-col gap-4">
-                                {opponentGames.map((game, idx) => <GameCard game={game} idx={`opponent-${idx}`} type="ranked" />)}
+                                {opponentGames.map((game, idx) => <GameCard key={`opponent-${idx}`} game={game} idx={`opponent-${idx}`} type="ranked" />)}
                             </div>
                         </div>
                     )}
@@ -399,7 +399,7 @@ class Leaderboard extends Component {
                                                     style={{ translate: "0 -15%" }}
                                                 />}
                                             {teamName &&
-                                                <div class="absolute inset-0 pointer-events-none bg-[linear-gradient(to_right,rgba(243,176,65,0.2),transparent_40%)]"></div>}
+                                                <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(to_right,rgba(243,176,65,0.2),transparent_40%)]"></div>}
                                             <div className="flex flex-row relative z-1">
                                                 <div className="min-w-16 pl-4 mr-8">
                                                     <p style={{ fontFamily: "RainWorldRodondo", fontSize: "36px" }}>{index + 1}</p>

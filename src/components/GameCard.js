@@ -98,7 +98,9 @@ const GameCard = ({ game, idx, type }) => {
                 } else if (type === "BingoHatchNoodleChallenge") {
                     const segs = challenges[next].split("><");
                     if (segs.length === 5) {
-                        segs[0] = "0";
+                        const segs2 = segs[0].split("~");
+                        segs2[1] = "0";
+                        segs[0] = segs2.join("~");
                         segs[3] = "0";
                         segs[4] = "0";
                     } else {
@@ -130,7 +132,9 @@ const GameCard = ({ game, idx, type }) => {
                 } else if (type === "BingoKarmaFlowerChallenge") {
                     const segs = challenges[next].split("><");
                     if (segs.length === 4) {
-                        segs[0] = "0";
+                        const segs2 = segs[0].split("~");
+                        segs2[1] = "0";
+                        segs[0] = segs2.join("~");
                         segs[2] = "0";
                         segs[3] = "0";
                     } else {
@@ -150,7 +154,9 @@ const GameCard = ({ game, idx, type }) => {
                     _challenges += replaced + separator;
                 } else if (type === "BingoMaulTypesChallenge") {
                     const segs = challenges[next].split("><");
-                    segs[0] = "0";
+                    const segs2 = segs[0].split("~");
+                    segs2[1] = "0";
+                    segs[0] = segs2.join("~");
                     segs[2] = "0";
                     segs[3] = "0";
                     segs[4] = "";
@@ -171,7 +177,9 @@ const GameCard = ({ game, idx, type }) => {
                     _challenges += replaced + separator;
                 } else if (type === "BingoPinChallenge") {
                     const segs = challenges[next].split("><");
-                    segs[0] = "0";
+                    const segs2 = segs[0].split("~");
+                    segs2[1] = "0";
+                    segs[0] = segs2.join("~");
                     segs[3] = "";
                     segs[5] = "0";
                     segs[6] = "0";
@@ -180,7 +188,9 @@ const GameCard = ({ game, idx, type }) => {
                 } else if (type === "BingoPopcornChallenge") {
                     const segs = challenges[next].split("><");
                     if (segs.length === 4) {
-                        segs[0] = "0";
+                        const segs2 = segs[0].split("~");
+                        segs2[1] = "0";
+                        segs[0] = segs2.join("~");
                         segs[2] = "0";
                         segs[3] = "0";
                     } else {
@@ -212,7 +222,9 @@ const GameCard = ({ game, idx, type }) => {
                     _challenges += replaced + separator;
                 } else if (type === "BingoTradeTradedChallenge") {
                     const segs = challenges[next].split("><");
-                    segs[0] = "0";
+                    const segs2 = segs[0].split("~");
+                    segs2[1] = "0";
+                    segs[0] = segs2.join("~");
                     segs[2] = "empty";
                     segs[3] = "0";
                     segs[4] = "0";
@@ -227,7 +239,9 @@ const GameCard = ({ game, idx, type }) => {
                     _challenges += replaced + separator;
                 } else if (type === "BingoGourmandCrushChallenge") {
                     const segs = challenges[next].split("><");
-                    segs[0] = "0";
+                    const segs2 = segs[0].split("~");
+                    segs2[1] = "0";
+                    segs[0] = segs2.join("~");
                     segs[2] = "0";
                     segs[3] = "0";
                     segs[4] = "";
@@ -235,7 +249,9 @@ const GameCard = ({ game, idx, type }) => {
                     _challenges += replaced + separator;
                 } else if (type === "BingoLickChallenge") {
                     const segs = challenges[next].split("><");
-                    segs[0] = "0";
+                    const segs2 = segs[0].split("~");
+                    segs2[1] = "0";
+                    segs[0] = segs2.join("~");
                     segs[2] = "0";
                     segs[3] = "0";
                     segs[4] = "";
@@ -252,11 +268,15 @@ const GameCard = ({ game, idx, type }) => {
                 } else if (type === "WatcherBingoOpenMelonsChallenge") {
                     const segs = challenges[next].split("><");
                     if (segs.length === 4) {
-                        segs[0] = "0";
+                        const segs2 = segs[0].split("~");
+                        segs2[1] = "0";
+                        segs[0] = segs2.join("~");
                         segs[2] = "0";
                         segs[3] = "0";
                     } else if (segs.length === 5) {
-                        segs[0] = "0";
+                        const segs2 = segs[0].split("~");
+                        segs2[1] = "0";
+                        segs[0] = segs2.join("~");
                         segs[3] = "0";
                         segs[4] = "0";
                     } else {
