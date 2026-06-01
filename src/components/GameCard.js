@@ -139,9 +139,9 @@ const GameCard = ({ game, idx, type }) => {
                         segs[3] = "0";
                     } else {
                         segs[3] = "0";
-                        segs[5] = "0";
+                        segs[5] = "";
                         segs[6] = "0";
-                        segs[7] = "";
+                        segs[7] = "0";
                     }
                     replaced = segs.join("><");
                     _challenges += replaced + separator;
