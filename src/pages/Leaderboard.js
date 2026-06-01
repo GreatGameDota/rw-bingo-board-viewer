@@ -352,6 +352,7 @@ class Leaderboard extends Component {
                 </div>
                 <div className="p-6 max-w-7xl mx-auto">
                     <h1 className="text-4xl font-bold text-white mb-8" style={{ fontFamily: 'RainWorldRodondo', fontSize: '48px' }}>Leaderboard</h1>
+                    <p className="mb-8">Click on a team to view their matches.</p>
 
                     {loading ? (
                         <div className="flex items-center justify-center py-24">

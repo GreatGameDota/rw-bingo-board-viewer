@@ -36,9 +36,22 @@ class Credits extends Component {
 
                     <p><span style={{ fontFamily: 'RainWorldRodondo', fontSize: '36px' }}>shrub</span> <span>@shrubfromtomorrow</span></p>
                     <div className="mb-4 ml-8 flex flex-col">
-                        <p>Maker of Bingo logo assets and main developer of the <Link href="https://steamcommunity.com/sharedfiles/filedetails/?id=3441764924">Bingo mod</Link>.</p>
+                        <p>Maker of Bingo logo assets and lead developer of the <Link href="https://steamcommunity.com/sharedfiles/filedetails/?id=3441764924">Bingo mod</Link>.</p>
                         <Link href="https://www.twitch.tv/shrubfromtomorrow">Twitch</Link>
                         <Link href="https://www.youtube.com/channel/UCHnYWAEcd17omBMB0Z4wlyg">Youtube</Link>
+                    </div>
+
+                    <p><span style={{ fontFamily: 'RainWorldRodondo', fontSize: '36px' }}>Nacu</span> <span>@nacu</span></p>
+                    <div className="mb-4 ml-8 flex flex-col">
+                        <p>Creator of the Bingo mod</p>
+                    </div>
+
+                    <p><span style={{ fontFamily: 'RainWorldRodondo', fontSize: '36px' }}>Iced</span> <span>@iced37</span></p>
+                    <div className="mb-4 ml-8 flex flex-col">
+                        <p>Producer of the Bingo mod</p>
+                        <Link href="https://www.twitch.tv/iced37">Twitch</Link>
+                        <Link href="https://www.youtube.com/channel/UCp1rwfSOKE3H1y2FZVWIdpQ">Youtube</Link>
+                        <Link href="https://bsky.app/profile/fartoocold.bsky.social">Bluesky</Link>
                     </div>
 
                     <p><span style={{ fontFamily: 'RainWorldRodondo', fontSize: '36px' }}>Ken</span> <span>@glamnet</span></p>
@@ -50,7 +63,7 @@ class Credits extends Component {
 
                     <p><span style={{ fontFamily: 'RainWorldRodondo', fontSize: '36px' }}>Saren</span> <span>@saren.exe</span></p>
                     <div className="mb-4 ml-8 flex flex-col">
-                        <p>Creator of the survivor Bingo menu art and apart of the home page art slideshow</p>
+                        <p>Events artist, creator of the survivor Bingo menu art and apart of the home page art slideshow</p>
                         <Link href="https://www.twitch.tv/saren">Twitch</Link>
                         <Link href="https://bsky.app/profile/sarenstone.com">Bluesky</Link>
                         <Link href="http://sarenstone.com/">Website</Link>
@@ -59,12 +72,13 @@ class Credits extends Component {
                     <p><span style={{ fontFamily: 'RainWorldRodondo', fontSize: '36px' }}>AnnoyingFlower</span> <span>@annoying_flower</span></p>
                     <div className="mb-4 ml-8 flex flex-col">
                         <p>Creator of the Watcher Bingo menu art</p>
+                        <Link href="https://annoyingflower.carrd.co/">Carrd</Link>
                         <Link href="https://x.com/annoying_flower">Twitter</Link>
                     </div>
 
                     <p><span style={{ fontFamily: 'RainWorldRodondo', fontSize: '36px' }}>WILD</span> <span>@wildslugcat</span></p>
                     <div className="mb-4 ml-8 flex flex-col">
-                        <p>Bingo event artist, more than one artwork featured on the home page and used for other page backgrounds</p>
+                        <p>Events artist, a majority of the artwork featured on the home page and other page backgrounds</p>
                         <Link href="https://bsky.app/profile/bewilderbark.bsky.social">Bluesky</Link>
                     </div>
 
@@ -130,6 +144,7 @@ class Credits extends Component {
                     <p><span style={{ fontFamily: 'RainWorldRodondo', fontSize: '36px' }}>Yellow Ghost (WTDB)</span> <span>@yellow_ghozt</span></p>
                     <div className="mb-4 ml-8 flex flex-col">
                         <Link href="https://www.youtube.com/@yellow_ghozt">Youtube</Link>
+                        <Link href="https://bsky.app/profile/yellowghost.bsky.social">Bluesky</Link>
                     </div>
 
                     <p><span style={{ fontFamily: 'RainWorldRodondo', fontSize: '36px' }}>River the Gremlin (WARE, WSUR)</span> <span>@_river_the_gremlin_</span></p>

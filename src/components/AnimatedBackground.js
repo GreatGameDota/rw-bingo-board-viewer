@@ -7,6 +7,7 @@ const IMAGES = [
     "url(https://firebasestorage.googleapis.com/v0/b/bingo-db-57e75.firebasestorage.app/o/bingo_art_hunter.png?alt=media)",
     "url(https://firebasestorage.googleapis.com/v0/b/bingo-db-57e75.firebasestorage.app/o/bingo_art_survivor.png?alt=media)",
     "url(https://firebasestorage.googleapis.com/v0/b/bingo-db-57e75.firebasestorage.app/o/scenic2.png?alt=media)",
+    "url(https://firebasestorage.googleapis.com/v0/b/bingo-db-57e75.firebasestorage.app/o/return_of_the_cat_event.png?alt=media)",
 ];
 
 class AnimatedBackground extends Component {

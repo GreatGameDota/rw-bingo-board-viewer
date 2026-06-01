@@ -57,7 +57,7 @@ CHARACTER_TO_IMG.set("Sofanthiel", "inv");
 CHARACTER_TO_IMG.set("Watcher", "wa");
 
 export const CHARACTER_TO_NAME = new Map();
-CHARACTER_TO_NAME.set("White", "Survior");
+CHARACTER_TO_NAME.set("White", "Survivor");
 CHARACTER_TO_NAME.set("Yellow", "Monk");
 CHARACTER_TO_NAME.set("Red", "Hunter");
 CHARACTER_TO_NAME.set("Gourmand", "Gourmand");
