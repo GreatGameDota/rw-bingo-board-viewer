@@ -8,6 +8,7 @@ const GameCard = ({ game, idx, type }) => {
         if (v && typeof v === 'object' && 'stringValue' in v) return v.stringValue;
         if (v && typeof v === 'object' && 'timestampValue' in v) return v.timestampValue;
         if (v && typeof v === 'object' && 'integerValue' in v) return v.integerValue;
+        if (v && typeof v === 'object' && 'booleanValue' in v) return Boolean(v.booleanValue);
         if (v && typeof v === 'object' && 'arrayValue' in v) return v.arrayValue.values;
         return v;
     }
@@ -315,6 +316,11 @@ const GameCard = ({ game, idx, type }) => {
     const team = getGameValue(game, 'team');
     const completedGoals = getGameValue(game, 'completedGoals') ?? 0;
     const deaths = getGameValue(game, 'deaths') ?? "";
+    const regions = getGameValue(game, 'regions') ?? "";
+    const tames = getGameValue(game, 'tames') ?? "na";
+    const startingShelter = getGameValue(game, 'startingShelter') ?? "";
+    const isRandomShelter = getGameValue(game, 'isRandomShelter') ?? "na";
+    const passageUsed = getGameValue(game, 'passageUsed') ?? "na";
     const winningTeam = getGameValue(game, 'winningTeam');
     const time = getGameValue(game, 'time');
     const createdAt = getGameValue(game, 'createdAt');
@@ -354,13 +360,23 @@ const GameCard = ({ game, idx, type }) => {
                 </div>
                 <span className="text-gray-400">Duration: {time}</span>
                 <p>
+                    <span className="text-gray-400">Regions visited: {regions === "" ? 0 : regions.split(',').length} </span>
+                    <span className="text-gray-500 text-sm break-all">[{regions}]</span>
+                </p>
+                <p>
                     <span className="text-gray-400">Deaths: {deaths === "" ? 0 : deaths.split(',').length} </span>
                     <span className="text-gray-500 text-sm break-all">[{deaths}]</span>
                 </p>
-                <div className={`flex ${type === "ranked" ? "flex-row" : "flex-col h-full"}`}>
-                    <p className="w-fit text-gray-500 text-xs">
-                        {updatedAt ? formatDate(updatedAt) : formatDate(createdAt)}
-                    </p>
+                <p>
+                    <span className="text-gray-400">Friends made: {tames === "na" ? "" :
+                        (tames.length === 0 ? <span className="text-gray-500 text-sm break-all">{"none :("}</span> :
+                        tames.split(',').map((name, index) =>
+                            <span key={index}>{name.split('|')[0]} <span className="text-gray-500 text-sm">{name.split('|')[1]}</span>{index === tames.split(',').length - 1 ? '' : ', '}</span>))}
+                    </span>
+                </p>
+                <span className="text-gray-400">Starting shelter: {startingShelter}<span className="text-gray-500 text-sm">{isRandomShelter === "na" ? "" : (isRandomShelter ? " (random)" : " (set)")}</span></span>
+                <span className="text-gray-400">Passage used: {passageUsed === "na" ? "" : (passageUsed ? "Yes" : "No")}</span>
+                <div className={`flex ${type === "ranked" ? "flex-row" : "flex-row h-full"}`}>
                     <button
                         onClick={() => navigator.clipboard.writeText(matchId)}
                         className={`flex flex-row text-xs p-1 w-fit ${type === "ranked" ? "ml-auto" : "mt-auto"} text-gray-400 rounded hover:bg-gray-700 transition-colors`}
@@ -371,6 +387,9 @@ const GameCard = ({ game, idx, type }) => {
                             <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 7.5V6.108c0-1.135.845-2.098 1.976-2.192.373-.03.748-.057 1.123-.08M15.75 18H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08M15.75 18.75v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5A3.375 3.375 0 0 0 6.375 7.5H5.25m11.9-3.664A2.251 2.251 0 0 0 15 2.25h-1.5a2.251 2.251 0 0 0-2.15 1.586m5.8 0c.065.21.1.433.1.664v.75h-6V4.5c0-.231.035-.454.1-.664M6.75 7.5H4.875c-.621 0-1.125.504-1.125 1.125v12c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V16.5a9 9 0 0 0-9-9Z" />
                         </svg>
                     </button>
+                    <p className="mt-auto ml-auto w-fit text-gray-500 text-xs">
+                        {updatedAt ? formatDate(updatedAt) : formatDate(createdAt)}
+                    </p>
                 </div>
             </div>
             <div className={`p-4 relative bg-gray-900/50 ${type === "list" ? "lg:w-2/3" : ""}`}>
