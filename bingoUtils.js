@@ -382,7 +382,22 @@ async function createOrUpdateGame(gameInfo, result, boardId, gameComplete) {
     const data = await response.json();
     const token = data.refreshToken;
 
-    const { boardString, boardState, playerName, teamNumber, time, completedGoals, deaths } = gameInfo;
+    const { boardString, boardState, playerName, teamNumber, time, completedGoals, deaths, tames, regions, startingShelter, isRandomShelter, passageUsed } = gameInfo;
+    const body = {
+        boardString: boardString,
+        boardState: boardState,
+        name: playerName,
+        team: String(teamNumber),
+        winningTeam: String(result.winningTeam),
+        time: time,
+        completedGoals: String(completedGoals),
+        deaths: deaths,
+        tames: tames,
+        regions: regions,
+        startingShelter: startingShelter,
+        isRandomShelter: isRandomShelter,
+        passageUsed: passageUsed,
+    };
 
     response = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/games/user/${playerName}`);
     var games = (await response.json()).games;
@@ -393,16 +408,7 @@ async function createOrUpdateGame(gameInfo, result, boardId, gameComplete) {
         response = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/game/${id.stringValue}`, {
             method: "PATCH",
             headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
-            body: JSON.stringify({
-                boardString: boardString,
-                boardState: boardState,
-                name: playerName,
-                team: String(teamNumber),
-                winningTeam: String(result.winningTeam),
-                time: time,
-                completedGoals: String(completedGoals),
-                deaths: deaths,
-            }),
+            body: JSON.stringify(body),
         });
         const res = await response.json();
         console.log(`[API] PATCH response: ${response.status} ${id.stringValue}`, res);
@@ -426,16 +432,7 @@ async function createOrUpdateGame(gameInfo, result, boardId, gameComplete) {
         response = await fetch("https://us-central1-bingo-db-57e75.cloudfunctions.net/api/game", {
             method: "POST",
             headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
-            body: JSON.stringify({
-                boardString: boardString,
-                boardState: boardState,
-                name: playerName,
-                team: String(teamNumber),
-                winningTeam: String(result.winningTeam),
-                time: time,
-                completedGoals: String(completedGoals),
-                deaths: deaths,
-            }),
+            body: JSON.stringify(body),
         });
         const res = await response.json();
         console.log(`[API] POST response: ${response.status}`, res);
@@ -448,16 +445,7 @@ async function createOrUpdateGame(gameInfo, result, boardId, gameComplete) {
         response = await fetch("https://us-central1-bingo-db-57e75.cloudfunctions.net/api/game", {
             method: "POST",
             headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
-            body: JSON.stringify({
-                boardString: boardString,
-                boardState: boardState,
-                name: playerName,
-                team: String(teamNumber),
-                winningTeam: String(result.winningTeam),
-                time: time,
-                completedGoals: String(completedGoals),
-                deaths: deaths,
-            }),
+            body: JSON.stringify(body),
         });
         const res = await response.json();
         console.log(`[API] POST response: ${response.status}`, res);
@@ -554,9 +542,14 @@ function parseMessage(raw) {
     const time = parts[4];
     const completedGoals = parseInt(parts[5]);
     const deaths = parts[6] ?? "";
+    const tames = parts[7] ?? "";
+    const regions = parts[8] ?? "";
+    const startingShelter = parts[9];
+    const isRandomShelter = parts[10];
+    const passageUsed = parts[11];
     const gameId = deriveGameId(boardString);
     const playerKey = `${gameId}|${playerName}`;
-    return { gameId, playerKey, boardString, boardState, playerName, teamNumber, time, completedGoals, deaths };
+    return { gameId, playerKey, boardString, boardState, playerName, teamNumber, time, completedGoals, deaths, tames, regions, startingShelter, isRandomShelter, passageUsed };
 }
 
 async function processMessage(raw) {
