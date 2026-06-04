@@ -20,6 +20,13 @@ const GameCard = ({ game, idx, type }) => {
     }
 
     const extractChallengeNames = (text) => {
+        const shelter = text.split(";").length === 3 ? text.split(";")[1] : text.split(";")[2];
+        if (shelter[0] === 'r' || shelter[0] === 's') {
+            const _text = text.split(";");
+            _text[2] = _text[2].substring(1);
+            text = _text.join(";");
+        }
+
         const lastSemicolon = text.lastIndexOf(';');
         const challenges = text.substring(lastSemicolon + 1).split("bChG");
 
@@ -370,8 +377,8 @@ const GameCard = ({ game, idx, type }) => {
                 <p>
                     <span className="text-gray-400">Friends made: {tames === "na" ? "" :
                         (tames.length === 0 ? <span className="text-gray-500 text-sm break-all">{"none :("}</span> :
-                        tames.split(',').map((name, index) =>
-                            <span key={index}>{name.split('|')[0]} <span className="text-gray-500 text-sm">{name.split('|')[1]}</span>{index === tames.split(',').length - 1 ? '' : ', '}</span>))}
+                            tames.split(',').map((name, index) =>
+                                <span key={index}>{name.split('|')[0]} <span className="text-gray-500 text-sm">{name.split('|')[1]}</span>{index === tames.split(',').length - 1 ? '' : ', '}</span>))}
                     </span>
                 </p>
                 <span className="text-gray-400">Starting shelter: {startingShelter}<span className="text-gray-500 text-sm">{isRandomShelter === "na" ? "" : (isRandomShelter ? " (random)" : " (set)")}</span></span>
@@ -379,7 +386,7 @@ const GameCard = ({ game, idx, type }) => {
                 <div className={`flex ${type === "ranked" ? "flex-row" : "flex-row h-full"}`}>
                     <button
                         onClick={() => navigator.clipboard.writeText(matchId)}
-                        className={`flex flex-row text-xs p-1 w-fit ${type === "ranked" ? "ml-auto" : "mt-auto"} text-gray-400 rounded hover:bg-gray-700 transition-colors`}
+                        className={`flex flex-row text-xs p-1 w-fit ${type === "ranked" ? "" : "mt-auto"} text-gray-400 rounded hover:bg-gray-700 transition-colors`}
                         title="Copy Match ID"
                     >
                         <span className="mr-1 mt-1">Match ID</span>

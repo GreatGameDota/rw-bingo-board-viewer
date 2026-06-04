@@ -76,10 +76,11 @@ class Credits extends Component {
                         <Link href="https://x.com/annoying_flower">Twitter</Link>
                     </div>
 
-                    <p><span style={{ fontFamily: 'RainWorldRodondo', fontSize: '36px' }}>WILD</span> <span>@wildslugcat</span></p>
+                    <p><span style={{ fontFamily: 'RainWorldRodondo', fontSize: '36px' }}>WILD</span> <span>@bewilderbark</span></p>
                     <div className="mb-4 ml-8 flex flex-col">
                         <p>Events artist, a majority of the artwork featured on the home page and other page backgrounds</p>
                         <Link href="https://bsky.app/profile/bewilderbark.bsky.social">Bluesky</Link>
+                        <Link href="https://tumblr.com/bewilderbark">Tumblr</Link>
                     </div>
 
                     <p><span style={{ fontFamily: 'RainWorldRodondo', fontSize: '36px' }}>Ravenmind</span> <span>@ravenmind_artist</span></p>
@@ -91,7 +92,7 @@ class Credits extends Component {
 
                     <p><span style={{ fontFamily: 'RainWorldRodondo', fontSize: '36px' }}>Mantis</span> <span>@the_rivulet</span></p>
                     <div className="mb-4 ml-8 flex flex-col">
-                        <p>Extracted and converted <span style={{ fontFamily: 'RainWorldMenu', fontSize: '20px' }}>Rain World's menu font to ttf, used for board display.</span></p>
+                        <p>Extracted and converted <span style={{ fontFamily: 'rainworldMenu', fontSize: '20px' }}>Rain World's menu font to ttf, used for board display.</span></p>
                         <Link href="https://www.youtube.com/channel/UCrdXLtM8H3u41r475efFuFg">Youtube</Link>
                     </div>
 
