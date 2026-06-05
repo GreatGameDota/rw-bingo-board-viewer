@@ -15,7 +15,7 @@ const BINGO_LINES = [
 
 function checkWin(grid) {
     const activeTeams = [];
-    for (let team = 0; team < 9; team++) {
+    for (let team = 0; team < grid[0].length; team++) {
         if (grid.some(c => c[team] !== "0")) {
             activeTeams.push(team);
         }
