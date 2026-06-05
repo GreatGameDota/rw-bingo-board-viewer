@@ -18,6 +18,7 @@ class AllGames extends Component {
             page: 0,
             total: 0,
             currentIndex: Math.floor(Math.random() * IMAGES.length),
+            pageInput: '1',
         };
     }
 
@@ -83,7 +84,7 @@ class AllGames extends Component {
     }
 
     fetchPage = async (page) => {
-        this.setState({ loading: true, error: null });
+        this.setState({ loading: true, error: null, pageInput: (page + 1).toString() });
         const min = page * 10;
         const max = min + 10;
         try {
@@ -117,6 +118,25 @@ class AllGames extends Component {
         const { page, total } = this.state;
         const totalPages = Math.ceil(total / 10);
         if (page < totalPages - 1) this.fetchPage(page + 1);
+    };
+
+    handleJumpToPage = (e) => {
+        if (e.key !== 'Enter')
+            return;
+
+        const pageNum = parseInt(e.target.value);
+        const totalPages = Math.ceil(this.state.total / 10);
+
+        if (isNaN(pageNum) || pageNum < 1 || pageNum > totalPages) {
+            this.setState({ pageInput: (this.state.page + 1).toString() });
+            return;
+        }
+
+        this.fetchPage(pageNum - 1);
+    };
+
+    handlePageInputChange = (e) => {
+        this.setState({ pageInput: e.target.value });
     };
 
     formatDate = (dateString) => {
@@ -153,11 +173,19 @@ class AllGames extends Component {
                     </svg>
                     Previous
                 </button>
-
-                <span className="text-gray-400 text-sm">
-                    Page {page + 1} of {totalPages}
-                </span>
-
+                <div>
+                    <span className="text-gray-400 text-sm">Page</span>
+                    <input
+                        type="text"
+                        inputMode="numeric"
+                        value={this.state.pageInput}
+                        onChange={this.handlePageInputChange}
+                        onKeyPress={this.handleJumpToPage}
+                        className="mx-2 w-12 px-2 py-1 rounded bg-gray-900"
+                        disabled={loading}
+                    />
+                    <span className="text-gray-400 text-sm">of {totalPages}</span>
+                </div>
                 <button
                     onClick={this.handleNext}
                     disabled={page >= totalPages - 1 || loading}
