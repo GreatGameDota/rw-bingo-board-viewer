@@ -303,6 +303,14 @@ const GameCard = ({ game, idx, type }) => {
                     segs[5] = "0";
                     replaced = segs.join("><");
                     _challenges += replaced + separator;
+                } else if (type === "BingoShelterChallenge") {
+                    const segs = challenges[next].split("><");
+                    segs[3] = "0";
+                    segs[5] = "";
+                    segs[6] = "0";
+                    segs[7] = "0";
+                    replaced = segs.join("><");
+                    _challenges += replaced + separator;
                 }
                 else {
                     const replaced = challenges[next].replace(/[<~]-?\d+>|[<~]-?\d+$/g, m => {
