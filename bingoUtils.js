@@ -575,7 +575,7 @@ async function processMessage(raw) {
     }
 
     if (!result.winner || boardState.split("<>").length !== 25) {
-        if (boardState.split("<>").length === 25 && time && time !== "") {
+        if (boardState.split("<>").length === 25 && time && time !== "" && teamNumber !== 10) {
             try {
                 await createOrUpdateGame(parsed, result, gameId, false);
             }
@@ -642,7 +642,7 @@ async function processMessage(raw) {
     // once someone wins, match is set to null, all other players stop updating, boards outdated...
     if (gameOver && !players.has(playerKey) && id) {
         players.set(playerKey, player);
-        if (teamNumber !== 8) {
+        if (teamNumber !== 10) {
             try {
                 await createOrUpdateGame(parsed, result, gameId, true);
             } catch (e) {
@@ -675,7 +675,7 @@ async function processMessage(raw) {
     wins.set(gameId, record);
     players.set(playerKey, player);
 
-    if (teamNumber !== 8) {
+    if (teamNumber !== 10) {
         try {
             await createOrUpdateGame(parsed, result, gameId, true);
         } catch (e) {
