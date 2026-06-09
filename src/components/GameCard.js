@@ -418,12 +418,12 @@ const GameCard = ({ game, idx, type }) => {
                 <div className="absolute bottom-0 left-1">
                     <div className="flex flex-row">
                         <img
-                            src={`https://firebasestorage.googleapis.com/v0/b/bingo-db-57e75.firebasestorage.app/o/emotes%2F${CHARACTER_TO_IMG.get(boardString.split(";")[0])}_thingie${wm ? "_wm" : ""}.png?alt=media`}
+                            src={`https://firebasestorage.googleapis.com/v0/b/bingo-db-57e75.firebasestorage.app/o/emotes%2F${CHARACTER_TO_IMG.get(boardString.split(";")[0])}_thingie${wm && boardString.split(";")[0] !== "Watcher" ? "_wm" : ""}.png?alt=media`}
                             alt="Board cat icon"
                             className="w-8 h-8 mr-1"
                             title={`${CHARACTER_TO_NAME.get(boardString.split(";")[0])} board`}
                         />
-                        {wm && <img
+                        {wm && boardString.split(";")[0] !== "Watcher" && <img
                             src={`https://firebasestorage.googleapis.com/v0/b/bingo-db-57e75.firebasestorage.app/o/uispriteswatcher22.png?alt=media`}
                             alt="Board cat icon"
                             className="w-8 h-8 pb-[2px]" />}
