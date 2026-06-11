@@ -329,8 +329,10 @@ const GameCard = ({ game, idx, type }) => {
 
     const name = getGameValue(game, 'name') ?? 'Unknown';
     const team = getGameValue(game, 'team');
-    const completedGoals = getGameValue(game, 'completedGoals') ?? 0;
-    const deaths = getGameValue(game, 'deaths').replace("-", ",") ?? "";
+    var completedGoals = getGameValue(game, 'completedGoals') ?? "0";
+    if (completedGoals.split("-").length > 1)
+        completedGoals = parseInt(completedGoals.split("-")[0]) + parseInt(completedGoals.split("-")[1]);
+    const deaths = ((getGameValue(game, 'deaths') ?? "").replace("-", ",")).replace(/,$/, "");
     const regions = getGameValue(game, 'regions') ?? "";
     const tames = getGameValue(game, 'tames') ?? "na";
     const startingShelter = getGameValue(game, 'startingShelter') ?? "";
