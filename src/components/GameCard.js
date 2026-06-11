@@ -330,7 +330,7 @@ const GameCard = ({ game, idx, type }) => {
     const name = getGameValue(game, 'name') ?? 'Unknown';
     const team = getGameValue(game, 'team');
     const completedGoals = getGameValue(game, 'completedGoals') ?? 0;
-    const deaths = getGameValue(game, 'deaths') ?? "";
+    const deaths = getGameValue(game, 'deaths').replace("-", ",") ?? "";
     const regions = getGameValue(game, 'regions') ?? "";
     const tames = getGameValue(game, 'tames') ?? "na";
     const startingShelter = getGameValue(game, 'startingShelter') ?? "";
