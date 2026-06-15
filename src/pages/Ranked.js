@@ -246,7 +246,7 @@ class Ranked extends Component {
             }
 
             if (_playerNames.length > 0)
-                return _playerNames.sort().join(' & ');
+                return _playerNames.sort((a, b) => a.localeCompare(b)).join(' & ');
             return 'Unknown';
         } catch (error) {
             console.error('Error extracting opponent from players:', error);
@@ -275,7 +275,7 @@ class Ranked extends Component {
 
     render() {
         const { teams, loading, error, showDrawer, selectedTeam } = this.state;
-        const selectedTeamNames = selectedTeam ? (this.getGameValue(selectedTeam, 'name') || '').split(',') : [];
+        const selectedTeamNames = selectedTeam ? (this.getGameValue(selectedTeam, 'name') || '').split(',').sort((a, b) => a.localeCompare(b)) : [];
         const selectedTeamEloValue = Math.round(parseFloat(this.getGameValue(selectedTeam, 'elo')));
         const selectedTeamWins = parseInt(this.getGameValue(selectedTeam, 'wins'));
         const selectedTeamGamesPlayed = parseInt(this.getGameValue(selectedTeam, 'gamesPlayed'));
@@ -370,7 +370,7 @@ class Ranked extends Component {
                         <div className="flex flex-col gap-6 mb-6">
                             {teams.map((team, index) => {
                                 const rawName = this.getGameValue(team, 'name') || '';
-                                const nameParts = rawName.split(',');
+                                const nameParts = rawName.split(',').sort((a, b) => a.localeCompare(b));
                                 const eloValue = Math.round(parseFloat(this.getGameValue(team, 'elo')));
                                 const wins = parseInt(this.getGameValue(team, 'wins'));
                                 const gamesPlayed = parseInt(this.getGameValue(team, 'gamesPlayed'));

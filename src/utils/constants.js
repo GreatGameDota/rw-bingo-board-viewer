@@ -53,7 +53,7 @@ CHARACTER_TO_IMG.set("Saint", "saint");
 CHARACTER_TO_IMG.set("Spear", "spear");
 CHARACTER_TO_IMG.set("Rivulet", "riv");
 CHARACTER_TO_IMG.set("Artificer", "arti");
-CHARACTER_TO_IMG.set("Sofanthiel", "inv");
+CHARACTER_TO_IMG.set("Inv", "inv");
 CHARACTER_TO_IMG.set("Watcher", "wa");
 
 export const CHARACTER_TO_NAME = new Map();
@@ -65,7 +65,7 @@ CHARACTER_TO_NAME.set("Saint", "Saint");
 CHARACTER_TO_NAME.set("Spear", "Spearmaster");
 CHARACTER_TO_NAME.set("Rivulet", "Rivulet");
 CHARACTER_TO_NAME.set("Artificer", "Artificer");
-CHARACTER_TO_NAME.set("Sofanthiel", "Inv");
+CHARACTER_TO_NAME.set("Inv", "Inv");
 CHARACTER_TO_NAME.set("Watcher", "Watcher");
 
 export const CHARACTER_TO_BG = new Map();
@@ -77,7 +77,7 @@ CHARACTER_TO_BG.set("Saint", "landscape - cl - flat");
 CHARACTER_TO_BG.set("Spear", "landscape - dm - flat");
 CHARACTER_TO_BG.set("Rivulet", "landscape - ms - flat");
 CHARACTER_TO_BG.set("Artificer", "landscape - lc - flat");
-CHARACTER_TO_BG.set("Sofanthiel", "");
+CHARACTER_TO_BG.set("Inv", "outro 3 - face - flatb");
 CHARACTER_TO_BG.set("Watcher", "outro prince 3-1 - flat");
 
 export const CHARACTER_TO_BG2 = new Map();
@@ -89,7 +89,7 @@ CHARACTER_TO_BG2.set("Saint", "landscape - wpta - flat");
 CHARACTER_TO_BG2.set("Spear", "landscape - ward - flat");
 CHARACTER_TO_BG2.set("Rivulet", "landscape - wrra - flat");
 CHARACTER_TO_BG2.set("Artificer", "landscape - ware - flat");
-CHARACTER_TO_BG2.set("Sofanthiel", "");
+CHARACTER_TO_BG2.set("Inv", "outro 3 - face - flatb");
 CHARACTER_TO_BG2.set("Watcher", "outro prince 3-1 - flat");
 
 export function getTeamName(teamIndex) {

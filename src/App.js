@@ -3,6 +3,7 @@ import MenuBar from "./components/MenuBar";
 import Footer from "./components/Footer";
 import Viewer from "./pages/Viewer";
 import AllGames from "./pages/AllGames";
+import AllMatches from "./pages/AllMatches";
 import UserGames from "./pages/UserGames";
 import Schedule from "./pages/Schedule";
 import Leaderboard from "./pages/Leaderboard";
@@ -26,6 +27,7 @@ function App() {
                     <Route path="/rw-bingo-board-viewer/leaderboard" element={<Leaderboard />} />
                     <Route path="/rw-bingo-board-viewer/ranked" element={<Ranked />} />
                     <Route path="/rw-bingo-board-viewer/all-games" element={<AllGames />} />
+                    <Route path="/rw-bingo-board-viewer/all-matches" element={<AllMatches />} />
                     <Route path="/rw-bingo-board-viewer/user/:userName" element={<UserGamesRoute />} />
                     <Route path="/rw-bingo-board-viewer/credits" element={<Credits />} />
                 </Routes>

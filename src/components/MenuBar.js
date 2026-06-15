@@ -44,6 +44,14 @@ const MenuBar = () => {
                         </li>
                         <li>
                             <Link
+                                to="/rw-bingo-board-viewer/all-matches"
+                                className="text-gray-300 hover:text-white transition-colors duration-200"
+                            >
+                                All Matches
+                            </Link>
+                        </li>
+                        <li>
+                            <Link
                                 to="/rw-bingo-board-viewer/leaderboard"
                                 className="text-gray-300 hover:text-white transition-colors duration-200"
                             >
@@ -118,6 +126,15 @@ const MenuBar = () => {
                                 onClick={() => setMenuOpen(false)}
                             >
                                 All Games
+                            </Link>
+                        </li>
+                        <li>
+                            <Link
+                                to="/rw-bingo-board-viewer/all-matches"
+                                className="text-gray-300 hover:text-white transition-colors duration-200"
+                                onClick={() => setMenuOpen(false)}
+                            >
+                                All Matches
                             </Link>
                         </li>
                         <li>
