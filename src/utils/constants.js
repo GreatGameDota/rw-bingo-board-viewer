@@ -12,6 +12,8 @@ export const TEAM_NAMES = [
     'Board Viewer'
 ];
 
+export const teamColors = ["#e60e0e66", "#0080ff66", "#33ff0066", "#ff990066", "#ff00ff66", "#00e8e666", "#5e5e6f66", "#5833ca66", "#ff788366", "#c7d9ff66", "#ffffff66"];
+
 export const BINGO_TEAMS = [
     'Adept', 'Apostle', 'Arbiter', 'Aristocrat', 'Champion', 'Collective', 'Custodian', 'Cycle', 'Doomed', 'Echo', 'Exiled', 'Forbidden', 'Forgotten', 'Gambler', 'Gatherer', 'Guide', 'Helping Hand', 'Hermit', 'Hoarder', 'Innovative', 'Inquisitive', 'Lost', 'Martyr', 'Messenger', 'Migration', 'Outsider', 'Peacekeeper', 'Probably Will Not Use This One', 'Pupil', 'Reaper', 'Retainer', 'Scholar', 'Steward', 'Temperate', 'Voyager', 'Vulture Slayer', 'Wanderlust', 'Ward', 'Warlord'
 ];

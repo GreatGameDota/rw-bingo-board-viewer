@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { atlases } from '../lib/bingovista/bingovista';
 import GameCard from '../components/GameCard';
+import { CHARACTER_TO_NAME, getTeamName, teamColors } from '../utils/constants';
 
 const IMAGES = [
     "https://firebasestorage.googleapis.com/v0/b/bingo-db-57e75.firebasestorage.app/o/regions.png?alt=media",
@@ -185,7 +186,7 @@ class AllMatches extends Component {
                     ))}
                 </div>
                 {teamIdx < teamNames.length - 1 && (
-                    <div className="flex items-center gap-4 my-4 cursor-default">
+                    <div className="flex items-center gap-4 my-8 cursor-default">
                         <div className="flex-1 border-t border-gray-700" />
                         <span className="text-gray-500 font-semibold text-sm">VS</span>
                         <div className="flex-1 border-t border-gray-700" />
@@ -333,6 +334,7 @@ class AllMatches extends Component {
                                     const createdAt = this.getGameValue(match, 'createdAt');
                                     const matchGames = expandedMatchGames[matchId] || [];
                                     const isLoading = expandedMatchLoading[matchId] || false;
+                                    const winningTeam = this.getGameValue(match, 'winnerTeam');
 
                                     return (
                                         <div key={index}>
@@ -342,8 +344,17 @@ class AllMatches extends Component {
                                             >
                                                 <div className="flex items-center justify-between">
                                                     <div className="flex-1">
-                                                        <p className="text-xl font-bold text-white">{playerNameStrings || 'Unknown'}</p>
+                                                        <p className="text-2xl font-bold text-white">{playerNameStrings || 'Unknown'}</p>
                                                         <p className="text-sm text-gray-400">{this.formatDate(createdAt)}</p>
+                                                    </div>
+                                                    <div className="ml-auto my-auto text-right">
+                                                        <p>
+                                                            {CHARACTER_TO_NAME.get(this.getGameValue(match, 'boardId').split(':')[0])} game <span className="mx-4">•</span> {
+                                                                winningTeam === "null" ?
+                                                                    <span className="px-2 py-0.5 rounded bg-gray-400 text-gray-900 font-semibold">UNFINISHED</span> :
+                                                                    <span style={{ "backgroundColor": teamColors[winningTeam] }} className={`px-2 py-0.5 rounded text-white font-semibold`}>{getTeamName(winningTeam)} win</span>
+                                                            }
+                                                        </p>
                                                     </div>
                                                 </div>
                                             </div>
