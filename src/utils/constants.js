@@ -9,6 +9,7 @@ export const TEAM_NAMES = [
     'Indigo',
     'Peach',
     'Blizzard',
+    'Yellow',
     'Board Viewer'
 ];
 
