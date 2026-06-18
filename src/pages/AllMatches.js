@@ -349,11 +349,11 @@ class AllMatches extends Component {
                                                     </div>
                                                     <div className="ml-auto my-auto text-right">
                                                         <p>
-                                                            {CHARACTER_TO_NAME.get(this.getGameValue(match, 'boardId').split(':')[0])} game <span className="mx-4">•</span> {
+                                                            {CHARACTER_TO_NAME.get(this.getGameValue(match, 'boardId').split(':')[0])} game <span className="mx-4">•</span> {winningTeam && (
                                                                 winningTeam === "null" ?
                                                                     <span className="px-2 py-0.5 rounded bg-gray-400 text-gray-900 font-semibold">UNFINISHED</span> :
                                                                     <span style={{ "backgroundColor": teamColors[winningTeam] }} className={`px-2 py-0.5 rounded text-white font-semibold`}>{getTeamName(winningTeam)} win</span>
-                                                            }
+                                                                )}
                                                         </p>
                                                     </div>
                                                 </div>
