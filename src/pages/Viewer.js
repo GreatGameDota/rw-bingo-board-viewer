@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import BingoCanvas from "../components/BingoCanvas";
 import { atlases } from '../lib/bingovista/bingovista';
 import { getLiveSocketService } from "../live/liveSocketService";
-import { TEAM_NAMES } from "../utils/constants";
+import { TEAM_NAMES, CHARACTER_TO_NAME, teamColors } from "../utils/constants";
 import AnimatedBackground from "../components/AnimatedBackground";
 import { Link } from "react-router-dom";
 
@@ -139,17 +139,21 @@ class Viewer extends Component {
 
     render() {
         const sortedClients = Array.from(this.state.clients.values()).sort((a, b) => a.name.localeCompare(b.name));
-        const activePlayersList = sortedClients.map((c) => (
-            <div
-                key={c.name}
-                onClick={() => this.handleClientChange(c.name)}
-                className={`flex flex-col w-full px-4 py-2 cursor-pointer rounded transition-all
-                    ${this.state.selectedClientId === c.name ? 'bg-green-400 text-gray-900 font-semibold' : 'bg-gray-700 text-white hover:bg-gray-600'}`}
-            >
-                <span>{c.name} ({TEAM_NAMES[c.team]})</span>
-                <span>{c.time}</span>
-            </div >
-        ));
+        const activePlayersList = sortedClients.map((c) => {
+            const slugcat = CHARACTER_TO_NAME.get(c.board.split(';')[0]);
+            return (
+                <div
+                    key={c.name}
+                    onClick={() => this.handleClientChange(c.name)}
+                    style={{ "backgroundColor": teamColors[c.team] }}
+                    className={`flex flex-col w-full px-4 py-2 cursor-pointer rounded transition-all text-white
+                    ${this.state.selectedClientId === c.name ? 'font-semibold' : 'brightness-[75%] hover:brightness-[500%]'}`}
+                >
+                    <span>{c.name} ({slugcat})</span>
+                    <span>{c.time}</span>
+                </div >
+            );
+        });
 
         return (
             // <div className="flex-grow flex flex-col w-full bg-[url(https://firebasestorage.googleapis.com/v0/b/bingo-db-57e75.firebasestorage.app/o/WatcherCoral_RavenMind2.png?alt=media)] bg-cover bg-center" style={{ boxSizing: "border-box", boxShadow: "inset 0 0 50px 50px rgba(0,0,0,0.5)" }}>
