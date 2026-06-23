@@ -21,7 +21,7 @@ class Schedule extends Component {
 
     fetchTeams = async () => {
         try {
-            const response = await fetch('https://us-central1-bingo-db-57e75.cloudfunctions.net/api/teams2');
+            const response = await fetch('https://us-central1-bingo-db-57e75.cloudfunctions.net/api/teams');
             if (!response.ok) {
                 throw new Error(`API error: ${response.status}`);
             }
@@ -103,7 +103,7 @@ class Schedule extends Component {
                     error: null
                 });
                 try {
-                    const response = await fetch('https://us-central1-bingo-db-57e75.cloudfunctions.net/api/teams2/name/' + encodeURIComponent([player1Name, player2Name].sort().join(',')));
+                    const response = await fetch('https://us-central1-bingo-db-57e75.cloudfunctions.net/api/teams/name/' + encodeURIComponent([player1Name, player2Name].sort().join(',')));
                     if (!response.ok) {
                         throw new Error(`API error: ${response.status}`);
                     }
@@ -139,7 +139,7 @@ class Schedule extends Component {
                     error: null
                 });
                 try {
-                    var response = await fetch('https://us-central1-bingo-db-57e75.cloudfunctions.net/api/team2', {
+                    var response = await fetch('https://us-central1-bingo-db-57e75.cloudfunctions.net/api/team', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
@@ -152,7 +152,7 @@ class Schedule extends Component {
                         throw new Error(`API error: ${response.status}`);
                     }
 
-                    response = await fetch('https://us-central1-bingo-db-57e75.cloudfunctions.net/api/teams2/name/' + encodeURIComponent([player1Name, player2Name].sort().join(',')));
+                    response = await fetch('https://us-central1-bingo-db-57e75.cloudfunctions.net/api/teams/name/' + encodeURIComponent([player1Name, player2Name].sort().join(',')));
                     if (!response.ok) {
                         throw new Error(`API error: ${response.status}`);
                     }
@@ -186,7 +186,7 @@ class Schedule extends Component {
                 error: null
             });
             try {
-                var response = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/team222/${this.getGameValue(team, 'id')}`, {
+                var response = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/team2/${this.getGameValue(team, 'id')}`, {
                     method: "PATCH",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
@@ -198,7 +198,7 @@ class Schedule extends Component {
                     throw new Error(`API error: ${response.status}`);
                 }
 
-                response = await fetch('https://us-central1-bingo-db-57e75.cloudfunctions.net/api/teams2/name/' + this.getGameValue(team, 'name'));
+                response = await fetch('https://us-central1-bingo-db-57e75.cloudfunctions.net/api/teams/name/' + this.getGameValue(team, 'name'));
                 if (!response.ok) {
                     throw new Error(`API error: ${response.status}`);
                 }
