@@ -141,6 +141,7 @@ class Viewer extends Component {
         const sortedClients = Array.from(this.state.clients.values()).sort((a, b) => a.name.localeCompare(b.name));
         const activePlayersList = sortedClients.map((c) => {
             const slugcat = CHARACTER_TO_NAME.get(c.board.split(';')[0]);
+            const wm = c.board.split(";").length === 4 && c.board.split(";")[1] === "1";
             return (
                 <div
                     key={c.name}
@@ -150,7 +151,13 @@ class Viewer extends Component {
                     ${this.state.selectedClientId === c.name ? 'font-semibold' : 'brightness-[75%] hover:brightness-[500%]'}`}
                 >
                     <span>{c.name} ({slugcat})</span>
-                    <span>{c.time}</span>
+                    <div className="flex flex-row items-center justify-between">
+                        <span>{c.time}</span>
+                        {wm && c.board.split(";")[0] !== "Watcher" && <img
+                            src={`https://firebasestorage.googleapis.com/v0/b/bingo-db-57e75.firebasestorage.app/o/uispriteswatcher22.png?alt=media`}
+                            alt="Watchermode"
+                            className="w-8 h-8 pb-[2px]" />}
+                    </div>
                 </div >
             );
         });
