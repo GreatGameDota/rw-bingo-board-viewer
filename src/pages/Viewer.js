@@ -148,7 +148,7 @@ class Viewer extends Component {
                     onClick={() => this.handleClientChange(c.name)}
                     style={{ "backgroundColor": teamColors[c.team] }}
                     className={`flex flex-col w-full px-4 py-2 cursor-pointer rounded transition-all text-white
-                    ${this.state.selectedClientId === c.name ? 'font-semibold' : 'brightness-[75%] hover:brightness-[500%]'}`}
+                    ${this.state.selectedClientId === c.name ? 'font-semibold brightness-[130%]' : 'brightness-[75%] hover:brightness-[120%]'}`}
                 >
                     <span>{c.name} ({slugcat})</span>
                     <div className="flex flex-row items-center justify-between">
@@ -203,7 +203,7 @@ class Viewer extends Component {
                         <div className="flex flex-col lg:flex-row gap-6 h-full">
                             <div className="lg:w-1/3 flex flex-col">
                                 <h2 className="text-lg font-bold text-green-400 mb-4">Active Games ({this.state.clients.size})</h2>
-                                <div className="space-y-2 overflow-y-auto flex-grow">
+                                <div className="space-y-2 overflow-y-auto flex-grow" style={{maxHeight: this.state.boardSize - 50}}>
                                     {activePlayersList.length > 0 ? (
                                         activePlayersList
                                     ) : (
