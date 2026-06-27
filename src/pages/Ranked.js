@@ -363,7 +363,9 @@ class Ranked extends Component {
                                 alt="Bingo Board Banner"
                                 className="w-[456px] h-[120px] object-cover"
                             />
-                            <p className="rounded-md bg-green-600 py-0.5 px-2.5 font-bold shadow-sm">LIVE <span className="ml-1 text-red-600">•</span></p>
+                            {new Date() <= new Date(2026, 7, 18) ?
+                                (<p className="rounded-md bg-gray-600 py-0.5 px-2.5 font-bold shadow-sm">Starting July 18th</p>) :
+                                (<p className="rounded-md bg-green-600 py-0.5 px-2.5 font-bold shadow-sm">LIVE <span className="ml-1 text-red-600">•</span></p>)}
                         </div>
                     </div>
 
@@ -416,7 +418,7 @@ class Ranked extends Component {
                                                 <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(to_right,rgba(243,176,65,0.2),transparent_40%)]"></div>}
                                             <div className="flex flex-row relative z-1">
                                                 <div className="min-w-16 pl-4 mr-8">
-                                                    <p style={{fontFamily: "RainWorldRodondo", fontSize: "36px"}}>{index + 1}</p>
+                                                    <p style={{ fontFamily: "RainWorldRodondo", fontSize: "36px" }}>{index + 1}</p>
                                                 </div>
                                                 <div className="flex flex-col my-auto">
                                                     <div className="flex flex-row items-center">
