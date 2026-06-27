@@ -351,8 +351,21 @@ class Ranked extends Component {
                     />
                 </div>
                 <div className="p-6 max-w-7xl mx-auto">
-                    <h1 className="text-4xl font-bold text-white mb-8" style={{ fontFamily: 'RainWorldRodondo', fontSize: '48px' }}>Ranked</h1>
-                    <p className="mb-8">Click on a team to view their matches.</p>
+                    <div className="flex flex-row my-12">
+                        <div className="flex flex-col justify-between">
+                            <h1 className="text-4xl font-bold text-white mb-8" style={{ fontFamily: 'RainWorldRodondo', fontSize: '48px' }}>Ranked</h1>
+                            <p>Official leaderboard for 2v2 ranked matches.</p>
+                            <p className="mb-8">Click on a team to view their matches.</p>
+                        </div>
+                        <div className="flex flex-col mx-auto items-center justify-between">
+                            <img
+                                src="https://firebasestorage.googleapis.com/v0/b/bingo-db-57e75.firebasestorage.app/o/Bingo7_Temporal_Twist.png?alt=media"
+                                alt="Bingo Board Banner"
+                                className="w-[456px] h-[120px] object-cover"
+                            />
+                            <p className="rounded-md bg-green-600 py-0.5 px-2.5 font-bold shadow-sm">LIVE <span className="ml-1 text-red-600">•</span></p>
+                        </div>
+                    </div>
 
                     {loading ? (
                         <div className="flex items-center justify-center py-24">
