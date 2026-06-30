@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import { atlases } from '../lib/bingovista/bingovista';
 import GameCard from '../components/GameCard';
+import LineGraph from '../components/LineGraph';
 import { PLAYER_TO_TEAM } from '../utils/constants';
 
 class Leaderboard extends Component {
@@ -286,6 +287,7 @@ class Leaderboard extends Component {
                 selectedTeamName = null;
         var cutoffFirst = false, cutoffEnd = false;
         var matchesCard = null;
+        const selectedTeamAllElo = this.getGameValue(selectedTeam, 'allElo');
 
         if (showDrawer && !this.state.matchGamesLoading && this.state.drawerMatches.length !== 0 && this.state.drawerGames.length !== 0) {
             const opponentNames = this.state.drawerMatches[this.state.selectedMatch]?.opponent?.split(' & ') || [];
@@ -484,8 +486,14 @@ class Leaderboard extends Component {
                                 </button>
                             </div>
 
+                            <div className="border-b border-gray-700">
+                                <div className="p-4 w-100 md:w-[50vw] h-[25vh] md:mx-auto">
+                                    <LineGraph values={selectedTeamAllElo} />
+                                </div>
+                            </div>
+
                             <div className="flex flex-col md:flex-row flex-1 overflow-hidden">
-                                <div className="w-full md:w-1/3 border-b md:border-b-0 md:border-r border-gray-700 overflow-y-auto">
+                                <div className="w-full md:w-1/3 border-b md:border-b-0 md:border-r border-gray-700 overflow-y-auto h-[25vh] md:h-[100%]">
                                     {this.state.drawerLoading ? (
                                         <div className="flex items-center justify-center py-12">
                                             <p className="text-white text-lg">Loading matches...</p>
