@@ -311,6 +311,14 @@ const GameCard = ({ game, idx, type }) => {
                     segs[7] = "0";
                     replaced = segs.join("><");
                     _challenges += replaced + separator;
+                } else if (type === "WatcherBingoAllRegionsExceptChallenge" || type === "BingoAllRegionsExceptChallenge") {
+                    const segs = challenges[next].split("><");
+                    segs[1] = "CC|DS|HI|GW|SI|SU|SH|SL|LF|UW|SB|SS|MS|OE|HR|LM|DM|LC|RM|CL|UG|VS|WVWA|WVWB|WRRA|WPGA|WARA|WARB|WARC|WARD|WARE|WARF|WARG|WMPA|WAUA|WBLA|WPTA|WRFA|WRFB|WRSA|WSKA|WSKB|WSKC|WSKD|WTDA|WTDB|WORA|WDSR|WGWR|WHIR|WSSR|WSUR";
+                    segs[2] = "0";
+                    segs[4] = "0";
+                    segs[5] = "0";
+                    replaced = segs.join("><");
+                    _challenges += replaced + separator;
                 }
                 else {
                     const replaced = challenges[next].replace(/[<~]-?\d+>|[<~]-?\d+$/g, m => {
