@@ -1,6 +1,7 @@
 
 var wins = new Map();
 var players = new Map();
+var _token = null;
 
 const BINGO_LINES = [
     // Rows
@@ -370,17 +371,20 @@ async function saveGame(gameInfo, winningTeam, gameEnded, token, match = null) {
 
 async function createOrUpdateGame(gameInfo, result, boardId, gameComplete) {
     // TODO: prob just make auth only for changing elo
-    var response = await fetch("https://us-central1-bingo-db-57e75.cloudfunctions.net/api/admin/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-            email: process.env.ADMIN_EMAIL,
-            password: process.env.ADMIN_PASSWORD,
-        }),
-    });
-    if (!response.ok) throw new Error(`Login failed with status ${response.status}`);
-    const data = await response.json();
-    const token = data.refreshToken;
+    if (!_token) {
+        var response = await fetch("https://us-central1-bingo-db-57e75.cloudfunctions.net/api/admin/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                email: process.env.ADMIN_EMAIL,
+                password: process.env.ADMIN_PASSWORD,
+            }),
+        });
+        if (!response.ok) throw new Error(`Login failed with status ${response.status}`);
+        const data = await response.json();
+        _token = data.refreshToken;
+    }
+    const token = _token;
 
     const { boardString, boardState, playerName, teamNumber, time, completedGoals, deaths, tames, regions, startingShelter, isRandomShelter, passageUsed } = gameInfo;
     const body = {
