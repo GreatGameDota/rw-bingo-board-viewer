@@ -172,8 +172,8 @@ async function calcElo(match, token) {
             team2 = { info: { id: { stringValue: res.id } } };
         }
 
-        const winK = parseInt(team1.info.gamesPlayed?.integerValue || 0) < 2 ? 80 : 32;
-        const loseK = parseInt(team2.info.gamesPlayed?.integerValue || 0) < 2 ? 80 : 32;
+        const winK = parseInt(team1.info.gamesPlayed?.integerValue || 0) < 2 ? 200 : 100;
+        const loseK = parseInt(team2.info.gamesPlayed?.integerValue || 0) < 2 ? 200 : 100;
 
         var rankedElo1 = parseFloat(team1.info.elo?.stringValue || 1200);
         var rankedElo2 = parseFloat(team2.info.elo?.stringValue || 1200);
