@@ -44,7 +44,8 @@ class Schedule extends Component {
     }
 
     hourToLocal = (hr) => {
-        const d = new Date(Date.UTC(2026, 0, 1, hr, 0, 0));
+        const _d = new Date();
+        const d = new Date(Date.UTC(_d.getFullYear(), _d.getMonth(), _d.getDate(), hr, 0, 0));
         return d.toLocaleTimeString();
     }
 
