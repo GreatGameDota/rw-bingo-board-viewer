@@ -39,7 +39,7 @@ class Schedule extends Component {
         const v = obj.info[key];
         if (v && typeof v === 'object' && 'stringValue' in v) return v.stringValue;
         if (v && typeof v === 'object' && 'timestampValue' in v) return v.timestampValue;
-        if (v && typeof v === 'object' && 'integerValue' in v) return v.integerValue;
+        if (v && typeof v === 'object' && 'integerValue' in v) return parseInt(v.integerValue);
         return v;
     }
 
@@ -238,7 +238,7 @@ class Schedule extends Component {
                 for (const t of teams) {
                     const elo = parseInt(this.getGameValue(t, 'elo'));
                     const teamElo = parseInt(this.getGameValue(team, 'elo'));
-                    if (Math.abs(elo - teamElo) <= eloDiff && this.getGameValue(t, 'name') !== this.getGameValue(team, 'name') && this.getGameValue(t, 'gamesPlayed') <= 10) {
+                    if (Math.abs(elo - teamElo) <= eloDiff && this.getGameValue(t, 'name') !== this.getGameValue(team, 'name') && this.getGameValue(t, 'gamesPlayed') < 10) {
                         const teamAvailability = this.convertFromFirebase(t.info.availability);
                         const commonAvailability = {};
                         for (const day of Object.keys(availability).sort((a, b) => days.indexOf(a) - days.indexOf(b))) {
