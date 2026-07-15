@@ -20,32 +20,44 @@ export const BINGO_TEAMS = [
 ];
 
 export var TEAM_NAMES_TO_IMAGE = new Map();
-// TEAM_NAMES_TO_IMAGE.set("Winterglide,YSHM", "Warlord");
-// TEAM_NAMES_TO_IMAGE.set("Moxie2017,some_dingus", "Reaper");
-// TEAM_NAMES_TO_IMAGE.set("GreatGameDota,Polarcat", "Doomed");
-// TEAM_NAMES_TO_IMAGE.set("107651,Wet Fish", "Messenger");
-// TEAM_NAMES_TO_IMAGE.set("Irri,Twizlet", "Gatherer");
-// TEAM_NAMES_TO_IMAGE.set("BrianTheDrummer,Gzethicus", "Adept");
-// TEAM_NAMES_TO_IMAGE.set("Potato!,TimaFrolov", "Pupil");
-// TEAM_NAMES_TO_IMAGE.set("Supervillain Joe,Tactical Ferret", "Gambler");
+TEAM_NAMES_TO_IMAGE.set("Pidgoetto,Red wolf 2524".toLowerCase(), "Wanderlust");
+TEAM_NAMES_TO_IMAGE.set("Supervillain Joe,GamingDragoness".toLowerCase(), "Exiled");
+TEAM_NAMES_TO_IMAGE.set("Moxie2017,some_dingus".toLowerCase(), "Inquisitive");
+TEAM_NAMES_TO_IMAGE.set("Crazy_Dream,Milosan".toLowerCase(), "Pupil");
+TEAM_NAMES_TO_IMAGE.set("alkali,KDeveloper".toLowerCase(), "Cycle");
+TEAM_NAMES_TO_IMAGE.set("BrianTheDrummer,YSHM".toLowerCase(), "Retainer");
+TEAM_NAMES_TO_IMAGE.set("Flo,gzethicus".toLowerCase(), "Echo");
+TEAM_NAMES_TO_IMAGE.set("flamedash,Flora".toLowerCase(), "Champion");
+TEAM_NAMES_TO_IMAGE.set("Bronsej,Potato!".toLowerCase(), "Scholar");
+TEAM_NAMES_TO_IMAGE.set("EtenRipples,Painbringer3000".toLowerCase(), "Guide");
+TEAM_NAMES_TO_IMAGE.set("Awrenwyn,Snow".toLowerCase(), "Ward");
+TEAM_NAMES_TO_IMAGE.set("IridescentPickle,Phoenix".toLowerCase(), "Martyr");
+TEAM_NAMES_TO_IMAGE.set("Karnellon,Podak".toLowerCase(), "Doomed");
+TEAM_NAMES_TO_IMAGE.set("Irri,Twizlet".toLowerCase(), "Custodian");
+TEAM_NAMES_TO_IMAGE.set("DeadCows57,The.Critterr".toLowerCase(), "Outsider");
+TEAM_NAMES_TO_IMAGE.set("107651,Wet Fish".toLowerCase(), "Voyager");
+TEAM_NAMES_TO_IMAGE.set("goldenrose714,neuyr".toLowerCase(), "Temperate");
+TEAM_NAMES_TO_IMAGE.set("greatgamedota,Polarcat".toLowerCase(), "Hermit");
+TEAM_NAMES_TO_IMAGE.set("Scattered,Wynn".toLowerCase(), "Steward");
+TEAM_NAMES_TO_IMAGE.set("Hexia,wildymoon".toLowerCase(), "Gatherer");
+TEAM_NAMES_TO_IMAGE.set("_vivaalex,xxrainbowwarrior20xx".toLowerCase(), "Gambler");
+TEAM_NAMES_TO_IMAGE.set("lttm_enthusiast,MadCap_195".toLowerCase(), "Forbidden");
+TEAM_NAMES_TO_IMAGE.set("capivara,gingercube09".toLowerCase(), "Aristocrat");
+TEAM_NAMES_TO_IMAGE.set("Linsy,ongi".toLowerCase(), "Vulture Slayer");
+TEAM_NAMES_TO_IMAGE.set("CnoteTWL,Moonpool".toLowerCase(), "Migration");
+TEAM_NAMES_TO_IMAGE.set("+:Eclipse:+,sovel".toLowerCase(), "Peacekeeper");
+TEAM_NAMES_TO_IMAGE.set("Flycc,Yellow Ghost".toLowerCase(), "Warlord");
+TEAM_NAMES_TO_IMAGE.set("BluSharpie,Mantis".toLowerCase(), "Lost");
+TEAM_NAMES_TO_IMAGE.set("HoodedSnake58,twagon".toLowerCase(), "Collective");
+TEAM_NAMES_TO_IMAGE.set("Funland Builder,mycatisadog99".toLowerCase(), "Hoarder");
+TEAM_NAMES_TO_IMAGE.set("EK3N,ImCatTastic".toLowerCase(), "Reaper");
 
 export var PLAYER_TO_TEAM = new Map();
-// PLAYER_TO_TEAM.set("Winterglide", "Warlord");
-// PLAYER_TO_TEAM.set("YSHM", "Warlord");
-// PLAYER_TO_TEAM.set("Moxie2017", "Reaper");
-// PLAYER_TO_TEAM.set("some_dingus", "Reaper");
-// PLAYER_TO_TEAM.set("Polarcat", "Doomed");
-// PLAYER_TO_TEAM.set("GreatGameDota", "Doomed");
-// PLAYER_TO_TEAM.set("107651", "Messenger");
-// PLAYER_TO_TEAM.set("Wet Fish", "Messenger");
-// PLAYER_TO_TEAM.set("Irri", "Gatherer");
-// PLAYER_TO_TEAM.set("Twizlet", "Gatherer");
-// PLAYER_TO_TEAM.set("BrianTheDrummer", "Adept");
-// PLAYER_TO_TEAM.set("Gzethicus", "Adept");
-// PLAYER_TO_TEAM.set("Potato!", "Pupil");
-// PLAYER_TO_TEAM.set("TimaFrolov", "Pupil");
-// PLAYER_TO_TEAM.set("Supervillain Joe", "Gambler");
-// PLAYER_TO_TEAM.set("Tactical Ferret", "Gambler");
+for (const [pairKey, teamName] of TEAM_NAMES_TO_IMAGE.entries()) {
+    const [playerA, playerB] = pairKey.split(',').map((name) => name.trim().toLowerCase());
+    if (playerA) PLAYER_TO_TEAM.set(playerA, teamName);
+    if (playerB) PLAYER_TO_TEAM.set(playerB, teamName);
+}
 
 export const CHARACTER_TO_IMG = new Map();
 CHARACTER_TO_IMG.set("White", "surv");

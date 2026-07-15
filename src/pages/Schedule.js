@@ -87,9 +87,9 @@ class Schedule extends Component {
             wins = parseInt(this.getGameValue(this.state.team[0], 'wins'));
             gamesPlayed = parseInt(this.getGameValue(this.state.team[0], 'gamesPlayed'));
             winRate = Math.round((wins / (gamesPlayed === 0 ? 1 : gamesPlayed)) * 100);
-            var teamName = PLAYER_TO_TEAM.get(nameParts[0]);
+            var teamName = PLAYER_TO_TEAM.get(nameParts[0].toLowerCase());
             for (const n of nameParts)
-                if (PLAYER_TO_TEAM.get(n) !== teamName)
+                if (PLAYER_TO_TEAM.get(n.toLowerCase()) !== teamName)
                     teamName = null;
         }
 
@@ -463,9 +463,9 @@ class Schedule extends Component {
                                                         const wins = parseInt(this.getGameValue(team, 'wins'));
                                                         const gamesPlayed = parseInt(this.getGameValue(team, 'gamesPlayed'));
                                                         const winRate = Math.round((wins / (gamesPlayed === 0 ? 1 : gamesPlayed)) * 100);
-                                                        var teamName = PLAYER_TO_TEAM.get(nameParts[0]);
+                                                        var teamName = PLAYER_TO_TEAM.get(nameParts[0].toLowerCase());
                                                         for (const n of nameParts)
-                                                            if (PLAYER_TO_TEAM.get(n) !== teamName)
+                                                            if (PLAYER_TO_TEAM.get(n.toLowerCase()) !== teamName)
                                                                 teamName = null;
 
                                                         return (

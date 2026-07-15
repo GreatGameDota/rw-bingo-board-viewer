@@ -364,12 +364,12 @@ const GameCard = ({ game, idx, type }) => {
                 <div className="flex items-center justify-between gap-2">
                     <div className="flex flex-row justify-center items-center">
                         <span className="text-white font-semibold mr-2">{name}</span>
-                        {PLAYER_TO_TEAM.get(name) &&
+                        {PLAYER_TO_TEAM.get(name.toLowerCase()) &&
                             <img
-                                src={`https://firebasestorage.googleapis.com/v0/b/bingo-db-57e75.firebasestorage.app/o/team_icons%2FThe ${PLAYER_TO_TEAM.get(name)}.png?alt=media`}
+                                src={`https://firebasestorage.googleapis.com/v0/b/bingo-db-57e75.firebasestorage.app/o/team_icons%2FThe ${PLAYER_TO_TEAM.get(name.toLowerCase())}.png?alt=media`}
                                 alt="Team Logo"
                                 className="w-5 h-5 mt-1"
-                                title={`The ${PLAYER_TO_TEAM.get(name)}`}
+                                title={`The ${PLAYER_TO_TEAM.get(name.toLowerCase())}`}
                             />}
                     </div>
                     <span className="text-gray-400">{getTeamName(team)}</span>

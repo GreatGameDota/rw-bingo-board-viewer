@@ -281,9 +281,9 @@ class Ranked extends Component {
         const selectedTeamWins = parseInt(this.getGameValue(selectedTeam, 'wins'));
         const selectedTeamGamesPlayed = parseInt(this.getGameValue(selectedTeam, 'gamesPlayed'));
         const selectedTeamWinRate = Math.round((selectedTeamWins / (selectedTeamGamesPlayed === 0 ? 1 : selectedTeamGamesPlayed)) * 100);
-        var selectedTeamName = selectedTeamNames.length !== 0 ? PLAYER_TO_TEAM.get(selectedTeamNames[0]) : null;
+        var selectedTeamName = selectedTeamNames.length !== 0 ? PLAYER_TO_TEAM.get(selectedTeamNames[0].toLowerCase()) : null;
         for (const n of selectedTeamNames)
-            if (PLAYER_TO_TEAM.get(n) !== selectedTeamName)
+            if (PLAYER_TO_TEAM.get(n.toLowerCase()) !== selectedTeamName)
                 selectedTeamName = null;
         var cutoffFirst = false, cutoffEnd = false;
         var matchesCard = null;
@@ -396,9 +396,9 @@ class Ranked extends Component {
                                 const showCutoffEnd = cutoffFirst && !cutoffEnd && this.getGameValue(team, 'gamesPlayed') !== "0";
                                 if (showCutoffFirst) cutoffFirst = true;
                                 if (showCutoffEnd) cutoffEnd = true;
-                                var teamName = PLAYER_TO_TEAM.get(nameParts[0]);
+                                var teamName = PLAYER_TO_TEAM.get(nameParts[0].toLowerCase());
                                 for (const n of nameParts)
-                                    if (PLAYER_TO_TEAM.get(n) !== teamName)
+                                    if (PLAYER_TO_TEAM.get(n.toLowerCase()) !== teamName)
                                         teamName = null;
 
                                 return (
@@ -527,9 +527,9 @@ class Ranked extends Component {
                                             {this.state.drawerMatches.map((match, idx) => {
                                                 const isSelected = this.state.selectedMatch === idx;
                                                 var selectedTeamNames = match.opponent.split(" & ");
-                                                var selectedTeamName = selectedTeamNames.length !== 0 ? PLAYER_TO_TEAM.get(selectedTeamNames[0]) : null;
+                                                var selectedTeamName = selectedTeamNames.length !== 0 ? PLAYER_TO_TEAM.get(selectedTeamNames[0].toLowerCase()) : null;
                                                 for (const n of selectedTeamNames)
-                                                    if (PLAYER_TO_TEAM.get(n) !== selectedTeamName)
+                                                    if (PLAYER_TO_TEAM.get(n.toLowerCase()) !== selectedTeamName)
                                                         selectedTeamName = null;
                                                 return (
                                                     <div
