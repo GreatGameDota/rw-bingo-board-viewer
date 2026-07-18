@@ -41,7 +41,7 @@ TEAM_NAMES_TO_IMAGE.set("greatgamedota,Polarcat".toLowerCase(), "Hermit");
 TEAM_NAMES_TO_IMAGE.set("Scattered,Wynn".toLowerCase(), "Steward");
 TEAM_NAMES_TO_IMAGE.set("Hexia,wildymoon".toLowerCase(), "Gatherer");
 TEAM_NAMES_TO_IMAGE.set("_vivaalex,xxrainbowwarrior20xx".toLowerCase(), "Gambler");
-TEAM_NAMES_TO_IMAGE.set("kayava,MadCap_195".toLowerCase(), "Forbidden");
+TEAM_NAMES_TO_IMAGE.set("MadCap_,kayava".toLowerCase(), "Forbidden");
 TEAM_NAMES_TO_IMAGE.set("capivara,gingercube09".toLowerCase(), "Aristocrat");
 TEAM_NAMES_TO_IMAGE.set("Linsy,ongi".toLowerCase(), "Vulture Slayer");
 TEAM_NAMES_TO_IMAGE.set("CnoteTWL,Moonpool".toLowerCase(), "Migration");
