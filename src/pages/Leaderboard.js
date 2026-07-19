@@ -167,7 +167,7 @@ class Leaderboard extends Component {
                     throw new Error(`API error: ${response.status}`);
                 }
                 const data = await response.json();
-                const currentTeamPlayers = teamName.split(',');
+                const currentTeamPlayers = teamName.toLowerCase().split(',');
                 const playerNames = data.match.playerNames.arrayValue.values || [];
                 const opponent = await this.extractOpponent(playerNames, currentTeamPlayers);
                 const winnerNames = data.match.winnerNames.arrayValue.values || [];
@@ -177,7 +177,7 @@ class Leaderboard extends Component {
                     info: data.match,
                     gameIds: data.match.games.arrayValue.values,
                     opponent: opponent,
-                    won: winnerNames.some(w => currentTeamPlayers.includes(w.stringValue))
+                    won: winnerNames.some(w => currentTeamPlayers.includes(w.stringValue.toLowerCase()))
                 });
                 if (this.state.showDrawer === false || this.getGameValue(this.state.selectedTeam, 'name') !== teamName) {
                     return;
@@ -241,7 +241,7 @@ class Leaderboard extends Component {
         try {
             const _playerNames = [];
             for (const name of playerNames) {
-                if (!currentTeamPlayers.includes(name.stringValue)) {
+                if (!currentTeamPlayers.includes(name.stringValue.toLowerCase())) {
                     _playerNames.push(name.stringValue);
                 }
             }
