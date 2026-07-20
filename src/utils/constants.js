@@ -41,14 +41,14 @@ TEAM_NAMES_TO_IMAGE.set("greatgamedota,Polarcat".toLowerCase(), "Hermit");
 TEAM_NAMES_TO_IMAGE.set("Scattered,Wynn".toLowerCase(), "Steward");
 TEAM_NAMES_TO_IMAGE.set("Hexia,wildymoon".toLowerCase(), "Gatherer");
 TEAM_NAMES_TO_IMAGE.set("_vivaalex,xxrainbowwarrior20xx".toLowerCase(), "Gambler");
-TEAM_NAMES_TO_IMAGE.set("MadCap_,kayava".toLowerCase(), "Forbidden");
+TEAM_NAMES_TO_IMAGE.set("kayava,MadCap_".toLowerCase(), "Forbidden");
 TEAM_NAMES_TO_IMAGE.set("-= Bambang =-,capivara".toLowerCase(), "Aristocrat");
 TEAM_NAMES_TO_IMAGE.set("Linsy,ongi".toLowerCase(), "Vulture Slayer");
 TEAM_NAMES_TO_IMAGE.set("CnoteTWL,Moonpool".toLowerCase(), "Migration");
 TEAM_NAMES_TO_IMAGE.set("+:Eclipse:+,sovel".toLowerCase(), "Peacekeeper");
 TEAM_NAMES_TO_IMAGE.set("Flycker,Yellow Ghost".toLowerCase(), "Warlord");
 TEAM_NAMES_TO_IMAGE.set("BluSharpie,Mantis".toLowerCase(), "Lost");
-TEAM_NAMES_TO_IMAGE.set("HoodedSnake58,twagon".toLowerCase(), "Collective");
+TEAM_NAMES_TO_IMAGE.set("Lummox,twagon".toLowerCase(), "Collective");
 TEAM_NAMES_TO_IMAGE.set("Funland Builder,mycatisadog99".toLowerCase(), "Hoarder");
 TEAM_NAMES_TO_IMAGE.set("EK3N,ImCatTastic".toLowerCase(), "Reaper");
 
