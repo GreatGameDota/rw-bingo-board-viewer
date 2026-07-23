@@ -390,7 +390,7 @@ class Schedule extends Component {
                                         <h1 className="mb-4 text-4xl font-bold text-white" style={{ fontFamily: 'RainWorldRodondo', fontSize: '48px' }}>Team Availability</h1>
                                         <div className="mb-4 flex flex-col">
                                             <span>Click blocks to mark when your team is free.</span>
-                                            <span>Each block covers a 2-hour window. Times are auto adjusted to your timezone.</span>
+                                            <span>Each block covers a 2-hour window. Time slot times start at UTC-0 and auto adjust to your timezone.</span>
                                         </div>
                                         <div className="flex flex-col items-center mx-auto mb-6 min-w-[75%]">
                                             <div className="flex flex-col">
