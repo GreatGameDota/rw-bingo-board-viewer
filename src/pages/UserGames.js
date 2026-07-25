@@ -12,8 +12,6 @@ class UserGames extends Component {
             userData: null,
             loading: true,
             error: null,
-            wins: 0,
-            total: 0,
         };
     }
 
@@ -75,12 +73,14 @@ class UserGames extends Component {
         });
 
         this.fetchUserGames();
+        this.fetchUserData();
     }
 
     componentDidUpdate(prevProps) {
         if (prevProps.userName !== this.props.userName) {
-            this.setState({ loading: true, error: null, userData: null, wins: 0, total: 0 });
+            this.setState({ loading: true, error: null, userData: null });
             this.fetchUserGames();
+            this.fetchUserData();
         }
     }
 
@@ -94,21 +94,11 @@ class UserGames extends Component {
             }
             const data = await response.json();
             const games = data.games || [];
-            var total = 0;
-            var wins = 0;
-            for (const g of games) {
-                if (g.info.winningTeam?.stringValue && g.info.winningTeam?.stringValue !== "null")
-                    total++;
-                if (g.info.winningTeam?.stringValue === g.info.team.stringValue)
-                    wins++;
-            }
             this.setState({
                 games,
                 loading: false,
                 error: null,
-                wins,
-                total,
-            }, () => this.fetchUserData());
+            });
         } catch (error) {
             console.error('Error fetching games:', error);
             this.setState({
@@ -156,8 +146,10 @@ class UserGames extends Component {
     }
 
     render() {
-        const { games, userData, loading, error, wins, total } = this.state;
+        const { games, userData, loading, error } = this.state;
         const { userName } = this.props;
+        const wins = userData?.info.wins?.integerValue ?? 0;
+        const total = userData?.info.gamesPlayed?.integerValue ?? 0;
 
         var teamName = PLAYER_TO_TEAM.get(userName.toLowerCase());
 
@@ -210,7 +202,7 @@ class UserGames extends Component {
 
                     <div className="border-b border-gray-700">
                         <div className="p-4 w-100 md:w-[50vw] h-[25vh] md:mx-auto">
-                            <LineGraph values={userData?.info.allElo.arrayValue.values} />
+                            <LineGraph values={userData?.info.allElo?.arrayValue.values} />
                         </div>
                     </div>
 
@@ -228,6 +220,7 @@ class UserGames extends Component {
                         </div>
                     ) : (
                         <div className="flex flex-col gap-6">
+                            <p className="text-4xl font-bold text-white my-4" style={{ fontFamily: 'RainWorldRodondo', fontSize: '48px' }}>All games ({games.length})</p>
                             {games.map((game, index) => <GameCard key={index} game={game} idx={index} type="list" />)}
                         </div>
                     )}

@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import BingoCanvas from '../components/BingoCanvas';
 import { CHARACTER_TO_BG, CHARACTER_TO_BG2, CHARACTER_TO_IMG, CHARACTER_TO_NAME, getTeamName, PLAYER_TO_TEAM } from '../utils/constants';
 
@@ -363,7 +364,7 @@ const GameCard = ({ game, idx, type }) => {
             <div className={`${type === "ranked" ? "flex flex-col p-4 space-y-2" : "flex flex-col lg:w-1/3 p-4 border-r border-gray-700 gap-2"}`}>
                 <div className="flex items-center justify-between gap-2">
                     <div className="flex flex-row justify-center items-center">
-                        <span className="text-white font-semibold mr-2">{name}</span>
+                        <Link to={`/rw-bingo-board-viewer/user/${name}`} className="text-white font-semibold mr-2">{name}</Link>
                         {PLAYER_TO_TEAM.get(name.toLowerCase()) &&
                             <img
                                 src={`https://firebasestorage.googleapis.com/v0/b/bingo-db-57e75.firebasestorage.app/o/team_icons%2FThe ${PLAYER_TO_TEAM.get(name.toLowerCase())}.png?alt=media`}
