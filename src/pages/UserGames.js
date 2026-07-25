@@ -97,9 +97,10 @@ class UserGames extends Component {
             var total = 0;
             var wins = 0;
             for (const g of games) {
+                if (g.info.winningTeam?.stringValue && g.info.winningTeam?.stringValue !== "null")
+                    total++;
                 if (g.info.winningTeam?.stringValue === g.info.team.stringValue)
                     wins++;
-                total++;
             }
             this.setState({
                 games,
