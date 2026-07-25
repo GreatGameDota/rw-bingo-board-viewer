@@ -1,14 +1,19 @@
 import React, { Component } from 'react';
 import { atlases } from '../lib/bingovista/bingovista';
 import GameCard from '../components/GameCard';
+import LineGraph from '../components/LineGraph';
+import { PLAYER_TO_TEAM } from "../utils/constants.js";
 
 class UserGames extends Component {
     constructor(props) {
         super(props);
         this.state = {
             games: [],
+            userData: null,
             loading: true,
-            error: null
+            error: null,
+            wins: 0,
+            total: 0,
         };
     }
 
@@ -74,7 +79,7 @@ class UserGames extends Component {
 
     componentDidUpdate(prevProps) {
         if (prevProps.userName !== this.props.userName) {
-            this.setState({ loading: true, error: null });
+            this.setState({ loading: true, error: null, userData: null, wins: 0, total: 0 });
             this.fetchUserGames();
         }
     }
@@ -89,17 +94,48 @@ class UserGames extends Component {
             }
             const data = await response.json();
             const games = data.games || [];
+            var total = 0;
+            var wins = 0;
+            for (const g of games) {
+                if (g.info.winningTeam?.stringValue === g.info.team.stringValue)
+                    wins++;
+                total++;
+            }
             this.setState({
                 games,
                 loading: false,
-                error: null
-            });
+                error: null,
+                wins,
+                total,
+            }, () => this.fetchUserData());
         } catch (error) {
             console.error('Error fetching games:', error);
             this.setState({
                 error: error.message,
                 loading: false
             });
+        }
+    }
+
+    fetchUserData = async () => {
+        const { userName } = this.props;
+        if (!userName) return;
+        try {
+            const response = await fetch('https://us-central1-bingo-db-57e75.cloudfunctions.net/api/users/name/' + encodeURIComponent(userName));
+            if (!response.ok) {
+                throw new Error(`API error: ${response.status}`);
+            }
+            const data = await response.json();
+            const userData = data.users[0] || null;
+            this.setState({
+                userData
+            });
+        } catch (error) {
+            console.error('Error fetching user data:', error);
+            // this.setState({
+            //     error: error.message,
+            //     loading: false
+            // });
         }
     }
 
@@ -119,13 +155,63 @@ class UserGames extends Component {
     }
 
     render() {
-        const { games, loading, error } = this.state;
+        const { games, userData, loading, error, wins, total } = this.state;
         const { userName } = this.props;
+
+        var teamName = PLAYER_TO_TEAM.get(userName.toLowerCase());
 
         return (
             <div className="flex-grow">
                 <div className="p-6 max-w-7xl mx-auto">
-                    <h1 className="text-4xl font-bold text-white mb-8" style={{ fontFamily: 'RainWorldRodondo', fontSize: '48px' }}>{decodeURIComponent(userName || '')}</h1>
+                    {/* <h1 className="text-4xl font-bold text-white mb-8" style={{ fontFamily: 'RainWorldRodondo', fontSize: '48px' }}>{decodeURIComponent(userName || '')}</h1> */}
+
+                    <div
+                        className="relative rounded-lg p-6 cursor-default overflow-hidden"
+                        title={teamName ? `The ${teamName}` : ""}
+                    >
+                        {teamName &&
+                            <img
+                                src={`https://firebasestorage.googleapis.com/v0/b/bingo-db-57e75.firebasestorage.app/o/team_icons%2FThe ${teamName}.png?alt=media`}
+                                alt="Team Logo"
+                                className="absolute h-[164px] z-0 -left-16 top-0 opacity-40"
+                                style={{ translate: "0 -15%" }}
+                            />}
+                        {teamName &&
+                            <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(to_right,rgba(243,176,65,0.2),transparent_40%)]"></div>}
+                        <div className="flex flex-row relative z-1">
+                            <div className="flex flex-col my-auto">
+                                <div className="flex flex-row items-center">
+                                    {teamName &&
+                                        <img
+                                            src={`https://firebasestorage.googleapis.com/v0/b/bingo-db-57e75.firebasestorage.app/o/team_icons%2FThe ${teamName}.png?alt=media`}
+                                            alt="Team Logo"
+                                            className="w-5 h-5 mt-1 mr-2"
+                                        />}
+                                    <p className="text-2xl font-bold py-4" style={{ fontFamily: 'RainWorldRodondo', fontSize: '48px' }}>
+                                        {userName}
+                                    </p>
+                                </div>
+                                <p>
+                                    <span
+                                        className={`text-xl font-bold`}
+                                    >
+                                        {Math.round(parseFloat(userData?.info.elo.stringValue ?? 0))}
+                                    </span> elo • <span className="text-xl font-semibold">{Math.round((wins / (total === 0 ? 1 : total)) * 100)}</span>% winrate
+                                </p>
+                            </div>
+                            <div className="ml-auto my-auto text-right">
+                                <p>
+                                    {total} {total === "1" ? "game" : "games"} • {wins}W {total - wins}L
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="border-b border-gray-700">
+                        <div className="p-4 w-100 md:w-[50vw] h-[25vh] md:mx-auto">
+                            <LineGraph values={userData?.info.allElo.arrayValue.values} />
+                        </div>
+                    </div>
 
                     {loading ? (
                         <div className="flex items-center justify-center py-24">
