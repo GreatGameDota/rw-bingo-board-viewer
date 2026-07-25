@@ -148,8 +148,8 @@ class UserGames extends Component {
     render() {
         const { games, userData, loading, error } = this.state;
         const { userName } = this.props;
-        const wins = userData?.info.wins?.integerValue ?? 0;
-        const total = userData?.info.gamesPlayed?.integerValue ?? 0;
+        const wins = parseInt(userData?.info.wins?.integerValue) ?? 0;
+        const total = parseInt(userData?.info.gamesPlayed?.integerValue) ?? 0;
 
         var teamName = PLAYER_TO_TEAM.get(userName.toLowerCase());
 
