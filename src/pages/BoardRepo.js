@@ -14,6 +14,7 @@ class BoardRepo extends Component {
             selectedCharacter: 'all',
             watcherMode: 'yes',
             previewBoard: null,
+            rankedBoardsOnly: 'no',
         };
     }
 
@@ -115,7 +116,10 @@ class BoardRepo extends Component {
                         boardString,
                         character,
                         watcherMode,
+                        ranked: Boolean(match?.info?.ranked?.booleanValue)
                     });
+                } else if (!boardsByKey.get(boardKey).ranked && Boolean(match?.info?.ranked?.booleanValue)) {
+                    boardsByKey.get(boardKey).ranked = true;
                 }
             }
 
@@ -156,13 +160,18 @@ class BoardRepo extends Component {
         this.setState({ watcherMode: event.target.value, previewBoard: null });
     };
 
+    handleRankedFilter = (event) => {
+        this.setState({ rankedBoardsOnly: event.target.value, previewBoard: null });
+    };
+
     render() {
-        const { boards, loading, error, selectedCharacter, watcherMode, previewBoard } = this.state;
+        const { boards, loading, error, selectedCharacter, watcherMode, rankedBoardsOnly, previewBoard } = this.state;
         const characters = ['all', ...Array.from(CHARACTER_TO_NAME.values())];
         const filteredBoards = boards.filter((board) => {
             const characterMatch = selectedCharacter === 'all' || board.character === selectedCharacter;
             const watcherMatch = watcherMode === 'all' || (watcherMode === 'yes' ? board.watcherMode : !board.watcherMode);
-            return characterMatch && watcherMatch;
+            const rankedMatch = rankedBoardsOnly === 'yes' ? board.ranked : true;
+            return characterMatch && watcherMatch && rankedMatch;
         });
 
         return (
@@ -200,6 +209,19 @@ class BoardRepo extends Component {
                                 id="watcher-filter"
                                 value={watcherMode}
                                 onChange={this.handleWatcherFilter}
+                                className="rounded border border-gray-600 bg-gray-900 px-3 py-2 text-white"
+                            >
+                                <option value="yes">On</option>
+                                <option value="no">Off</option>
+                            </select>
+                        </div>
+
+                        <div className="flex flex-col gap-2">
+                            <label className="text-sm text-gray-400" htmlFor="ranked-filter">Ranked Only</label>
+                            <select
+                                id="ranked-filter"
+                                value={rankedBoardsOnly}
+                                onChange={this.handleRankedFilter}
                                 className="rounded border border-gray-600 bg-gray-900 px-3 py-2 text-white"
                             >
                                 <option value="yes">On</option>
