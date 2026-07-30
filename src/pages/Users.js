@@ -61,7 +61,7 @@ class Users extends Component {
                         Users
                     </h1>
                     <div className="mb-8">
-                        <p>Counts games with an opponent and a winner. Doesn't include games before matches were added (mid May)</p>
+                        <p>Counts games with an opponent and a winner. Doesn't include games before matches were added (mid May 2026)</p>
                         <p>Includes any game: 1v1, 2v2, 1v2, 3v3, etc.</p>
                     </div>
 

@@ -235,8 +235,9 @@ class BoardRepo extends Component {
                     </div>
 
                     {loading ? (
-                        <div className="flex items-center justify-center py-24">
-                            <p className="text-white text-xl">Scanning matches and boards...</p>
+                        <div className="flex flex-col items-center justify-center py-24">
+                            <p className="text-white text-xl mb-4">Scanning matches and boards...</p>
+                            <img alt="slugcat army loading" src="https://firebasestorage.googleapis.com/v0/b/bingo-db-57e75.firebasestorage.app/o/Slugcat_walking_army.gif?alt=media" />
                         </div>
                     ) : error ? (
                         <div className="flex items-center justify-center py-24">

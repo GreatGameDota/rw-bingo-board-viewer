@@ -26,22 +26,22 @@ const MenuBar = () => {
                         />
                     </Link>
                     <ul className="hidden md:flex ml-0 md:ml-12 space-x-8 items-center">
-                        <li>
+                        {/* <li>
                             <Link
                                 to="/rw-bingo-board-viewer"
                                 className="text-gray-300 hover:text-white transition-colors duration-200"
                             >
                                 Live
                             </Link>
-                        </li>
-                        <li>
+                        </li> */}
+                        {/* <li>
                             <Link
                                 to="/rw-bingo-board-viewer/all-games"
                                 className="text-gray-300 hover:text-white transition-colors duration-200"
                             >
                                 All Games
                             </Link>
-                        </li>
+                        </li> */}
                         <li>
                             <Link
                                 to="/rw-bingo-board-viewer/all-matches"
@@ -50,14 +50,14 @@ const MenuBar = () => {
                                 All Matches
                             </Link>
                         </li>
-                        <li>
+                        {/* <li>
                             <Link
                                 to="/rw-bingo-board-viewer/leaderboard"
                                 className="text-gray-300 hover:text-white transition-colors duration-200"
                             >
                                 Leaderboard
                             </Link>
-                        </li>
+                        </li> */}
                         <li>
                             <Link
                                 to="/rw-bingo-board-viewer/ranked"
@@ -66,14 +66,14 @@ const MenuBar = () => {
                                 Ranked
                             </Link>
                         </li>
-                        {/* <li>
+                        <li>
                             <Link
                                 to="/rw-bingo-board-viewer/users"
                                 className="text-gray-300 hover:text-white transition-colors duration-200"
                             >
                                 Users
                             </Link>
-                        </li> */}
+                        </li>
                         <li>
                             <Link
                                 to="/rw-bingo-board-viewer/board-repo"
@@ -126,7 +126,7 @@ const MenuBar = () => {
             {menuOpen && (
                 <div className="md:hidden absolute top-full left-0 right-0 z-50 bg-gray-900 border-t border-gray-700 px-6 pb-4">
                     <ul className="flex flex-col space-y-3 pt-3">
-                        <li>
+                        {/* <li>
                             <Link
                                 to="/rw-bingo-board-viewer"
                                 className="text-gray-300 hover:text-white transition-colors duration-200"
@@ -143,7 +143,7 @@ const MenuBar = () => {
                             >
                                 All Games
                             </Link>
-                        </li>
+                        </li> */}
                         <li>
                             <Link
                                 to="/rw-bingo-board-viewer/all-matches"
@@ -153,7 +153,7 @@ const MenuBar = () => {
                                 All Matches
                             </Link>
                         </li>
-                        <li>
+                        {/* <li>
                             <Link
                                 to="/rw-bingo-board-viewer/leaderboard"
                                 className="text-gray-300 hover:text-white transition-colors duration-200"
@@ -161,7 +161,7 @@ const MenuBar = () => {
                             >
                                 Leaderboard
                             </Link>
-                        </li>
+                        </li> */}
                         <li>
                             <Link
                                 to="/rw-bingo-board-viewer/ranked"
@@ -171,7 +171,7 @@ const MenuBar = () => {
                                 Ranked
                             </Link>
                         </li>
-                        {/* <li>
+                        <li>
                             <Link
                                 to="/rw-bingo-board-viewer/users"
                                 className="text-gray-300 hover:text-white transition-colors duration-200"
@@ -179,7 +179,7 @@ const MenuBar = () => {
                             >
                                 Users
                             </Link>
-                        </li> */}
+                        </li>
                         <li>
                             <Link
                                 to="/rw-bingo-board-viewer/board-repo"
