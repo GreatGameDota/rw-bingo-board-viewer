@@ -66,6 +66,14 @@ const MenuBar = () => {
                                 Ranked
                             </Link>
                         </li>
+                        {/* <li>
+                            <Link
+                                to="/rw-bingo-board-viewer/users"
+                                className="text-gray-300 hover:text-white transition-colors duration-200"
+                            >
+                                Users
+                            </Link>
+                        </li> */}
                         <li>
                             <Link
                                 to="/rw-bingo-board-viewer/schedule"
@@ -155,6 +163,15 @@ const MenuBar = () => {
                                 Ranked
                             </Link>
                         </li>
+                        {/* <li>
+                            <Link
+                                to="/rw-bingo-board-viewer/users"
+                                className="text-gray-300 hover:text-white transition-colors duration-200"
+                                onClick={() => setMenuOpen(false)}
+                            >
+                                Users
+                            </Link>
+                        </li> */}
                         <li>
                             <Link
                                 to="/rw-bingo-board-viewer/schedule"
