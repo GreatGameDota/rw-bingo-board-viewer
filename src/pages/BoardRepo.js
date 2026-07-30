@@ -12,7 +12,7 @@ class BoardRepo extends Component {
             loading: true,
             error: null,
             selectedCharacter: 'all',
-            watcherMode: 'all',
+            watcherMode: 'yes',
             previewBoard: null,
         };
     }
@@ -82,7 +82,7 @@ class BoardRepo extends Component {
         this.setState({ loading: true, error: null });
 
         try {
-            const response = await fetch('https://us-central1-bingo-db-57e75.cloudfunctions.net/api/matches?min=0&max=100');
+            const response = await fetch('https://us-central1-bingo-db-57e75.cloudfunctions.net/api/matches?min=0&max=10000');
             if (!response.ok) {
                 throw new Error(`API error: ${response.status}`);
             }
