@@ -76,6 +76,14 @@ const MenuBar = () => {
                         </li> */}
                         <li>
                             <Link
+                                to="/rw-bingo-board-viewer/board-repo"
+                                className="text-gray-300 hover:text-white transition-colors duration-200"
+                            >
+                                Board Repo
+                            </Link>
+                        </li>
+                        <li>
+                            <Link
                                 to="/rw-bingo-board-viewer/schedule"
                                 className="text-gray-300 hover:text-white transition-colors duration-200"
                             >
@@ -172,6 +180,15 @@ const MenuBar = () => {
                                 Users
                             </Link>
                         </li> */}
+                        <li>
+                            <Link
+                                to="/rw-bingo-board-viewer/board-repo"
+                                className="text-gray-300 hover:text-white transition-colors duration-200"
+                                onClick={() => setMenuOpen(false)}
+                            >
+                                Board Repo
+                            </Link>
+                        </li>
                         <li>
                             <Link
                                 to="/rw-bingo-board-viewer/schedule"

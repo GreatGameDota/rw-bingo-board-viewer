@@ -9,6 +9,7 @@ import Schedule from "./pages/Schedule";
 import Leaderboard from "./pages/Leaderboard";
 import Ranked from "./pages/Ranked";
 import Users from "./pages/Users";
+import BoardRepo from "./pages/BoardRepo";
 import Credits from "./pages/Credits";
 
 function UserGamesRoute() {
@@ -28,6 +29,7 @@ function App() {
                     <Route path="/rw-bingo-board-viewer/leaderboard" element={<Leaderboard />} />
                     <Route path="/rw-bingo-board-viewer/ranked" element={<Ranked />} />
                     <Route path="/rw-bingo-board-viewer/users" element={<Users />} />
+                    <Route path="/rw-bingo-board-viewer/board-repo" element={<BoardRepo />} />
                     <Route path="/rw-bingo-board-viewer/all-games" element={<AllGames />} />
                     <Route path="/rw-bingo-board-viewer/all-matches" element={<AllMatches />} />
                     <Route path="/rw-bingo-board-viewer/user/:userName" element={<UserGamesRoute />} />
