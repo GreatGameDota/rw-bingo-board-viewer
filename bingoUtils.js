@@ -96,6 +96,48 @@ function deriveGameId(boardString) {
     return `${seed}:${challengeHash}`;
 }
 
+async function calcPlayerElo(allPlayers, winningTeam, m, token) {
+    const winners = allPlayers.filter(p => p.team === winningTeam);
+    const losers = allPlayers.filter(p => p.team !== winningTeam);
+    const winnersNames = allPlayers.filter(p => p.team === winningTeam).map(p => p.name);
+    const losersNames = allPlayers.filter(p => p.team !== winningTeam).map(p => p.name);
+
+    if (winners.length === 0 || losers.length === 0) {
+        console.log(`${m.info.id.stringValue} Not enough winners/losers, skipping`);
+        return;
+    }
+
+    const winK = 100;
+    const loseK = 100;
+
+    const avgWinnerElo = winners.reduce((sum, p) => sum + parseFloat(p.elo || 1000), 0) / winners.length;
+    const avgLoserElo = losers.reduce((sum, p) => sum + parseFloat(p.elo || 1000), 0) / losers.length;
+
+    const expectedWin = 1 / (1 + Math.pow(10, (avgLoserElo - avgWinnerElo) / 400));
+
+    const avgWinnerDelta = winK * (1 - expectedWin);
+    const avgLoserDelta = loseK * (0 - (1 - expectedWin));
+
+    for (const p of allPlayers) {
+        var body = {
+            name: p.name,
+            elo: String(parseFloat(p.elo) + (winnersNames.includes(p.name) ? avgWinnerDelta : avgLoserDelta)),
+            eloTime: m.info.createdAt.timestampValue,
+            gamesPlayed: p.gamesPlayed + 1,
+            wins: p.wins + (winnersNames.includes(p.name) ? 1 : 0),
+        };
+        var response = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/user/${p.id}`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
+            body: JSON.stringify(body),
+        });
+        const res = await response.json();
+    }
+    console.log(`${m.info.id.stringValue}:`);
+    winners.forEach(p => console.log(`  ${p.name}: ${p.elo} ${avgWinnerDelta}`));
+    losers.forEach(p => console.log(`  ${p.name}: ${p.elo} ${avgLoserDelta}`));
+}
+
 async function calcElo(match, token) {
     const isRanked = match.info.ranked2?.booleanValue;
 
@@ -116,12 +158,18 @@ async function calcElo(match, token) {
             const team = gameData.game.team?.stringValue;
             const gameWinningTeam = gameData.game.winningTeam?.stringValue;
 
-            allPlayers.push({ name: playerName, team });
+            const userResponse = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/users/name/${playerName}`);
+            const userData = await userResponse.json();
+            const userInfo = userData.users[0].info;
+
+            allPlayers.push({ name: playerName, team, id: userInfo.id.stringValue, elo: userInfo.elo?.stringValue ?? "1000", gamesPlayed: parseInt(userInfo.gamesPlayed?.integerValue) ?? 0, wins: parseInt(userInfo.wins?.integerValue) ?? 0 });
 
             if (!winningTeam && gameWinningTeam !== "null") {
                 winningTeam = gameWinningTeam;
             }
         }
+
+        await calcPlayerElo(allPlayers, winningTeam, match, token);
 
         // Cannot do this to allow other games in match to save snapshot
         // for (const game of gameDatas) {
