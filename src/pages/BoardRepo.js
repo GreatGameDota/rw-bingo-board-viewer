@@ -103,7 +103,16 @@ class BoardRepo extends Component {
                 const gameResponse = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/games/${gameId}`);
                 const gameData = await gameResponse.json();
                 const game = gameData.game;
-                const boardString = extractChallengeNames(game.boardString?.stringValue);
+                var boardString = extractChallengeNames(game.boardString?.stringValue);
+                var parts = boardString.split(";");
+                if (parts.length === 3) {
+                    parts[1] = "random";
+                    boardString = parts.join(';');
+                }
+                else {
+                    parts[2] = "random";
+                    boardString = parts.join(';');
+                }
                 const boardKey = match?.info?.boardId?.stringValue;
 
                 if (!boardsByKey.has(boardKey)) {
