@@ -83,56 +83,61 @@ class BoardRepo extends Component {
         this.setState({ loading: true, error: null });
 
         try {
-            const response = await fetch('https://us-central1-bingo-db-57e75.cloudfunctions.net/api/matches?min=0&max=10000');
+            const response = await fetch('https://us-central1-bingo-db-57e75.cloudfunctions.net/api/boardRepo?min=0&max=10000');
             if (!response.ok) {
                 throw new Error(`API error: ${response.status}`);
             }
 
             const data = await response.json();
-            const matches = data.matches || [];
-            const boardsByKey = new Map();
+            var boards = data.boards || [];
+            boards = boards.map(b => { return { id: b.info.boardKey.stringValue, boardString: b.info.boardString.stringValue, character: b.info.character.stringValue, watcherMode: Boolean(b.info.watcherMode.booleanValue), ranked: Boolean(b.info.ranked.booleanValue) } });
+            // boards.reverse();
 
-            for (const match of matches) {
-                const gameRefs = match?.info?.games?.arrayValue?.values || [];
-                const firstGameRef = gameRefs[0];
-                const gameId = firstGameRef?.stringValue;
-                if (!gameId) {
-                    console.log("no game found");
-                    continue;
-                }
-                const gameResponse = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/games/${gameId}`);
-                const gameData = await gameResponse.json();
-                const game = gameData.game;
-                var boardString = extractChallengeNames(game.boardString?.stringValue);
-                var parts = boardString.split(";");
-                if (parts.length === 3) {
-                    parts[1] = "random";
-                    boardString = parts.join(';');
-                }
-                else {
-                    parts[2] = "random";
-                    boardString = parts.join(';');
-                }
-                const boardKey = match?.info?.boardId?.stringValue;
+            // const data = await response.json();
+            // const matches = data.matches || [];
+            // const boardsByKey = new Map();
 
-                if (!boardsByKey.has(boardKey)) {
-                    const parts = boardString.split(';');
-                    const rawCharacter = parts[0] || 'Unknown';
-                    const character = CHARACTER_TO_NAME.get(rawCharacter) || rawCharacter;
-                    const watcherMode = (parts.length === 4 && parts[1] === '1') || character === "Watcher";
-                    boardsByKey.set(boardKey, {
-                        id: boardKey,
-                        boardString,
-                        character,
-                        watcherMode,
-                        ranked: Boolean(match?.info?.ranked?.booleanValue)
-                    });
-                } else if (!boardsByKey.get(boardKey).ranked && Boolean(match?.info?.ranked?.booleanValue)) {
-                    boardsByKey.get(boardKey).ranked = true;
-                }
-            }
+            // for (const match of matches) {
+            //     const gameRefs = match?.info?.games?.arrayValue?.values || [];
+            //     const firstGameRef = gameRefs[0];
+            //     const gameId = firstGameRef?.stringValue;
+            //     if (!gameId) {
+            //         console.log("no game found");
+            //         continue;
+            //     }
+            //     const gameResponse = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/games/${gameId}`);
+            //     const gameData = await gameResponse.json();
+            //     const game = gameData.game;
+            //     var boardString = extractChallengeNames(game.boardString?.stringValue);
+            //     var parts = boardString.split(";");
+            //     if (parts.length === 3) {
+            //         parts[1] = "random";
+            //         boardString = parts.join(';');
+            //     }
+            //     else {
+            //         parts[2] = "random";
+            //         boardString = parts.join(';');
+            //     }
+            //     const boardKey = match?.info?.boardId?.stringValue;
 
-            const boards = Array.from(boardsByKey.values());
+            //     if (!boardsByKey.has(boardKey)) {
+            //         const parts = boardString.split(';');
+            //         const rawCharacter = parts[0] || 'Unknown';
+            //         const character = CHARACTER_TO_NAME.get(rawCharacter) || rawCharacter;
+            //         const watcherMode = (parts.length === 4 && parts[1] === '1') || character === "Watcher";
+            //         boardsByKey.set(boardKey, {
+            //             id: boardKey,
+            //             boardString,
+            //             character,
+            //             watcherMode,
+            //             ranked: Boolean(match?.info?.ranked?.booleanValue)
+            //         });
+            //     } else if (!boardsByKey.get(boardKey).ranked && Boolean(match?.info?.ranked?.booleanValue)) {
+            //         boardsByKey.get(boardKey).ranked = true;
+            //     }
+            // }
+
+            // const boards = Array.from(boardsByKey.values());
             this.setState({ boards, loading: false, error: null });
         } catch (error) {
             console.error('Error fetching boards ', error);
