@@ -119,7 +119,7 @@ class BoardRepo extends Component {
                     const parts = boardString.split(';');
                     const rawCharacter = parts[0] || 'Unknown';
                     const character = CHARACTER_TO_NAME.get(rawCharacter) || rawCharacter;
-                    const watcherMode = parts.length === 4 && parts[1] === '1';
+                    const watcherMode = (parts.length === 4 && parts[1] === '1') || character === "Watcher";
                     boardsByKey.set(boardKey, {
                         id: boardKey,
                         boardString,
@@ -301,7 +301,7 @@ class BoardRepo extends Component {
                                             <BingoCanvas
                                                 bingoString={board.boardString}
                                                 boardState={"00000000000<>00000000000<>00000000000<>00000000000<>00000000000<>00000000000<>00000000000<>00000000000<>00000000000<>00000000000<>00000000000<>00000000000<>00000000000<>00000000000<>00000000000<>00000000000<>00000000000<>00000000000<>00000000000<>00000000000<>00000000000<>00000000000<>00000000000<>00000000000<>00000000000".split("<>")}
-                                                team={0}
+                                                team={11}
                                                 size={400}
                                             />
                                         </div>
