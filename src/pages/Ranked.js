@@ -358,6 +358,7 @@ class Ranked extends Component {
                             <h1 className="text-4xl font-bold text-white mb-8" style={{ fontFamily: 'RainWorldRodondo', fontSize: '48px' }}>Ranked</h1>
                             <p>Official leaderboard for 2v2 ranked matches.</p>
                             <p className="mb-8">Click on a team to view their matches.</p>
+                            <p className="mb-8">Teams start at 1200 elo. K is 200 for first two games, then 100 for the rest.</p>
                         </div>
                         <div className="flex flex-col mx-auto items-center justify-between">
                             <img

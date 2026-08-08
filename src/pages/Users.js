@@ -63,6 +63,7 @@ class Users extends Component {
                     <div className="mb-8">
                         <p>Counts games with an opponent and a winner. Doesn't include games before matches were added (mid May 2026)</p>
                         <p>Includes any game: 1v1, 2v2, 1v2, 3v3, etc.</p>
+                        <p>Users start at 1000 elo. K is 100 for all games.</p>
                     </div>
 
                     {loading ? (
