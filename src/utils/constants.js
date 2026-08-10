@@ -39,7 +39,7 @@ TEAM_NAMES_TO_IMAGE.set("107651,Wet Fish".toLowerCase(), "Voyager");
 TEAM_NAMES_TO_IMAGE.set("goldenrose,ryan".toLowerCase(), "Temperate");
 TEAM_NAMES_TO_IMAGE.set("greatgamedota,Polarcat".toLowerCase(), "Hermit");
 TEAM_NAMES_TO_IMAGE.set("Hexia,wildymoon".toLowerCase(), "Gatherer");
-TEAM_NAMES_TO_IMAGE.set("_vivaalex,xxrainbowwarrior20xx".toLowerCase(), "Gambler");
+TEAM_NAMES_TO_IMAGE.set("HunterBunter,Rockparmesan".toLowerCase(), "Gambler");
 TEAM_NAMES_TO_IMAGE.set("MadCap_,Wynn".toLowerCase(), "Forbidden");
 TEAM_NAMES_TO_IMAGE.set("-= Bambang =-,capivara".toLowerCase(), "Aristocrat");
 TEAM_NAMES_TO_IMAGE.set("Linsy,ongi".toLowerCase(), "Vulture Slayer");
