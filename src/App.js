@@ -11,10 +11,16 @@ import Ranked from "./pages/Ranked";
 import Users from "./pages/Users";
 import BoardRepo from "./pages/BoardRepo";
 import Credits from "./pages/Credits";
+import Board from "./pages/Board";
 
 function UserGamesRoute() {
     const { userName } = useParams();
     return <UserGames userName={userName} />;
+}
+
+function BoardRoute() {
+    const { boardId } = useParams();
+    return <Board boardId={boardId} />;
 }
 
 function App() {
@@ -33,6 +39,7 @@ function App() {
                     <Route path="/rw-bingo-board-viewer/all-games" element={<AllGames />} />
                     <Route path="/rw-bingo-board-viewer/all-matches" element={<AllMatches />} />
                     <Route path="/rw-bingo-board-viewer/user/:userName" element={<UserGamesRoute />} />
+                    <Route path="/rw-bingo-board-viewer/board/:boardId" element={<BoardRoute />} />
                     <Route path="/rw-bingo-board-viewer/credits" element={<Credits />} />
                 </Routes>
                 <Footer />
