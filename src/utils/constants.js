@@ -46,7 +46,7 @@ TEAM_NAMES_TO_IMAGE.set("Linsy,ongi".toLowerCase(), "Vulture Slayer");
 TEAM_NAMES_TO_IMAGE.set("CnoteTWL,Moonpool".toLowerCase(), "Migration");
 TEAM_NAMES_TO_IMAGE.set("+:Eclipse:+,sovel".toLowerCase(), "Peacekeeper");
 TEAM_NAMES_TO_IMAGE.set("Flycker,Yellow Ghost".toLowerCase(), "Warlord");
-TEAM_NAMES_TO_IMAGE.set("BluSharpie,Mantis".toLowerCase(), "Lost");
+TEAM_NAMES_TO_IMAGE.set("Mantis,shrub".toLowerCase(), "Lost");
 TEAM_NAMES_TO_IMAGE.set("Lummox,twagon".toLowerCase(), "Collective");
 TEAM_NAMES_TO_IMAGE.set("Funland Builder,mycatisadog99".toLowerCase(), "Hoarder");
 TEAM_NAMES_TO_IMAGE.set("EK3N,ImCatTastic".toLowerCase(), "Reaper");
