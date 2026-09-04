@@ -15,7 +15,7 @@ class Schedule extends Component {
             player1Search: '',
             player2Search: '',
             availability: {},
-            eloDiff: 200,
+            eloDiff: 9999,
         };
     }
 
@@ -113,7 +113,6 @@ class Schedule extends Component {
                     // console.log('Fetched team:', teams);
                     this.setState({
                         teams: null,
-                        eloDiff: 200,
                         team: teams,
                         loading2: false,
                         error: null,
@@ -162,7 +161,6 @@ class Schedule extends Component {
                     // console.log('Fetched team:', teams);
                     this.setState({
                         teams: null,
-                        eloDiff: 200,
                         team: teams,
                         loading2: false,
                         error: null,
