@@ -168,7 +168,7 @@ async function calcElo(match, token) {
             if (!winningTeam && gameWinningTeam !== "null") {
                 winningTeam = gameWinningTeam;
             }
-            if (!timeStamp && gameData.game.updatedAt?.timestampValue)
+            if (!timeStamp || new Date(gameData.game.updatedAt.timestampValue) > new Date(timeStamp))
             {
                 timeStamp = gameData.game.updatedAt.timestampValue;
             }
