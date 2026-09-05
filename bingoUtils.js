@@ -96,7 +96,7 @@ function deriveGameId(boardString) {
     return `${seed}:${challengeHash}`;
 }
 
-async function calcPlayerElo(allPlayers, winningTeam, m, token) {
+async function calcPlayerElo(allPlayers, winningTeam, m, token, timeStamp) {
     const winners = allPlayers.filter(p => p.team === winningTeam);
     const losers = allPlayers.filter(p => p.team !== winningTeam);
     const winnersNames = allPlayers.filter(p => p.team === winningTeam).map(p => p.name);
@@ -122,7 +122,7 @@ async function calcPlayerElo(allPlayers, winningTeam, m, token) {
         var body = {
             name: p.name,
             elo: String(parseFloat(p.elo) + (winnersNames.includes(p.name) ? avgWinnerDelta : avgLoserDelta)),
-            eloTime: m.info.createdAt.timestampValue,
+            eloTime: timeStamp || m.info.createdAt.timestampValue,
             gamesPlayed: p.gamesPlayed + 1,
             wins: p.wins + (winnersNames.includes(p.name) ? 1 : 0),
         };
@@ -148,6 +148,7 @@ async function calcElo(match, token) {
         let winningTeam = null;
 
         var gameDatas = [];
+        var timeStamp = null;
         for (const gameRef of games) {
             const gameId = gameRef.stringValue;
             const gameResponse = await fetch(`https://us-central1-bingo-db-57e75.cloudfunctions.net/api/games/${gameId}`);
@@ -167,9 +168,13 @@ async function calcElo(match, token) {
             if (!winningTeam && gameWinningTeam !== "null") {
                 winningTeam = gameWinningTeam;
             }
+            if (!timeStamp && gameData.game.updatedAt?.timestampValue)
+            {
+                timeStamp = gameData.game.updatedAt.timestampValue;
+            }
         }
 
-        await calcPlayerElo(allPlayers, winningTeam, match, token);
+        await calcPlayerElo(allPlayers, winningTeam, match, token, timeStamp);
 
         // Cannot do this to allow other games in match to save snapshot
         // for (const game of gameDatas) {
