@@ -366,9 +366,10 @@ class Ranked extends Component {
                                 alt="Bingo Board Banner"
                                 className="w-[456px] h-[120px] object-cover"
                             />
-                            {new Date() < new Date(Date.UTC(2026, 7, 18, 0, 0, 0)) ? 
+                            <p className="rounded-md bg-gray-800 py-0.5 px-2.5 font-bold shadow-sm">COMPLETED</p>
+                            {/* {new Date() < new Date(Date.UTC(2026, 7, 18, 0, 0, 0)) ? 
                                 (<p className="rounded-md bg-gray-600 py-0.5 px-2.5 font-bold shadow-sm">Starting July 18th</p>) :
-                                (<p className="rounded-md bg-green-600 py-0.5 px-2.5 font-bold shadow-sm">LIVE <span className="ml-1 text-red-600">•</span></p>)}
+                                (<p className="rounded-md bg-green-600 py-0.5 px-2.5 font-bold shadow-sm">LIVE <span className="ml-1 text-red-600">•</span></p>)} */}
                         </div>
                     </div>
 

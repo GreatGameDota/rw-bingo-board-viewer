@@ -82,14 +82,14 @@ const MenuBar = () => {
                                 Board Repo
                             </Link>
                         </li>
-                        <li>
+                        {/* <li>
                             <Link
                                 to="/rw-bingo-board-viewer/schedule"
                                 className="text-gray-300 hover:text-white transition-colors duration-200"
                             >
                                 Schedule
                             </Link>
-                        </li>
+                        </li> */}
                     </ul>
                     <form onSubmit={handleSearchSubmit} className="hidden md:block ml-auto relative">
                         <svg
@@ -189,7 +189,7 @@ const MenuBar = () => {
                                 Board Repo
                             </Link>
                         </li>
-                        <li>
+                        {/* <li>
                             <Link
                                 to="/rw-bingo-board-viewer/schedule"
                                 className="text-gray-300 hover:text-white transition-colors duration-200"
@@ -197,7 +197,7 @@ const MenuBar = () => {
                             >
                                 Schedule
                             </Link>
-                        </li>
+                        </li> */}
                     </ul>
 
                     <form onSubmit={(e) => { handleSearchSubmit(e); setMenuOpen(false); }} className="mt-4 relative">
